@@ -40,6 +40,7 @@ from indico.modules.events.registration.notifications import (notify_invitation,
                                                               notify_registration_modification)
 from indico.modules.logs import LogKind
 from indico.modules.users.util import get_user_by_email
+from indico.util.caching import memoize_request
 from indico.util.date_time import format_date
 from indico.util.i18n import _
 from indico.util.signals import values_from_signal
@@ -122,7 +123,8 @@ def get_event_section_data(regform, management=False, registration=None):
     for section in regform.sections:
         if section.is_deleted or (not management and section.is_manager_only):
             continue
-
+        if not _is_section_visible(regform, section, registration=registration):
+            continue
         section_data = section.own_data
         section_data['items'] = []
 
@@ -210,7 +212,8 @@ def make_registration_form(regform, management=False, registration=None):
     for form_item in regform.active_fields:
         if not management and form_item.parent.is_manager_only:
             continue
-
+        if not _is_section_visible(regform, form_item.parent, registration=registration):
+            continue
         field_impl = form_item.field_impl
         setattr(RegistrationFormWTF, form_item.html_field_name, field_impl.create_wtf_field())
     signals.event.registration_form_wtform_created.send(regform, registration=registration, management=management,
@@ -309,13 +312,19 @@ def modify_registration(registration, data, management=False, notify_user=True):
     billable_items_locked = not management and registration.is_paid
     for form_item in regform.active_fields:
         field_impl = form_item.field_impl
+        is_visible = _is_section_visible(regform, form_item.parent, registration=registration)
+        should_preserve_data = not is_visible
         if management or not form_item.parent.is_manager_only:
             value = data.get(form_item.html_field_name)
         elif form_item.id not in data_by_field:
             # set default value for manager-only field if it didn't have one before
             value = field_impl.default_value
+            should_preserve_data = False
         else:
             # manager-only field that has data which should be preserved
+            continue
+
+        if should_preserve_data:
             continue
 
         if form_item.id not in data_by_field:
@@ -702,3 +711,9 @@ def serialize_registration_form(regform):
         'identifier': f'RegistrationForm:{regform.id}',
         '_type': 'RegistrationForm'
     }
+
+
+@memoize_request
+def _is_section_visible(regform, section, registration=None):
+    signal = signals.event.registration.registration_form_section_can_access
+    return all(values_from_signal(signal.send(regform, section=section, registration=registration)))
