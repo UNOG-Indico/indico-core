@@ -6,6 +6,11 @@ Version 3.1.1
 -------------
 
 *Released on April 27, 2022*
+Version 2.3.5
+Version 2.3.4
+-------------
+
+*Unreleased*
 
 Improvements
 ^^^^^^^^^^^^
@@ -17,6 +22,10 @@ Improvements
 - Include program codes in export API (:pr:`5246`)
 - Add abstract rating scores grouped by track (:pr:`5298`)
 - Allow uploading revisions when an editor hasn't been assigned (:pr:`5289`)
+- Fail more gracefully is a user has an invalid locale set and fall back to the default
+  locale or English in case the default locale is invalid as well
+- Log an error if the configured default locale does not exist
+- Add ID-1 page size for badge printing (:pr:`4774`, thanks :user:`omegak`)
 
 Bugfixes
 ^^^^^^^^
@@ -41,6 +50,10 @@ Bugfixes
 - Do not enforce personal token name uniqueness across different users (:pr:`5317`)
 - Fix last modification date not updating when an abstract is edited (:pr:`5325`)
 - Fix a bug with poster and badge printing in unlisted events (:pr:`5322`)
+- Fix the "Videoconference Rooms" page in conference events when there are any VC rooms
+  attached but the corresponding plugin is no longer installed
+- Fix deleting events which have a videoconference room attached which has its VC plugin
+  no longer installed
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
@@ -116,6 +129,9 @@ Bugfixes
 
 
 Version 3.0.4
+- Also trigger the ``ical-export`` metadata signal when exporting events for a whole category
+
+Version 2.3.3
 -------------
 
 *Unreleased*
