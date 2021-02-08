@@ -3,6 +3,32 @@ Changelog
 
 
 Version 2.3.5
+Version 2.3.4
+-------------
+
+*Unreleased*
+
+Improvements
+^^^^^^^^^^^^
+
+- Fail more gracefully is a user has an invalid locale set and fall back to the default
+  locale or English in case the default locale is invalid as well
+- Log an error if the configured default locale does not exist
+- Add ID-1 page size for badge printing (:pr:`4774`, thanks :user:`omegak`)
+
+Bugfixes
+^^^^^^^^
+
+- Fix the "Videoconference Rooms" page in conference events when there are any VC rooms
+  attached but the corresponding plugin is no longer installed
+- Fix deleting events which have a videoconference room attached which has its VC plugin
+  no longer installed
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+
+- Also trigger the ``ical-export`` metadata signal when exporting events for a whole category
+
 Version 2.3.3
 -------------
 
