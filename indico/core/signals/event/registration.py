@@ -108,3 +108,11 @@ access check fails, the section will be skipped.
 If multiple subscribers to the signal return contradictory results, ``False``
 wins and access is denied.
 """)
+
+before_check_registration_email = _signals.signal('before-check-registration-email', '''
+Called before checking the validity of the registration email.  The sender is
+the ``RegistrationForm`` object.  The signal handler is expected to return
+``None`` if all checks passed or a ``{'status': ..., 'conflict': ...}``
+dictionary.  ``'status'`` is expected to be either ``'error'``, ``'warning'`` or
+``ok``.
+''')

@@ -110,6 +110,14 @@ def check_registration_email(regform, email, registration=None, management=False
     user = get_user_by_email(email)
     email_registration = regform.get_registration(email=email)
     user_registration = regform.get_registration(user=user) if user else None
+    extra_checks = values_from_signal(
+        signals.event.before_check_registration_email.send(
+            regform,
+            email=email, registration=registration, management=management, user=user,
+            user_registration=user_registration, email_registration=email_registration),
+        as_list=True)
+    if extra_checks:
+        return sorted(extra_checks, key=lambda x: ['error', 'warning', 'ok'].index(x['status']))[0]
     if registration is not None:
         if email_registration and email_registration != registration:
             return dict(status='error', conflict='email-already-registered')
