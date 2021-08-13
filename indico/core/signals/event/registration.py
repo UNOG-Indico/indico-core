@@ -120,3 +120,9 @@ access check fails, the section will be skipped.
 If multiple subscribers to the signal return contradictory results, ``False``
 wins and access is denied.
 ''')
+
+after_registration_form_clone = _signals.signal('after-registration-form-clone', '''
+Executed after a registration form is cloned. The sender is the old ``RegistrationForm``
+object being cloned. The new ``RegistrationForm`` object is passed in the ``new_form``
+kwarg.
+''')
