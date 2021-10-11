@@ -36,6 +36,14 @@ def test_secure_client_filename(filename, expected):
     (u'm\xf6p.txt'.encode('utf-8'), 'moep.txt'),
     (u'/m\xf6p.txt', 'moep.txt'),
     (r'spacy   \filename', 'spacy_filename'),
+    ('.filename', 'filename'),
+    ('filename', 'filename'),
+    ('file.name', 'file.name'),
+    ('   ', 'fallback')
 ))
 def test_secure_filename(filename, expected):
     assert secure_filename(filename, 'fallback') == expected
+
+
+def test_secure_filename_max_length():
+    assert secure_filename('{}.pdf'.format("x" * 500), 'fallback') == '{}.pdf'.format("x" * 150)

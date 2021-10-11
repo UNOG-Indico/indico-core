@@ -49,7 +49,10 @@ def secure_filename(filename, fallback):
     """
     if not filename:
         return fallback
-    return _secure_filename(unicode_to_ascii(to_unicode(filename))) or fallback
+    filename = _secure_filename(unicode_to_ascii(to_unicode(filename)))
+    filename, ext = os.path.splitext(filename)
+    filename = '{filename}{ext}'.format(filename=filename[:150], ext=ext)
+    return filename or fallback
 
 
 def secure_client_filename(filename, fallback='file'):
