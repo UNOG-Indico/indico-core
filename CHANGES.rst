@@ -12,6 +12,48 @@ Version 2.3.4
 
 *Unreleased*
 
+Security fixes
+^^^^^^^^^^^^^^
+
+- Protect authentication endpoints against CSRF login attacks (:pr:`5099`,
+  thanks :user:`omegak`)
+
+Improvements
+^^^^^^^^^^^^
+
+- Support TLS certificates for SMTP authentication (:pr:`5100`, thanks :user:`dweinholz`)
+- Add CSV/Excel contribution list exports containing affiliations (:issue:`5114`, :pr:`5118`)
+- Include program codes in contribution PDFs and spreadsheets (:pr:`5126`)
+
+Bugfixes
+^^^^^^^^
+
+- Fix certain registration list filters (checkin status & state) being combined
+  with OR instead of AND (:pr:`5101`)
+- Fix translations not being taken into account in some places (:issue:`5073`, :pr:`5105`)
+- Use correct/consistent field order for personal data fields in newly created
+  registration forms
+- Remove deleted registration forms from ACLs (:issue:`5130`, :pr:`5131`, thanks
+  :user:`jbtwist`)
+
+
+Version 3.0.2
+-------------
+
+*Released on September 09, 2021*
+
+Bugfixes
+^^^^^^^^
+
+- Fix JavaScript errors on the login page which caused problems when using multiple
+  form-based login methods (e.g. LDAP and local Indico accounts)
+
+
+Version 3.0.1
+-------------
+
+*Released on September 08, 2021*
+
 Improvements
 ^^^^^^^^^^^^
 
