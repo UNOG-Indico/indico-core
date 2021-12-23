@@ -7,10 +7,6 @@
 
 /* global setupListGenerator:false, setupSearchBox:false */
 
-import 'selectize';
-import 'selectize/dist/css/selectize.css';
-import 'selectize/dist/css/selectize.default.css';
-
 import 'indico/modules/events/reviews';
 import 'indico/modules/events/util/types_dialog';
 
