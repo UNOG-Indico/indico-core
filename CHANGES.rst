@@ -8,6 +8,7 @@ Version 3.1.1
 *Released on April 27, 2022*
 Version 2.3.5
 Version 2.3.4
+Version 3.1.1
 -------------
 
 *Unreleased*
