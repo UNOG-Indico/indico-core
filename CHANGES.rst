@@ -25,6 +25,19 @@ Improvements
 - Support TLS certificates for SMTP authentication (:pr:`5100`, thanks :user:`dweinholz`)
 - Add CSV/Excel contribution list exports containing affiliations (:issue:`5114`, :pr:`5118`)
 - Include program codes in contribution PDFs and spreadsheets (:pr:`5126`)
+- Add a new event management permission that grants access only to the abstracts
+  module (:pr:`5212`)
+- Add a link to quickly view the current stylesheet on the conference layout
+  customization page (:issue:`5239`, :pr:`5259`)
+- Add more powerful filters to "get next editable" and the list of editables
+  (:issue:`5188`, :pr:`5224`, :pr:`5241`)
+- Add the ability to create speaker-only menu entries for conferences (:issue:`5261`,
+  :pr:`5268`)
+- Highlight changed fields in notification emails about modified registrations
+  (:issue:`5265`, :pr:`5269`)
+- Add an option to send notifications of new abstract comments (:issue:`5266`, :pr:`5284`)
+- Badge/poster templates can have additional images besides the background image
+  (:pr:`5273`, thanks :user:`SegiNyn`)
 
 Bugfixes
 ^^^^^^^^
