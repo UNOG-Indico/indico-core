@@ -26,6 +26,7 @@ from indico.modules.events.abstracts.operations import create_abstract, delete_a
 from indico.modules.events.abstracts.schemas import abstract_review_questions_schema, abstracts_schema
 from indico.modules.events.abstracts.util import can_create_invited_abstracts, make_abstract_form
 from indico.modules.events.abstracts.views import WPManageAbstracts
+from indico.modules.events.cloning import get_attrs_to_clone
 from indico.modules.events.contributions.models.persons import AuthorType
 from indico.modules.events.util import get_field_values
 from indico.modules.users.models.users import User
