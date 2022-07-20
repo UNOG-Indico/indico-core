@@ -96,6 +96,12 @@ the signal handler should return a string describing why the password is
 not secure.
 ''')
 
+db_query = _signals.signal('db-query', '''
+Expected to return exactly one single `Query` object.  The *sender* is a string
+identifying the context.  The *query* kwarg contains the query object to be
+customized.  The additional kwargs passed to this signal depend on the context.
+''')
+
 before_notification_send = _signals.signal('before-notification-send', '''
 Executed before a notification is sent.  The *sender* is a string representing
 the type of notification.  The notification email that will be sent is passed in
