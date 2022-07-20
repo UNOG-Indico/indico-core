@@ -5,13 +5,13 @@
 # modify it under the terms of the MIT License; see the
 # LICENSE file for more details.
 
-from operator import attrgetter
 from uuid import UUID
 
 from flask import flash, jsonify, redirect, request, session
 from sqlalchemy.orm import contains_eager, joinedload, lazyload, load_only, subqueryload
 from werkzeug.exceptions import Forbidden, NotFound
 
+from indico.core.db import db
 from indico.modules.auth.util import redirect_to_login
 from indico.modules.events.controllers.base import RegistrationRequired, RHDisplayEventBase
 from indico.modules.events.models.events import EventType
@@ -140,7 +140,8 @@ class RHParticipantList(RHRegistrationFormDisplayBase):
                          ~Registration.is_deleted)
                  .join(Registration.registration_form)
                  .options(subqueryload('data').joinedload('field_data'),
-                          contains_eager('registration_form')))
+                          contains_eager('registration_form'))
+                 .signal_query('merged-participant-list-publishable-registrations'))
         registrations = sorted(_deduplicate_reg_data(_process_registration(reg, column_names) for reg in query),
                                key=lambda reg: tuple(x['text'].lower() for x in reg['columns']))
         return {'headers': headers,
@@ -178,8 +179,13 @@ class RHParticipantList(RHRegistrationFormDisplayBase):
                       for column_id in registration_settings.get_participant_list_columns(self.event, regform)
                       if column_id in active_fields]
         headers = [active_fields[column_id].title.title() for column_id in column_ids]
-        active_registrations = sorted(regform.active_registrations, key=attrgetter('last_name', 'first_name', 'id'))
-        registrations = [_process_registration(reg, column_ids, active_fields) for reg in active_registrations
+        query = (Registration.query.with_parent(regform)
+                 .options(subqueryload('data'))
+                 .order_by(db.func.lower(Registration.first_name),
+                           db.func.lower(Registration.last_name),
+                           Registration.friendly_id)
+                 .signal_query('participant-list-publishable-registrations', regform=regform))
+        registrations = [_process_registration(reg, column_ids, active_fields) for reg in query
                          if reg.is_publishable]
         return {'headers': headers,
                 'rows': registrations,
@@ -191,6 +197,7 @@ class RHParticipantList(RHRegistrationFormDisplayBase):
                     .filter(RegistrationForm.publish_registrations_enabled,
                             ~RegistrationForm.is_deleted)
                     .options(subqueryload('registrations').subqueryload('data').joinedload('field_data'))
+                    .signal_query('participant-list-publishable-regforms')
                     .all())
         if registration_settings.get(self.event, 'merge_registration_forms'):
             tables = [self._merged_participant_list_table()]
