@@ -141,7 +141,7 @@ class RHParticipantList(RHRegistrationFormDisplayBase):
                  .join(Registration.registration_form)
                  .options(subqueryload('data').joinedload('field_data'),
                           contains_eager('registration_form'))
-                 .signal_query('merged-participant-list-publishable-registrations'))
+                 .signal_query('merged-participant-list-publishable-registrations', event=self.event))
         registrations = sorted(_deduplicate_reg_data(_process_registration(reg, column_names) for reg in query),
                                key=lambda reg: tuple(x['text'].lower() for x in reg['columns']))
         return {'headers': headers,
@@ -197,7 +197,7 @@ class RHParticipantList(RHRegistrationFormDisplayBase):
                     .filter(RegistrationForm.publish_registrations_enabled,
                             ~RegistrationForm.is_deleted)
                     .options(subqueryload('registrations').subqueryload('data').joinedload('field_data'))
-                    .signal_query('participant-list-publishable-regforms')
+                    .signal_query('participant-list-publishable-regforms', event=self.event)
                     .all())
         if registration_settings.get(self.event, 'merge_registration_forms'):
             tables = [self._merged_participant_list_table()]
