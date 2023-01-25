@@ -12,6 +12,8 @@ import * as ReactRedux from 'react-redux';
 import * as Redux from 'redux';
 import * as SUIR from 'semantic-ui-react';
 
+import * as IndicoPrincipalsImperative from 'indico/react/components/principals/imperative';
+
 // exports for plugins
 window._IndicoCoreReact = React;
 window._IndicoCoreReactDom = ReactDom;
@@ -19,3 +21,4 @@ window._IndicoCorePropTypes = PropTypes;
 window._IndicoCoreReactRedux = ReactRedux;
 window._IndicoCoreRedux = Redux;
 window._IndicoCoreSUIR = SUIR;
+window._IndicoPrincipalsImperative = IndicoPrincipalsImperative;

@@ -54,6 +54,7 @@ module.exports = env => {
       'prop-types': '_IndicoCorePropTypes',
       'redux': '_IndicoCoreRedux',
       'semantic-ui-react': '_IndicoCoreSUIR',
+      'indico/react/components/principals/imperative': '_IndicoPrincipalsImperative',
     },
     module: {
       rules: [
