@@ -31,6 +31,8 @@ Improvements
 - Include current language in page metadata (:pr:`5894`, thanks :user:`foxbunny`)
 - Add keyboard shortcut (CTRL-SHIFT-A) to toggle room booking admin override (:pr:`5909`)
 - Make language list accessible (:issue:`5899`, :pr:`5903`, thanks :user:`foxbunny`)
+- Add the ability to use Flask sessions that don't refresh, if supported by the
+  Flask-Multipass identity provider.
 
 Bugfixes
 ^^^^^^^^
