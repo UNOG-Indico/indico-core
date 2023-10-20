@@ -32,11 +32,11 @@ logger = Logger.get('auth')
 @multipass.identity_handler
 def process_identity(identity_info):
     logger.info('Received identity info: %s', identity_info)
-
-    if session_expiry := identity_info.multipass_data.get('session_expiry'):
-        if not isinstance(session_expiry, datetime):
-            raise ValueError('Session expiry must be a datetime object')
-        session.hard_expiry = session_expiry
+    if multipass_data := identity_info.multipass_data:
+        if session_expiry := multipass_data.get('session_expiry'):
+            if not isinstance(session_expiry, datetime):
+                raise ValueError('Session expiry must be a datetime object')
+            session.hard_expiry = session_expiry
 
     identity = Identity.query.filter_by(provider=identity_info.provider.name,
                                         identifier=identity_info.identifier).first()
