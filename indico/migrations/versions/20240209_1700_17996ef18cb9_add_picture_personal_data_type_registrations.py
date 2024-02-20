@@ -15,15 +15,20 @@ branch_labels = None
 depends_on = None
 
 
+# HACK: This migration script is disabled because personal data types are
+#       patched in the plugin. Running it like this will always fail. Instead,
+#       we run the script from the plugin adding the entire list of valid values.
 def upgrade():
-    op.drop_constraint('ck_form_items_valid_enum_personal_data_type', 'form_items', schema='event_registration')
-    op.create_check_constraint('valid_enum_personal_data_type', 'form_items',
-                               '(personal_data_type = ANY (ARRAY[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))',
-                               schema='event_registration')
+    # op.drop_constraint('ck_form_items_valid_enum_personal_data_type', 'form_items', schema='event_registration')
+    # op.create_check_constraint('valid_enum_personal_data_type', 'form_items',
+    #                            '(personal_data_type = ANY (ARRAY[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))',
+    #                            schema='event_registration')
+    pass
 
 
 def downgrade():
-    op.drop_constraint('ck_form_items_valid_enum_personal_data_type', 'form_items', schema='event_registration')
-    op.create_check_constraint('valid_enum_personal_data_type', 'form_items',
-                               '(personal_data_type = ANY (ARRAY[1, 2, 3, 4, 5, 6, 7, 8, 9]))',
-                               schema='event_registration')
+    # op.drop_constraint('ck_form_items_valid_enum_personal_data_type', 'form_items', schema='event_registration')
+    # op.create_check_constraint('valid_enum_personal_data_type', 'form_items',
+    #                            '(personal_data_type = ANY (ARRAY[1, 2, 3, 4, 5, 6, 7, 8, 9]))',
+    #                            schema='event_registration')
+    pass
