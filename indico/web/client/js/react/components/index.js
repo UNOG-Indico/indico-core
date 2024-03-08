@@ -13,6 +13,7 @@ export {
   ACLField,
   TrackACLField,
 } from './principals';
+export {SearchDropdown} from './WTFSearchDropdown';
 export {default as ConfirmButton} from './ConfirmButton';
 export {default as IButton} from './IButton';
 export {default as MessageBox} from './MessageBox';
