@@ -77,11 +77,15 @@ TEMPLATE_DATA_JSON_SCHEMA = {
                     'bold': {'type': 'boolean'},
                     'italic': {'type': 'boolean'},
                     'text_overflow': {'type': 'string'},
-                    'preserve_aspect_ratio': {'type': 'boolean'}
+                    'preserve_aspect_ratio': {'type': 'boolean'},
+                    'layer': {'type': 'string'}
                 }
             },
             'required': ['id', 'text', 'x', 'y', 'width', 'color', 'font_family', 'font_size', 'text_align',
-                         'bold', 'italic']
+                         'bold', 'italic', 'layer']
+        },
+        'layers': {
+            'type': 'object'
         },
     },
     'required': ['width', 'height', 'background_position', 'items']
