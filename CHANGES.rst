@@ -22,6 +22,8 @@ Bugfixes
   thanks :user:`jbtwist`)
 - Fix the order of a day's session blocks in the registration form session field
   (:pr:`6428`, thanks :user:`jbtwist`)
+- Fix display of empty session selection in registration summary (:pr:`6421`,
+  thanks :user:`jbtwist`)
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
