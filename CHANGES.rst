@@ -2,6 +2,28 @@ Changelog
 =========
 
 
+Version 3.3.4
+-------------
+
+*Unreleased*
+
+Improvements
+^^^^^^^^^^^^
+
+- Allow cropping an existing picture in registration form picture fields (:pr:`6423`,
+  thanks :user:`SegiNyn`)
+
+Bugfixes
+^^^^^^^^
+
+- Nothing so far :)
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+
+- Nothing so far
+
+
 Version 3.3.3
 -------------
 
