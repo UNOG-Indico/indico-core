@@ -2,6 +2,33 @@ Changelog
 =========
 
 
+Version 3.3.5
+-------------
+
+*Unreleased*
+
+Improvements
+^^^^^^^^^^^^
+
+- Nothing so far :(
+
+Bugfixes
+^^^^^^^^
+
+- Make picture field more resilient when uploading and resizing pictures close to
+  the max upload file size (:pr:`6530`, thanks :user:`SegiNyn`)
+
+Accessibility
+^^^^^^^^^^^^^
+
+- Nothing so far :(
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+
+- Nothing so far
+
+
 Version 3.3.4
 -------------
 
