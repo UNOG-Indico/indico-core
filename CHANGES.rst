@@ -11,6 +11,11 @@ Improvements
 ^^^^^^^^^^^^
 
 - Nothing so far :(
+- Allow specifying "prev" and "next" as the date param on the category overview
+  page to show the previous or next period relative to the current date (:pr:`6537`)
+- Add caching and rate-limiting (configurable via :data:`LATEX_RATE_LIMIT`, and only applied
+  to unauthenticated users) for endpoints that trigger LaTeX PDF generation (:pr:`6526`)
+- Log changes to registration form settings in the event log (:pr:`6544`, thanks :user:`vtran99`)
 
 Bugfixes
 ^^^^^^^^
