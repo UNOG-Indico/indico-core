@@ -99,3 +99,9 @@ class Location(ProtectionManagersMixin, db.Model):
     @property
     def protection_parent(self):
         return None
+
+    def can_edit(self, user):
+        from indico.modules.rb.util import rb_is_admin
+        if not user:
+            return False
+        return self.can_manage(user) or rb_is_admin(user)
