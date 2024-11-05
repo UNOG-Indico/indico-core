@@ -63,7 +63,9 @@ class AddLocalIdentityForm(IndicoForm):
 class EditLocalIdentityForm(IndicoForm):
     username = StringField(_('Username'), [DataRequired()], filters=[_tolower])
     password = PasswordField(_('Current password'), [DataRequired()],
-                             render_kw={'autocomplete': 'current-password'})
+                             render_kw={'autocomplete': 'current-password'},
+                             description=_('Note that changing your password will log you out of all other '
+                                           'devices and browsers where you are currently logged in.'))
     new_password = PasswordField(_('New password'), [Optional(), SecurePassword('set-user-password',
                                                                                 username_field='username')],
                                  render_kw={'autocomplete': 'new-password'})
@@ -149,5 +151,7 @@ class ResetPasswordEmailForm(IndicoForm):
 class ResetPasswordForm(IndicoForm):
     username = StringField(_('Username'))
     password = PasswordField(_('New password'), [DataRequired(), SecurePassword('set-user-password',
-                                                                                username_field='username')])
+                                                                                username_field='username')],
+                            description=_('Note that changing your password will log you out of all other '
+                                          'devices and browsers where you are currently logged in.'))
     confirm_password = PasswordField(_('Confirm password'), [DataRequired(), ConfirmPassword('password')])

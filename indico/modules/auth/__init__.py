@@ -112,6 +112,20 @@ def login_user(user, identity=None, admin_impersonation=False):
     signals.users.logged_in.send(user, identity=identity, admin_impersonation=admin_impersonation)
 
 
+def delete_old_user_sessions(user, *skip_sids):
+    """Invalidates a user session.
+    
+    :param user: The :class:`~indico.modules.users.User` to delete sessions.
+    :param skip_sids: A tuple of session ids that should not be deleted.
+    """
+    all_user_sessions = user.sessions
+    for user_session in all_user_sessions:
+        if user_session.sid in skip_sids:
+            continue
+        db.session.delete(user_session)
+    db.session.commit()
+
+
 @signals.menu.items.connect_via('user-profile-sidemenu')
 def _extend_profile_sidemenu(sender, user, **kwargs):
     yield SideMenuItem('accounts', _('Accounts'), url_for('auth.accounts'), 50, disabled=user.is_system)
