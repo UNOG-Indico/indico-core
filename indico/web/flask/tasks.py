@@ -11,13 +11,11 @@ from celery.schedules import crontab
 
 from indico.core.celery import celery
 from indico.core.db import db
-from indico.web.flask.models import IndicoStoredUserSession
+from indico.web.flask.models import UserSession
 
 
 @celery.periodic_task(name='delete_stored_user_sessions', run_every=crontab(minute='0'))
 def delete_user_sessions():
     """Delete expired user sessions from postgres."""
-    query = IndicoStoredUserSession.query.filter(IndicoStoredUserSession.ttl < datetime.now()).all()
-    for expired_session in query:
-        db.session.delete(expired_session)
+    UserSession.query.filter(UserSession.ttl < datetime.now()).delete()
     db.session.commit()

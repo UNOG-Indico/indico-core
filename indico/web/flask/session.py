@@ -24,7 +24,7 @@ from indico.core.db import db
 from indico.modules.users import User
 from indico.util.date_time import get_display_tz, utc_to_server
 from indico.util.i18n import set_best_lang
-from indico.web.flask.models import IndicoStoredUserSession
+from indico.web.flask.models import UserSession
 from indico.web.util import get_request_user
 
 
@@ -218,7 +218,7 @@ class IndicoSessionInterface(SessionInterface):
         return False
 
     def get_stored_user_session(self, sid):
-        return IndicoStoredUserSession.query.filter_by(sid=sid).one_or_none()
+        return UserSession.query.filter_by(sid=sid).one_or_none()
 
     def get_session_data(self, sid):
         data = None
@@ -235,14 +235,14 @@ class IndicoSessionInterface(SessionInterface):
                 stored_session.data = self.serializer.dumps(dict(session))
                 stored_session.ttl = session['_expires']
             else:
-                stored_session = IndicoStoredUserSession(sid=session.sid, data=self.serializer.dumps(dict(session)),
+                stored_session = UserSession(sid=session.sid, data=self.serializer.dumps(dict(session)),
                                                          ttl=session['_expires'], user_id=session['_user_id'])
                 db.session.add(stored_session)
             db.session.commit()
         else:
             self.temp_storage.set(session.sid, self.serializer.dumps(dict(session)), storage_ttl)
 
-    def delete_sesssion(self, sid):
+    def delete_session(self, sid):
         if stored_session := self.get_stored_user_session(sid):
             db.session.delete(stored_session)
             db.session.commit()
@@ -269,7 +269,7 @@ class IndicoSessionInterface(SessionInterface):
         refresh_sid = self.should_refresh_sid(app, session)
         if not session and not session.new:  # when does this happen? the user is logged out? w
             # empty session, delete it from storage and cookie
-            self.delete_sesssion(session.sid)
+            self.delete_session(session.sid)
             response.delete_cookie(app.session_cookie_name, domain=domain)
             response.vary.add('Cookie')
             return
@@ -297,7 +297,7 @@ class IndicoSessionInterface(SessionInterface):
             session['_expires'] = datetime.now() + storage_ttl
 
         if refresh_sid:
-            self.delete_sesssion(session.sid)
+            self.delete_session(session.sid)
             session.sid = self.generate_sid()
 
         session['_secure'] = request.is_secure

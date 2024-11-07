@@ -22,6 +22,7 @@ from indico.modules.auth.models.registration_requests import RegistrationRequest
 from indico.modules.auth.util import save_identity_info
 from indico.modules.users import User
 from indico.util.i18n import _
+from indico.web.flask.models import UserSession
 from indico.web.flask.util import url_for
 from indico.web.menu import SideMenuItem
 
@@ -118,12 +119,7 @@ def delete_old_user_sessions(user, *skip_sids):
     :param user: The :class:`~indico.modules.users.User` to delete sessions.
     :param skip_sids: A tuple of session ids that should not be deleted.
     """
-    all_user_sessions = user.sessions
-    for user_session in all_user_sessions:
-        if user_session.sid in skip_sids:
-            continue
-        db.session.delete(user_session)
-    db.session.commit()
+    UserSession.query.with_parent(user).filter(UserSession.sid.notin(skip_sids)).delete()
 
 
 @signals.menu.items.connect_via('user-profile-sidemenu')

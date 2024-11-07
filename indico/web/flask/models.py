@@ -9,7 +9,7 @@ from indico.core.db import db
 from indico.util.string import format_repr
 
 
-class IndicoStoredUserSession(db.Model):
+class UserSession(db.Model):
     __tablename__ = 'user_sessions'
     __table_args__ = {'schema': 'indico'}
 
