@@ -22,9 +22,9 @@ from indico.core.cache import make_scoped_cache
 from indico.core.config import config
 from indico.core.db import db
 from indico.modules.users import User
+from indico.modules.users.models.sessions import UserSession
 from indico.util.date_time import get_display_tz, utc_to_server
 from indico.util.i18n import set_best_lang
-from indico.web.flask.models import UserSession
 from indico.web.util import get_request_user
 
 

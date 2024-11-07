@@ -10,8 +10,8 @@ from indico.util.string import format_repr
 
 
 class UserSession(db.Model):
-    __tablename__ = 'user_sessions'
-    __table_args__ = {'schema': 'indico'}
+    __tablename__ = 'sessions'
+    __table_args__ = {'schema': 'users'}
 
     id = db.Column(
         db.Integer,

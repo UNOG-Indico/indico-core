@@ -21,8 +21,8 @@ from indico.modules.auth.models.identities import Identity
 from indico.modules.auth.models.registration_requests import RegistrationRequest
 from indico.modules.auth.util import save_identity_info
 from indico.modules.users import User
+from indico.modules.users.models.sessions import UserSession
 from indico.util.i18n import _
-from indico.web.flask.models import UserSession
 from indico.web.flask.util import url_for
 from indico.web.menu import SideMenuItem
 

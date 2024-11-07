@@ -18,7 +18,7 @@ depends_on = None
 
 def upgrade():
     op.create_table(
-        'user_sessions',
+        'sessions',
         sa.Column('id', sa.Integer(), nullable=False),
         sa.Column('sid', sa.String(), nullable=False, unique=True),
         sa.Column('data', sa.LargeBinary(), nullable=False),
@@ -26,9 +26,9 @@ def upgrade():
         sa.Column('user_id', sa.Integer(), nullable=False),
         sa.PrimaryKeyConstraint('id'),
         sa.ForeignKeyConstraint(['user_id'], ['users.users.id']),
-        schema='indico'
+        schema='users'
     )
 
 
 def downgrade():
-    op.drop_table('user_sessions', schema='indico')
+    op.drop_table('sessions', schema='users')
