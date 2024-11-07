@@ -14,7 +14,7 @@ from indico.core.db import db
 from indico.web.flask.models import UserSession
 
 
-@celery.periodic_task(name='delete_stored_user_sessions', run_every=crontab(minute='0'))
+@celery.periodic_task(name='delete_user_sessions', run_every=crontab(minute='0'))
 def delete_user_sessions():
     """Delete expired user sessions from postgres."""
     UserSession.query.filter(UserSession.ttl < datetime.now()).delete()

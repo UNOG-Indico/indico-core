@@ -119,7 +119,7 @@ def delete_old_user_sessions(user, *skip_sids):
     :param user: The :class:`~indico.modules.users.User` to delete sessions.
     :param skip_sids: A tuple of session ids that should not be deleted.
     """
-    UserSession.query.with_parent(user).filter(UserSession.sid.notin(skip_sids)).delete()
+    UserSession.query.with_parent(user).filter(UserSession.sid.notin_(skip_sids)).delete()
 
 
 @signals.menu.items.connect_via('user-profile-sidemenu')

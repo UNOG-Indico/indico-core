@@ -375,7 +375,8 @@ class RHAccounts(RHUserBase):
         if form.data['new_password']:
             self.user.local_identity.password = form.data['new_password']
             session.pop('insecure_password_error', None)
-            delete_old_user_sessions(self.user, session.sid)
+            if form.data['force_logout']:
+                delete_old_user_sessions(self.user, session.sid)
             logger.info('User %s (%s) changed their password', self.user, self.user.local_identity.identifier)
         flash(_('Your local account credentials have been updated successfully'), 'success')
 
@@ -788,7 +789,8 @@ class RHResetPassword(RH):
         if form.validate_on_submit():
             identity.password = form.password.data
             flash(_('Your password has been changed successfully.'), 'success')
-            delete_old_user_sessions(identity.user)
+            if form.force_logout.data:
+                delete_old_user_sessions(identity.user)
             login_user(identity.user, identity)
             logger.info('Password reset confirmed for user %s', identity.user)
             # We usually come here from a multipass login page so we should have a target url
