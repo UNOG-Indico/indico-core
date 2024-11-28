@@ -71,8 +71,8 @@ class EditLocalIdentityForm(IndicoForm):
     confirm_new_password = PasswordField(_('Confirm password'), [ConfirmPassword('new_password')],
                                          render_kw={'autocomplete': 'new-password'})
     force_logout = BooleanField(_('Logout of other devices'), [HiddenUnless('new_password')], widget=SwitchWidget(),
-                                description=_('Enable this if you wish to log out of all other devices and '
-                                              'browsers where you are currently logged in.'))
+                                description=_('This will log you out of all other devices and sessions '
+                                              'where you are currently logged in.'))
 
     def __init__(self, *args, **kwargs):
         self.identity = kwargs.pop('identity', None)
@@ -156,5 +156,5 @@ class ResetPasswordForm(IndicoForm):
                                                                                 username_field='username')])
     confirm_password = PasswordField(_('Confirm password'), [DataRequired(), ConfirmPassword('password')])
     force_logout = BooleanField(_('Logout of other devices'), widget=SwitchWidget(), 
-                                description=_('Enable this if you wish to log out of all other devices and '
-                                              'browsers where you are currently logged in.'))
+                                description=_('This will log you out of all other devices and sessions '
+                                              'where you are currently logged in.'))
