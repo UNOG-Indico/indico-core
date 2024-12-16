@@ -84,13 +84,11 @@ function UserDeleteDialogBody({firstName, lastName, disabled, inProgress, onDele
             </List.Content>
           </List.Item>
         </List>
-        <p>
-          <Translate>
-            Are you sure you want to delete{' '}
-            <Param wrapper={<strong />} name="first_name" value={firstName} />{' '}
-            <Param wrapper={<strong />} name="last_name" value={lastName} />?
-          </Translate>
-        </p>
+        <Translate as="p">
+          Are you sure you want to delete{' '}
+          <Param wrapper={<strong />} name="first_name" value={firstName} />{' '}
+          <Param wrapper={<strong />} name="last_name" value={lastName} />?
+        </Translate>
       </Modal.Content>
       <Modal.Actions>
         <Button onClick={onClose} content={Translate.string("No, I don't")} />
