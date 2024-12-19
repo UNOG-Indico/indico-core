@@ -579,6 +579,9 @@ class RHRegistrationsConfigBadges(RHRegistrationsActionBase):
     def _get_event_badge_settings(self, event):
         return event_badge_settings.get_all(event.id)
 
+    def _set_event_badge_settings(self, event, data):
+        event_badge_settings.set_multi(self.event, data)
+
     def _process(self):
         all_templates = set(self.event.designer_templates) | get_inherited_templates(self.event)
         badge_templates = {tpl.id: {
@@ -607,7 +610,7 @@ class RHRegistrationsConfigBadges(RHRegistrationsActionBase):
             data.pop('submitted', None)
             template_id = data.pop('template')
             if data.pop('save_values', False):
-                event_badge_settings.set_multi(self.event, data)
+                self._set_event_badge_settings(self.event, data)
             data['registration_ids'] = [x.id for x in registrations]
 
             key = str(uuid.uuid4())
