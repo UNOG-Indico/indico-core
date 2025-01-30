@@ -23,6 +23,12 @@ Improvements
 - Make the event export/import util much more flexible to support exporting whole
   category subtrees, add better support for dealing with files, and add various things
   that were not correctly exported before (:pr:`6446`)
+- Add a setting to limit the information room booking users can see for bookings not
+  linked to them or their rooms (:pr:`6704`)
+- Add shortcuts to the past and closest events in a category (:pr:`6710`)
+- Improve the appearance of the date pickers (:issue:`6719`, :pr:`6720`, thanks :user:`foxbunny`)
+- Add a new setting (:data:`ALLOW_ADMIN_USER_DELETION`) to let administrators permanently
+  delete Indico users from the user management UI (:pr:`6652`, thanks :user:`SegiNyn`)
 
 Bugfixes
 ^^^^^^^^
