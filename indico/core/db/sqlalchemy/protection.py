@@ -587,8 +587,14 @@ def render_acl(obj):
 
 
 def make_acl_log_fn(obj_type, log_realm):
+    """Create logger function for logging ACL changes in both the permission owner's and principal's log.
+
+    :param obj_type: Object, permissions belong to
+    :param log_realm: Log realm for permission owner's log entry.
+                      If `None`, only principal log entry will be created (if it's a `User`).
+    """
     def _log_acl_changes(sender, obj, principal, entry, is_new, old_data, quiet, **kwargs):
-        from indico.modules.logs.models.entries import LogKind
+        from indico.modules.logs.models.entries import LogKind, UserLogRealm
 
         if quiet:
             return
@@ -617,17 +623,21 @@ def make_acl_log_fn(obj_type, log_realm):
         elif principal.principal_type == PrincipalType.event_role:
             data['Event Role'] = principal.name
         if entry is None:
+            summary = 'ACL entry removed'
+            log_kind = LogKind.negative
             data['Read Access'] = old_data['read_access']
             data['Manager'] = old_data['full_access']
             data['Permissions'] = _format_permissions(old_data['permissions'])
-            obj.log(log_realm, LogKind.negative, 'Protection', 'ACL entry removed', user, data=data)
         elif is_new:
+            summary = 'ACL entry added'
+            log_kind = LogKind.positive
             data['Read Access'] = entry.read_access
             data['Manager'] = entry.full_access
             if entry.permissions:
                 data['Permissions'] = _format_permissions(entry.permissions)
-            obj.log(log_realm, LogKind.positive, 'Protection', 'ACL entry added', user, data=data)
         elif entry.current_data != old_data:
+            summary = 'ACL entry changed'
+            log_kind = LogKind.change
             data['Read Access'] = entry.read_access
             data['Manager'] = entry.full_access
             current_permissions = set(entry.permissions)
@@ -639,6 +649,36 @@ def make_acl_log_fn(obj_type, log_realm):
                 data['Permissions (removed)'] = _format_permissions(removed_permissions)
             if current_permissions:
                 data['Permissions'] = _format_permissions(current_permissions)
-            obj.log(log_realm, LogKind.change, 'Protection', 'ACL entry changed', user, data=data)
+        else:
+            return
+
+        if log_realm:
+            obj.log(log_realm, log_kind, 'Protection', summary, user, data=data)
+
+        if principal.principal_type == PrincipalType.user:
+            user_log_data = data.copy()
+            del user_log_data['User']
+            obj_title = getattr(obj, 'title', None) or getattr(obj, 'name', str(obj))
+            if parent := (getattr(obj, 'category', None)
+                          or getattr(obj, 'event', None)
+                          or getattr(obj, 'location', None)):
+                user_log_data[f'{parent.__class__.__name__} / {obj_type.__name__} ID'] = f'{parent.id} / {obj.id}'
+                parent_title = getattr(parent, 'title', None) or getattr(parent, 'name', str(parent))
+                obj_title = f'{parent_title} / {obj_title}'
+            else:
+                user_log_data[f'{obj_type.__name__} ID'] = obj.id
+
+            if log_kind == LogKind.positive:
+                summary = f'{obj_type.__name__} permission granted ({obj_title})'
+            elif log_kind == LogKind.negative:
+                summary = f'{obj_type.__name__} permission revoked ({obj_title})'
+            elif log_kind == LogKind.change:
+                summary = f'{obj_type.__name__} permission changed ({obj_title})'
+            principal.log(UserLogRealm.permissions, log_kind, 'Protection', summary, user, data=user_log_data)
 
     return _log_acl_changes
+
+# FIXME
+# * ACL changes are not logged for Attachment, AttachmentFolder, MenuEntry
+# * Where is ACL settings for Track?
+# * ACL is broken for Room
