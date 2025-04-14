@@ -7,20 +7,21 @@
 
 import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
-import {Button, Message, Modal, Icon, List} from 'semantic-ui-react';
+import {Button, Message, Modal, Icon} from 'semantic-ui-react';
 
 import {Translate, Param} from 'indico/react/i18n';
+import ReactDOM from "react-dom";
 
 const DeleteDialog = ({
-                        open,
-                        title,
-                        message,
-                        confirmText,
-                        onDelete,
-                        onClose,
-                        isDeleting,
-                        entityName,
-                      }) => {
+  open,
+  title,
+  message,
+  confirmText,
+  onDelete,
+  onClose,
+  isDeleting,
+  recordName,
+}) => {
   const [countdown, setCountdown] = useState(10);
   const [isButtonDisabled, setButtonDisabled] = useState(true);
 
@@ -47,7 +48,7 @@ const DeleteDialog = ({
       <Modal.Header>{title}</Modal.Header>
       <Modal.Content>
         <Message negative icon>
-          <Icon name="warning sign"/>
+          <Icon name="warning sign" />
           <Message.Content>
             <Message.Header>
               <Translate>This action is irreversible</Translate>
@@ -55,7 +56,7 @@ const DeleteDialog = ({
             <Translate>{message}</Translate>
           </Message.Content>
         </Message>
-        <Translate as="p">Are you sure you want to delete {entityName}?</Translate>
+        <Translate as="p">Are you sure you want to delete {recordName}?</Translate>
       </Modal.Content>
       <Modal.Actions>
         <Button onClick={onClose} disabled={isDeleting} content={Translate.string('Cancel')}/>
@@ -83,7 +84,7 @@ DeleteDialog.propTypes = {
   onDelete: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   isDeleting: PropTypes.bool,
-  entityName: PropTypes.string.isRequired,
+  recordName: PropTypes.string.isRequired,
 };
 
 DeleteDialog.defaultProps = {
@@ -91,3 +92,21 @@ DeleteDialog.defaultProps = {
 };
 
 export default DeleteDialog;
+
+customElements.define(
+  'ind-delete-button',
+  class extends HTMLElement {
+    connectedCallback() {
+      ReactDOM.render(
+        <DeleteDialog
+          title={JSON.parse(this.getAttribute('title'))}
+          isAdmin={JSON.parse(this.getAttribute('user-is-admin'))}
+          message={this.getAttribute('message')}
+          confirmText={this.getAttribute('confirm-text')}
+          recordName={this.getAttribute('record-name')}
+        />,
+        this
+      );
+    }
+  }
+);
