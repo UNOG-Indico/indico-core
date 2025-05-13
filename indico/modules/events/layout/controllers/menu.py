@@ -105,7 +105,8 @@ class RHMenuEntryEdit(RHMenuEntryEditBase):
                                     custom_title=self.entry.title is not None)
         form = form_cls(entry=self.entry, obj=defaults, event=self.event, **form_kwargs)
         if form.validate_on_submit():
-            form.populate_obj(self.entry, skip={'html', 'custom_title'})
+            form.populate_obj(self.entry, skip={'acl', 'html', 'custom_title'})
+            self.entry.update_acl_entries(form.acl.data)
             if self.entry.is_page:
                 self.entry.page.html = form.html.data
             return jsonify_data(entry=_render_menu_entry(self.entry))
@@ -200,8 +201,8 @@ class RHMenuAddEntry(RHMenuBase):
         form = form_cls(obj=defaults, event=self.event, **form_kwargs)
         if form.validate_on_submit():
             entry = MenuEntry(event=self.event, type=MenuEntryType[entry_type])
-            form.populate_obj(entry, skip={'html'})
-
+            form.populate_obj(entry, skip={'acl', 'html'})
+            entry.update_acl_entries(form.acl.data)
             if entry.is_page:
                 page = EventPage(html=form.html.data)
                 self.event.custom_pages.append(page)

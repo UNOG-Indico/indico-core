@@ -116,7 +116,7 @@ class AddAttachmentFilesMixin:
                 attachment = Attachment(folder=folder, user=session.user, title=f.filename,
                                         type=AttachmentType.file, protection_mode=form.protection_mode.data)
                 if attachment.is_self_protected:
-                    attachment.acl = form.acl.data
+                    attachment.update_acl_entries(form.acl.data)
                 content_type = mimetypes.guess_type(f.filename)[0] or f.mimetype or 'application/octet-stream'
                 attachment.file = AttachmentFile(user=session.user, filename=filename, content_type=content_type)
                 attachment.file.save(f.stream)
@@ -163,9 +163,9 @@ class EditAttachmentMixin(SpecificAttachmentMixin):
             self.attachment.folder = folder
             form.populate_obj(self.attachment, skip={'acl', 'file', 'folder'})
             if self.attachment.is_self_protected:
-                # can't use `=` because of https://bitbucket.org/zzzeek/sqlalchemy/issues/3583
-                self.attachment.acl |= form.acl.data
-                self.attachment.acl &= form.acl.data
+                self.attachment.update_acl_entries(form.acl.data)
+            else:
+                self.attachment.update_acl_entries([])
             # files need special handling; links are already updated in `populate_obj`
             if self.attachment.type == AttachmentType.file:
                 file = form.file.data['added']
@@ -195,7 +195,7 @@ class CreateFolderMixin:
             folder = AttachmentFolder(object=self.object)
             form.populate_obj(folder, skip={'acl'})
             if folder.is_self_protected:
-                folder.acl = form.acl.data
+                folder.update_acl_entries(form.acl.data)
             db.session.add(folder)
             logger.info('Folder %s created by %s', folder, session.user)
             signals.attachments.folder_created.send(folder, user=session.user)
@@ -214,9 +214,9 @@ class EditFolderMixin(SpecificFolderMixin):
         if form.validate_on_submit():
             form.populate_obj(self.folder, skip={'acl'})
             if self.folder.is_self_protected:
-                # can't use `=` because of https://bitbucket.org/zzzeek/sqlalchemy/issues/3583
-                self.folder.acl |= form.acl.data
-                self.folder.acl &= form.acl.data
+                self.folder.update_acl_entries(form.acl.data)
+            else:
+                self.folder.update_acl_entries([])
             logger.info('Folder %s edited by %s', self.folder, session.user)
             signals.attachments.folder_updated.send(self.folder, user=session.user)
             flash(_('Folder "{name}" updated').format(name=self.folder.title), 'success')
@@ -245,3 +245,7 @@ class DeleteAttachmentMixin(SpecificAttachmentMixin):
         signals.attachments.attachment_deleted.send(self.attachment, user=session.user)
         flash(_('Attachment "{name}" deleted').format(name=self.attachment.title), 'success')
         return jsonify_data(attachment_list=_render_attachment_list(self.object))
+
+# Issues:
+# * What about ACL entries if Attachment/AttachmentFolder gets deleted?
+# * Log entry ID is wrong when new object is added (probably in the existing ones as well)

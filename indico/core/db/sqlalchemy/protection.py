@@ -17,6 +17,7 @@ from sqlalchemy.orm.base import NEVER_SET, NO_VALUE
 from indico.core import signals
 from indico.core.db import db
 from indico.core.db.sqlalchemy import PyIntEnum
+from indico.core.db.sqlalchemy.links import LinkMixin
 from indico.core.db.sqlalchemy.principals import EmailPrincipal, PrincipalType
 from indico.core.permissions import get_available_permissions
 from indico.util.caching import memoize_request
@@ -297,6 +298,17 @@ class ProtectionMixin:
     def _access_key_session_key(self):
         cls, pks = inspect(self).identity_key[:2]
         return '{}-{}'.format(cls.__name__, '-'.join(map(str, pks)))
+
+    def update_acl_entries(self, principals):
+        """Update ACL entries from a list of principals."""
+        existing_principals = {acl_entry.principal for acl_entry in self.acl_entries}
+        principals = set(principals)
+        to_be_added = principals - existing_principals
+        to_be_removed = existing_principals - principals
+        for principal in to_be_added:
+            self.update_principal(principal, read_access=True)
+        for principal in to_be_removed:
+            self.update_principal(principal, read_access=False)
 
     def update_principal(self, principal, read_access=None, quiet=False):
         """Update access privileges for the given principal.
@@ -600,7 +612,10 @@ def make_acl_log_fn(obj_type, log_realm=None):
             return
 
         user = session.user if session else None  # allow acl changes outside request context
-        available_permissions = get_available_permissions(obj_type)
+        # `ProtectionMixin` provides only read access in a simplified form without any registered permissions.
+        # Therefor an ACL entry can be added or removed but not updated. See `ProtectionMixin.update_principal`
+        only_read_access = issubclass(obj_type, ProtectionMixin) and not issubclass(obj_type, ProtectionManagersMixin)
+        available_permissions = get_available_permissions(obj_type) if only_read_access else {}
 
         def _format_permissions(permissions):
             permissions = set(permissions)
@@ -625,16 +640,18 @@ def make_acl_log_fn(obj_type, log_realm=None):
         if entry is None:
             summary = 'ACL entry removed'
             log_kind = LogKind.negative
-            data['Read Access'] = old_data['read_access']
-            data['Manager'] = old_data['full_access']
-            data['Permissions'] = _format_permissions(old_data['permissions'])
+            if not only_read_access:
+                data['Read Access'] = old_data['read_access']
+                data['Manager'] = old_data['full_access']
+                data['Permissions'] = _format_permissions(old_data['permissions'])
         elif is_new:
             summary = 'ACL entry added'
             log_kind = LogKind.positive
-            data['Read Access'] = entry.read_access
-            data['Manager'] = entry.full_access
-            if entry.permissions:
-                data['Permissions'] = _format_permissions(entry.permissions)
+            if not only_read_access:
+                data['Read Access'] = entry.read_access
+                data['Manager'] = entry.full_access
+                if entry.permissions:
+                    data['Permissions'] = _format_permissions(entry.permissions)
         elif entry.current_data != old_data:
             summary = 'ACL entry changed'
             log_kind = LogKind.change
@@ -659,14 +676,24 @@ def make_acl_log_fn(obj_type, log_realm=None):
             user_log_data = data.copy()
             del user_log_data['User']
             obj_title = getattr(obj, 'title', None) or getattr(obj, 'name', str(obj))
+            obj_type_name = obj_type.__name__
+            obj_id = str(obj.id)
+            if getattr(obj, 'folder', None) and isinstance(obj.folder, LinkMixin):
+                if obj.folder.title:  # default folder's title is None
+                    obj_title = f'{obj.folder.title} / {obj_title}'
+                obj_type_name = f'{type(obj.folder).__name__} / {obj_type_name}'
+                obj_id = f'{obj.folder.id} / {obj_id}'
+                if link_data := obj.folder.link_event_log_data:
+                    user_log_data.update(link_data)
+                obj = obj.folder
             if parent := (getattr(obj, 'category', None)
                           or getattr(obj, 'event', None)
                           or getattr(obj, 'location', None)):
-                user_log_data[f'{parent.__class__.__name__} / {obj_type.__name__} ID'] = f'{parent.id} / {obj.id}'
+                user_log_data[f'{type(parent).__name__} / {obj_type_name} ID'] = f'{parent.id} / {obj_id}'
                 parent_title = getattr(parent, 'title', None) or getattr(parent, 'name', str(parent))
                 obj_title = f'{parent_title} / {obj_title}'
             else:
-                user_log_data[f'{obj_type.__name__} ID'] = obj.id
+                user_log_data[f'{obj_type_name} ID'] = obj_id
 
             if log_kind == LogKind.positive:
                 summary = f'{obj_type.__name__} permission granted ({obj_title})'
