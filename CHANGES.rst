@@ -2,6 +2,32 @@ Changelog
 =========
 
 
+Version 3.3.8
+-------------
+
+*Unreleased*
+
+Improvements
+^^^^^^^^^^^^
+
+- Nothing so far :(
+
+Bugfixes
+^^^^^^^^
+
+- Fix missing spacing between toolbar button groups (:pr:`6981`)
+
+Accessibility
+^^^^^^^^^^^^^
+
+- Nothing so far
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+
+- Nothing so far
+
+
 Version 3.3.7
 -------------
 
