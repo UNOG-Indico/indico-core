@@ -30,7 +30,7 @@ from indico.modules.categories.controllers.management import (RHAddCategoryRole,
                                                               RHManageCategoryProtection, RHManageCategorySettings,
                                                               RHMoveCategory, RHMoveEvents, RHMoveSubcategories,
                                                               RHRemoveCategoryRoleMember, RHSortSubcategories,
-                                                              RHSplitCategory)
+                                                              RHSplitCategory, RHCategoryManageRegistrationForms)
 from indico.modules.users import User
 from indico.web.flask.util import make_compat_redirect_func, redirect_view, url_for
 from indico.web.flask.wrappers import IndicoBlueprint
@@ -132,3 +132,6 @@ _compat_bp.add_url_rule('/category/<legacy_category_id>/', 'legacy_id', compat_c
 _compat_bp.add_url_rule('!/categoryDisplay.py', 'display_modpython',
                         make_compat_redirect_func(_compat_bp, 'legacy_id',
                                                   view_args_conv={'categId': 'legacy_category_id'}))
+
+# Regorms management
+_bp.add_url_rule('/manage/regforms', 'manage_regforms', RHCategoryManageRegistrationForms)

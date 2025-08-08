@@ -12,6 +12,7 @@ from io import BytesIO
 from flask import flash, redirect, request, session
 from PIL import Image
 from sqlalchemy.orm import joinedload, load_only, undefer_group
+from sqlalchemy.orm import undefer
 from webargs import fields
 from werkzeug.exceptions import BadRequest, Forbidden
 
@@ -35,6 +36,8 @@ from indico.modules.categories.views import WPCategoryManagement
 from indico.modules.events import Event
 from indico.modules.events.notifications import notify_move_request_closure, notify_move_request_creation
 from indico.modules.events.operations import create_event_request
+from indico.modules.regform.models.forms import RegistrationForm
+from indico.modules.events.registration.views import WPManageRegistration
 from indico.modules.logs.models.entries import CategoryLogRealm, LogKind
 from indico.modules.rb.models.reservation_occurrences import ReservationOccurrence, ReservationOccurrenceLink
 from indico.modules.users import User
@@ -154,6 +157,15 @@ class RHAPIEventMoveRequests(RHManageCategoryBase):
 class RHManageCategoryModeration(RHManageCategoryBase):
     def _process(self):
         return WPCategoryManagement.render_template('management/moderation.html', self.category, 'moderation')
+
+
+class RHCategoryManageRegistrationForms(RHManageCategoryBase):
+    def _process(self):
+        regforms = (RegistrationForm.query
+                    .with_parent(self.category)
+                    .order_by(db.func.lower(RegistrationForm.title)).all())
+        return WPCategoryManagement.render_template('management/regform_list.html', self.category, 'regform',
+                                                    regforms=regforms)
 
 
 class RHCategoryImageUploadBase(RHManageCategoryBase):

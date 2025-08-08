@@ -62,9 +62,6 @@ def _extend_event_management_menu(sender, event, **kwargs):
     if event.type != 'conference':
         yield SideMenuItem('participants', _('Participants'), url_for('event_participation.manage', event),
                            section='organization')
-    if event.has_feature('registration'):
-        yield SideMenuItem('registration', _('Registration'), url_for('event_registration.manage_regform_list', event),
-                           section=registration_section)
 
 
 @template_hook('conference-home-info')
