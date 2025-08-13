@@ -20,7 +20,6 @@ from indico.core.marshmallow import mm
 from indico.modules.events.registration.fields.base import (FieldSetupSchemaBase, LimitedPlacesBillableItemSchema,
                                                             RegistrationFormBillableField,
                                                             RegistrationFormBillableItemsField)
-from indico.modules.events.registration.fields.util import to_date, to_machine_date
 from indico.modules.events.registration.models.form_fields import RegistrationFormFieldData
 from indico.modules.events.registration.models.registrations import RegistrationData
 from indico.util.date_time import format_date
@@ -520,7 +519,7 @@ class AccommodationField(RegistrationFormBillableItemsField):
             item['places_limit'] = int(item['places_limit']) if item.get('places_limit') else 0
             captions[item['id']] = item.pop('caption')
         for key in ('arrival_date_from', 'arrival_date_to', 'departure_date_from', 'departure_date_to'):
-            unversioned_data[key] = to_machine_date(unversioned_data[key])
+            unversioned_data[key] = unversioned_data[key].isoformat()
         versioned_data['choices'] = items
         unversioned_data['captions'] = captions
         return unversioned_data, versioned_data
@@ -603,8 +602,8 @@ class AccommodationField(RegistrationFormBillableItemsField):
         unversioned_data = registration_data.field_data.field.data
         friendly_data['choice'] = unversioned_data['captions'][friendly_data['choice']]
         if not friendly_data.get('is_no_accommodation'):
-            friendly_data['arrival_date'] = to_date(friendly_data['arrival_date'])
-            friendly_data['departure_date'] = to_date(friendly_data['departure_date'])
+            friendly_data['arrival_date'] = date.fromisoformat(friendly_data['arrival_date'])
+            friendly_data['departure_date'] = date.fromisoformat(friendly_data['departure_date'])
             friendly_data['nights'] = (friendly_data['departure_date'] - friendly_data['arrival_date']).days
         else:
             friendly_data['arrival_date'] = ''
@@ -618,7 +617,7 @@ class AccommodationField(RegistrationFormBillableItemsField):
         item = next((x for x in versioned_data['choices'] if reg_data['choice'] == x['id'] and x['price']), None)
         if not item:
             return 0
-        nights = (to_date(reg_data['departure_date']) - to_date(reg_data['arrival_date'])).days
+        nights = (date.fromisoformat(reg_data['departure_date']) - date.fromisoformat(reg_data['arrival_date'])).days
         return Decimal(str(item['price'])) * nights
 
     def process_form_data(self, registration, value, old_data=None, billable_items_locked=False, new_data_version=None):
