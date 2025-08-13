@@ -14,7 +14,7 @@ from PIL import Image
 from indico.modules.events.registration.fields.base import (BillableFieldDataSchema, FieldSetupSchemaBase,
                                                             LimitedPlacesBillableFieldDataSchema,
                                                             RegistrationFormBillableField, RegistrationFormFieldBase)
-from indico.modules.events.registration.fields.choices import _to_date, _to_machine_date
+from indico.modules.events.registration.fields.util import to_date, to_machine_date
 from indico.modules.files.models.files import File
 from indico.util.countries import get_countries, get_country
 from indico.util.date_time import strftime_all_years
@@ -212,9 +212,9 @@ class DateField(RegistrationFormFieldBase):
                 return True
             try:
                 dt = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%S').date()
-                if self.form_item.data.get('min_date') and dt < _to_date(self.form_item.data['min_date']):
+                if self.form_item.data.get('min_date') and dt < to_date(self.form_item.data['min_date']):
                     raise ValidationError(_('Date must be after {}').format(self.form_item.data['min_date']))
-                if self.form_item.data.get('max_date') and dt > _to_date(self.form_item.data['max_date']):
+                if self.form_item.data.get('max_date') and dt > to_date(self.form_item.data['max_date']):
                     raise ValidationError(_('Date must be before {}').format(self.form_item.data['max_date']))
             except ValueError as e:
                 raise ValidationError(_('Invalid date')) from e
@@ -239,10 +239,10 @@ class DateField(RegistrationFormFieldBase):
     @classmethod
     def process_field_data(cls, data, old_data=None, old_versioned_data=None):
         unversioned_data, versioned_data = super().process_field_data(data, old_data, old_versioned_data)
-        if unversioned_data.get('min_date'):
-            unversioned_data['min_date'] = _to_machine_date(unversioned_data['min_date'])
-        if unversioned_data.get('max_date'):
-            unversioned_data['max_date'] = _to_machine_date(unversioned_data['max_date'])
+        if min_date := unversioned_data.get('min_date'):
+            unversioned_data['min_date'] = to_machine_date(min_date)
+        if max_date := unversioned_data.get('max_date'):
+            unversioned_data['max_date'] = to_machine_date(max_date)
         return unversioned_data, versioned_data
 
     def get_friendly_data(self, registration_data, for_humans=False, for_search=False):

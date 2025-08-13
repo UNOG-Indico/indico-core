@@ -134,7 +134,7 @@ export default function DateInput({
   };
 
   const validateDateTimeWithMinMax = dateTime => {
-    if (dateTime && !dateTime.match(/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:00(.*)/)) {
+    if (dateTime && !moment(dateTime, moment.ISO_8601, true).isValid()) {
       return Translate.string('The provided date is invalid.');
     }
     if (minDate && dateTime && dateTime < minDate) {
