@@ -11,7 +11,7 @@ from wtforms.fields import BooleanField, SelectField, TextAreaField
 from wtforms.validators import DataRequired, ValidationError
 
 from indico.modules.events.models.events import EventType
-from indico.modules.events.registration.models.forms import RegistrationForm
+from indico.modules.regform.models.forms import RegistrationForm
 from indico.modules.events.registration.models.tags import RegistrationTag
 from indico.util.date_time import now_utc
 from indico.util.i18n import _

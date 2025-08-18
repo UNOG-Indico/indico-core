@@ -37,11 +37,11 @@ from indico.modules.events.registration.constants import REGISTRATION_PICTURE_SI
 from indico.modules.events.registration.fields.accompanying import AccompanyingPersonsField
 from indico.modules.events.registration.fields.choices import (AccommodationField, ChoiceBaseField,
                                                                get_field_merged_options)
-from indico.modules.events.registration.models.form_fields import (RegistrationFormFieldData,
+from indico.modules.regform.models.form_fields import (RegistrationFormFieldData,
                                                                    RegistrationFormPersonalDataField)
-from indico.modules.events.registration.models.forms import RegistrationForm
+from indico.modules.regform.models.forms import RegistrationForm
 from indico.modules.events.registration.models.invitations import InvitationState, RegistrationInvitation
-from indico.modules.events.registration.models.items import (PersonalDataType, RegistrationFormItemType,
+from indico.modules.regform.models.items import (PersonalDataType, RegistrationFormItemType,
                                                              RegistrationFormPersonalDataSection)
 from indico.modules.events.registration.models.registrations import (Registration, RegistrationData, RegistrationState,
                                                                      RegistrationVisibility)

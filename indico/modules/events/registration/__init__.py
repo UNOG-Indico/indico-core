@@ -102,7 +102,7 @@ def _inject_event_header(event, **kwargs):
 
 @signals.event.sidemenu.connect
 def _extend_event_menu(sender, **kwargs):
-    from indico.modules.events.registration.models.forms import RegistrationForm
+    from indico.modules.regform.models.forms import RegistrationForm
     from indico.modules.events.registration.models.registrations import Registration
 
     def _visible_registration(event):
@@ -227,8 +227,9 @@ def _get_management_permissions(sender, **kwargs):
 @signals.event_management.get_cloners.connect
 def _get_registration_cloners(sender, **kwargs):
     from indico.modules.events.registration import clone
+    from indico.modules.regform import clone as regformclone
     yield clone.RegistrationTagCloner
-    yield clone.RegistrationFormCloner
+    yield regformclone.RegistrationFormCloner
     yield clone.RegistrationCloner
 
 

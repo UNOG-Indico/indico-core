@@ -1101,7 +1101,7 @@ class Event(SearchableTitleMixin, DescriptionMixin, LocationMixin, ProtectionMan
 
         This takes both unpaid and complete registrations into account.
         """
-        from indico.modules.events.registration.models.forms import RegistrationForm
+        from indico.modules.regform.models.forms import RegistrationForm
         from indico.modules.events.registration.models.registrations import Registration, RegistrationState
         if user is None:
             return False

@@ -12,7 +12,7 @@ from werkzeug.datastructures import ImmutableDict
 from indico.core.db import db
 from indico.modules.events.registration.fields import get_field_types
 from indico.modules.events.registration.fields.base import InvalidRegistrationFormField
-from indico.modules.events.registration.models.items import RegistrationFormItem, RegistrationFormItemType
+from indico.modules.regform.models.items import RegistrationFormItem, RegistrationFormItemType
 from indico.util.string import camelize_keys
 
 

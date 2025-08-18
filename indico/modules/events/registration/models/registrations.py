@@ -27,7 +27,7 @@ from indico.core.db.sqlalchemy.util.queries import increment_and_get
 from indico.core.errors import IndicoError
 from indico.core.storage import StoredFileMixin
 from indico.modules.events.payment.models.transactions import TransactionStatus
-from indico.modules.events.registration.models.items import PersonalDataType
+from indico.modules.regform.models.items import PersonalDataType
 from indico.modules.events.registration.wallets.apple import AppleWalletManager
 from indico.modules.events.registration.wallets.google import GoogleWalletManager
 from indico.modules.users.models.users import format_display_full_name
@@ -322,7 +322,7 @@ class Registration(db.Model):
     @classmethod
     def get_all_for_event(cls, event):
         """Retrieve all registrations in all registration forms of an event."""
-        from indico.modules.events.registration.models.forms import RegistrationForm
+        from indico.modules.regform.models.forms import RegistrationForm
         return (Registration.query
                 .filter(Registration.is_active,
                         ~RegistrationForm.is_deleted,
@@ -353,7 +353,7 @@ class Registration(db.Model):
     @is_publishable.expression
     def is_publishable(cls, is_participant):
         from indico.modules.events import Event
-        from indico.modules.events.registration.models.forms import RegistrationForm
+        from indico.modules.regform.models.forms import RegistrationForm
 
         def _has_regform_publish_mode(mode):
             if is_participant:
@@ -439,7 +439,7 @@ class Registration(db.Model):
 
     @property
     def can_be_withdrawn(self):
-        from indico.modules.events.registration.models.forms import ModificationMode
+        from indico.modules.regform.models.forms import ModificationMode
         if not self.is_active:
             return False
         elif self.is_paid:
@@ -583,7 +583,7 @@ class Registration(db.Model):
 
     @property
     def accompanying_persons(self):
-        from indico.modules.events.registration.models.form_fields import RegistrationFormFieldData
+        from indico.modules.regform.models.form_fields import RegistrationFormFieldData
         query = (RegistrationData.query
                  .with_parent(self)
                  .join(RegistrationFormFieldData)
@@ -951,8 +951,8 @@ class RegistrationData(StoredFileMixin, db.Model):
 
 @listens_for(mapper, 'after_configured', once=True)
 def _mapper_configured():
-    from indico.modules.events.registration.models.form_fields import RegistrationFormFieldData
-    from indico.modules.events.registration.models.items import RegistrationFormItem
+    from indico.modules.regform.models.form_fields import RegistrationFormFieldData
+    from indico.modules.regform.models.items import RegistrationFormItem
     from indico.modules.receipts.models.files import ReceiptFile
 
     @listens_for(Registration.registration_form, 'set')
