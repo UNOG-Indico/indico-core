@@ -67,6 +67,12 @@ def _extend_event_management_menu(sender, event, **kwargs):
                            section=registration_section)
 
 
+@signals.menu.items.connect_via('category-management-sidemenu')
+def _sidemenu_items(sender, category, **kwargs):
+    yield SideMenuItem('registration', _('Registration'), url_for('event_registration.manage_regform_list', category),
+                       40, icon='list')
+
+
 @template_hook('conference-home-info')
 def _inject_regform_announcement(event, **kwargs):
     from indico.modules.registration.util import get_event_regforms, get_registrations_with_tickets

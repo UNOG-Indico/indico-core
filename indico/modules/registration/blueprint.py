@@ -12,8 +12,20 @@ from indico.modules.registration.controllers.api import misc as api_misc
 from indico.modules.registration.controllers.compat import compat_registration
 from indico.modules.registration.controllers.management import (fields, invitations, privacy, regforms, reglists,
                                                                 sections, tags, tickets)
-from indico.web.flask.util import make_compat_redirect_func
+from indico.util.caching import memoize
+from indico.web.flask.util import make_compat_redirect_func, make_view_func
 from indico.web.flask.wrappers import IndicoBlueprint
+
+
+@memoize
+def _dispatch(event_rh, category_rh):
+    event_view = make_view_func(event_rh)
+    categ_view = make_view_func(category_rh)
+
+    def view_func(**kwargs):
+        return categ_view(**kwargs) if kwargs['object_type'] == 'category' else event_view(**kwargs)
+
+    return view_func
 
 
 _bp = IndicoBlueprint('event_registration', __name__, url_prefix='/event/<int:event_id>', template_folder='templates',
