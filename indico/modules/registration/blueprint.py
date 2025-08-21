@@ -17,7 +17,7 @@ from indico.web.flask.wrappers import IndicoBlueprint
 
 
 _bp = IndicoBlueprint('event_registration', __name__, url_prefix='/event/<int:event_id>', template_folder='templates',
-                      virtual_template_folder='events/registration', event_feature='registration')
+                      virtual_template_folder='registration', event_feature='registration')
 
 # Management
 _bp.add_url_rule('/manage/registration/', 'manage_regform_list', regforms.RHManageRegistrationForms)
