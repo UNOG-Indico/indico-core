@@ -11,7 +11,7 @@ from sqlalchemy import orm, select
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.dialects.postgresql import UUID as pg_UUID  # noqa: N811
 from sqlalchemy.event import listens_for
-from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
+from sqlalchemy.ext.hybrid import Comparator, hybrid_method, hybrid_property
 from sqlalchemy.orm import column_property, subqueryload
 from werkzeug.exceptions import BadRequest
 
@@ -50,6 +50,9 @@ class RegistrationForm(db.Model):
                       db.UniqueConstraint('id', 'event_id'),  # useless but needed for the registrations fkey
                       db.CheckConstraint('publish_registrations_public <= publish_registrations_participants',
                                          name='publish_registrations_more_restrictive_to_public'),
+                      db.CheckConstraint('(event_id IS NULL) != (category_id IS NULL)',
+                                         name='event_xor_category_id_null'),
+                      db.CheckConstraint('cloned_from_id != id', 'not_cloned_from_self'),
                       {'schema': 'event_registration'})
 
     #: The ID of the object
@@ -62,7 +65,21 @@ class RegistrationForm(db.Model):
         db.Integer,
         db.ForeignKey('events.events.id'),
         index=True,
-        nullable=False
+        nullable=True
+    )
+    #: The ID of the category
+    category_id = db.Column(
+        db.Integer,
+        db.ForeignKey('categories.categories.id'),
+        index=True,
+        nullable=True
+    )
+    #: If this form was cloned, the id of the parent form
+    cloned_from_id = db.Column(
+        db.Integer,
+        db.ForeignKey('event_registration.forms.id'),
+        nullable=True,
+        index=True,
     )
     #: The title of the registration form
     title = db.Column(
@@ -316,6 +333,28 @@ class RegistrationForm(db.Model):
             lazy=True
         )
     )
+    #: The Category containing this registration form
+    category = db.relationship(
+        'Category',
+        lazy=True,
+        backref=db.backref(
+            'registration_forms',
+            primaryjoin='(RegistrationForm.category_id == Category.id) & ~RegistrationForm.is_deleted',
+            cascade='all, delete-orphan',
+            lazy=True
+        )
+    )
+    #: The form this one was cloned from
+    cloned_from = db.relationship(
+        'RegistrationForm',
+        lazy=True,
+        remote_side='RegistrationForm.id',
+        backref=db.backref(
+            'clones',
+            lazy=True,
+            order_by=start_dt
+        )
+    )
     #: The template used to generate tickets
     ticket_template = db.relationship(
         'DesignerTemplate',
@@ -360,6 +399,7 @@ class RegistrationForm(db.Model):
     )
 
     # relationship backrefs:
+    # - clones (RegistrationForm.cloned_from)
     # - designer_templates (DesignerTemplate.registration_form)
     # - in_attachment_acls (AttachmentPrincipal.registration_form)
     # - in_attachment_folder_acls (AttachmentFolderPrincipal.registration_form)
@@ -454,9 +494,25 @@ class RegistrationForm(db.Model):
     def is_scheduled(cls):
         return ~cls.is_deleted & cls.start_dt.isnot(None)
 
+    @hybrid_property
+    def is_template(self):
+        return self.event_id is None
+
+    @is_template.expression
+    def is_template(cls):
+        return cls.event_id.is_(None)
+
+    @hybrid_property
+    def owner(self):
+        return self.event or self.category
+
+    @owner.comparator
+    def owner(cls):
+        return _OwnerComparator(cls)
+
     @locator_property
     def locator(self):
-        return dict(self.event.locator, reg_form_id=self.id)
+        return dict(self.owner.locator, reg_form_id=self.id)
 
     @locator.token
     def locator(self):
@@ -631,3 +687,20 @@ def _mappers_configured():
              .correlate_except(Registration)
              .scalar_subquery())
     RegistrationForm.checked_in_registrations_count = column_property(query, deferred=True)
+
+
+class _OwnerComparator(Comparator):
+    def __init__(self, cls):
+        self.cls = cls
+
+    def __clause_element__(self):
+        # just in case
+        raise NotImplementedError
+
+    def __eq__(self, other):
+        if isinstance(other, db.m.Event):
+            return self.cls.event == other
+        elif isinstance(other, db.m.Category):
+            return self.cls.category == other
+        else:
+            raise TypeError(f'Unexpected object type {type(other)}: {other}')
