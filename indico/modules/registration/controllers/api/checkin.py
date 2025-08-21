@@ -13,10 +13,9 @@ from werkzeug.exceptions import NotFound
 from indico.core import signals
 from indico.modules.events.management.controllers.base import RHManageEventBase
 from indico.modules.events.payment.util import toggle_registration_payment
-from indico.modules.events.registration.models.forms import RegistrationForm
-from indico.modules.events.registration.models.registrations import Registration
-from indico.modules.events.registration.schemas import (CheckinEventSchema, CheckinRegFormSchema,
-                                                        CheckinRegistrationSchema)
+from indico.modules.registration.models.forms import RegistrationForm
+from indico.modules.registration.models.registrations import Registration
+from indico.modules.registration.schemas import CheckinEventSchema, CheckinRegFormSchema, CheckinRegistrationSchema
 from indico.web.args import use_kwargs
 from indico.web.rh import cors, json_errors, oauth_scope
 

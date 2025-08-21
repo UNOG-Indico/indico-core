@@ -20,24 +20,23 @@ from indico.core.db.sqlalchemy.util.session import no_autoflush
 from indico.modules.events.features.util import set_feature_enabled
 from indico.modules.events.models.events import EventType
 from indico.modules.events.payment import payment_settings
-from indico.modules.events.registration import logger, registration_settings
-from indico.modules.events.registration.controllers.display import ParticipantListMixin
-from indico.modules.events.registration.controllers.management import RHManageRegFormBase, RHManageRegFormsBase
-from indico.modules.events.registration.forms import (ParticipantsDisplayForm, ParticipantsDisplayFormColumnsForm,
-                                                      RegistrationFormCreateForm, RegistrationFormEditForm,
-                                                      RegistrationFormScheduleForm, RegistrationManagersForm)
-from indico.modules.events.registration.models.forms import Registration, RegistrationForm, RegistrationState
-from indico.modules.events.registration.models.items import PersonalDataType, RegistrationFormItemType
-from indico.modules.events.registration.models.registrations import PublishRegistrationsMode, RegistrationData
-from indico.modules.events.registration.operations import update_registration_form_settings
-from indico.modules.events.registration.stats import AccommodationStats, OverviewStats
-from indico.modules.events.registration.util import (close_registration, create_personal_data_fields,
-                                                     get_flat_section_setup_data)
-from indico.modules.events.registration.views import (WPManageParticipants, WPManageRegistration,
-                                                      WPManageRegistrationStats)
 from indico.modules.events.settings import data_retention_settings
 from indico.modules.events.util import update_object_principals
 from indico.modules.logs.models.entries import EventLogRealm, LogKind
+from indico.modules.registration import logger, registration_settings
+from indico.modules.registration.controllers.display import ParticipantListMixin
+from indico.modules.registration.controllers.management import RHManageRegFormBase, RHManageRegFormsBase
+from indico.modules.registration.forms import (ParticipantsDisplayForm, ParticipantsDisplayFormColumnsForm,
+                                               RegistrationFormCreateForm, RegistrationFormEditForm,
+                                               RegistrationFormScheduleForm, RegistrationManagersForm)
+from indico.modules.registration.models.forms import Registration, RegistrationForm, RegistrationState
+from indico.modules.registration.models.items import PersonalDataType, RegistrationFormItemType
+from indico.modules.registration.models.registrations import PublishRegistrationsMode, RegistrationData
+from indico.modules.registration.operations import update_registration_form_settings
+from indico.modules.registration.stats import AccommodationStats, OverviewStats
+from indico.modules.registration.util import (close_registration, create_personal_data_fields,
+                                              get_flat_section_setup_data)
+from indico.modules.registration.views import WPManageParticipants, WPManageRegistration, WPManageRegistrationStats
 from indico.modules.users.models.affiliations import Affiliation
 from indico.util.date_time import format_human_timedelta, now_utc
 from indico.util.i18n import _, force_locale, orig_string

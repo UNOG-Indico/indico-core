@@ -9,11 +9,11 @@ from flask import request
 from sqlalchemy.orm import contains_eager, defaultload
 
 from indico.modules.events.management.controllers import RHManageEventBase
-from indico.modules.events.registration.controllers import RegistrationFormMixin
-from indico.modules.events.registration.lists import RegistrationListGenerator
-from indico.modules.events.registration.models.form_fields import RegistrationFormField
-from indico.modules.events.registration.models.forms import RegistrationForm
-from indico.modules.events.registration.models.registrations import Registration
+from indico.modules.registration.controllers import RegistrationFormMixin
+from indico.modules.registration.lists import RegistrationListGenerator
+from indico.modules.registration.models.form_fields import RegistrationFormField
+from indico.modules.registration.models.forms import RegistrationForm
+from indico.modules.registration.models.registrations import Registration
 
 
 class RHManageRegFormsBase(RHManageEventBase):

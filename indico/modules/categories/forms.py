@@ -24,8 +24,8 @@ from indico.modules.categories.util import get_image_data, get_visibility_option
 from indico.modules.events import Event
 from indico.modules.events.fields import IndicoThemeSelectField
 from indico.modules.events.models.events import EventType
-from indico.modules.events.registration.wallets.google import GoogleCredentialValidationResult, GoogleWalletManager
 from indico.modules.networks import IPNetworkGroup
+from indico.modules.registration.wallets.google import GoogleCredentialValidationResult, GoogleWalletManager
 from indico.util.i18n import _
 from indico.util.user import principal_from_identifier
 from indico.web.forms.base import IndicoForm, generated_data

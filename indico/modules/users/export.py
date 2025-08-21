@@ -29,9 +29,9 @@ from indico.modules.events.editing.models.revisions import EditingRevision
 from indico.modules.events.notes.models.notes import EventNoteRevision
 from indico.modules.events.papers.models.files import PaperFile
 from indico.modules.events.papers.models.revisions import PaperRevision
-from indico.modules.events.registration.models.registrations import Registration, RegistrationData
 from indico.modules.files.models.files import File
 from indico.modules.receipts.models.files import ReceiptFile
+from indico.modules.registration.models.registrations import Registration, RegistrationData
 from indico.modules.users import logger
 from indico.modules.users.models.export import DataExportOptions, DataExportRequest, DataExportRequestState
 from indico.util.date_time import now_utc

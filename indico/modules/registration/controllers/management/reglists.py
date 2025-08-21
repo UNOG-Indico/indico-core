@@ -33,36 +33,33 @@ from indico.modules.designer.models.templates import DesignerTemplate
 from indico.modules.designer.util import get_badge_format, get_inherited_templates
 from indico.modules.events import EventLogRealm
 from indico.modules.events.payment.util import toggle_registration_payment
-from indico.modules.events.registration import logger
-from indico.modules.events.registration.badges import (RegistrantsListToBadgesPDF,
-                                                       RegistrantsListToBadgesPDFDoubleSided,
-                                                       RegistrantsListToBadgesPDFFoldable)
-from indico.modules.events.registration.controllers import (CheckEmailMixin, RegistrationEditMixin,
-                                                            UploadRegistrationFileMixin, UploadRegistrationPictureMixin)
-from indico.modules.events.registration.controllers.management import (RHManageRegFormBase, RHManageRegFormsBase,
-                                                                       RHManageRegistrationBase,
-                                                                       RHManageRegistrationFieldActionBase)
-from indico.modules.events.registration.forms import (BadgeSettingsForm, CreateMultipleRegistrationsForm,
-                                                      EmailRegistrantsForm, ImportRegistrationsForm, PublishReceiptForm,
-                                                      RegistrationBasePriceForm,
-                                                      RegistrationExceptionalModificationForm, RejectRegistrantsForm)
-from indico.modules.events.registration.models.items import PersonalDataType, RegistrationFormItemType
-from indico.modules.events.registration.models.registrations import Registration, RegistrationData, RegistrationState
-from indico.modules.events.registration.notifications import (notify_registration_receipt_created,
-                                                              notify_registration_state_update)
-from indico.modules.events.registration.placeholders.registrations import PicturePlaceholder
-from indico.modules.events.registration.settings import event_badge_settings
-from indico.modules.events.registration.util import (ActionMenuEntry, create_registration,
-                                                     generate_spreadsheet_from_registrations,
-                                                     get_flat_section_submission_data, get_initial_form_values,
-                                                     get_ticket_attachments, get_title_uuid, get_user_data,
-                                                     import_registrations_from_csv, load_registration_schema,
-                                                     make_registration_schema)
-from indico.modules.events.registration.views import WPManageRegistration
 from indico.modules.events.util import ZipGeneratorMixin
 from indico.modules.logs import LogKind
 from indico.modules.logs.util import make_diff_log
 from indico.modules.receipts.models.files import ReceiptFile
+from indico.modules.registration import logger
+from indico.modules.registration.badges import (RegistrantsListToBadgesPDF, RegistrantsListToBadgesPDFDoubleSided,
+                                                RegistrantsListToBadgesPDFFoldable)
+from indico.modules.registration.controllers import (CheckEmailMixin, RegistrationEditMixin,
+                                                     UploadRegistrationFileMixin, UploadRegistrationPictureMixin)
+from indico.modules.registration.controllers.management import (RHManageRegFormBase, RHManageRegFormsBase,
+                                                                RHManageRegistrationBase,
+                                                                RHManageRegistrationFieldActionBase)
+from indico.modules.registration.forms import (BadgeSettingsForm, CreateMultipleRegistrationsForm, EmailRegistrantsForm,
+                                               ImportRegistrationsForm, PublishReceiptForm, RegistrationBasePriceForm,
+                                               RegistrationExceptionalModificationForm, RejectRegistrantsForm)
+from indico.modules.registration.models.items import PersonalDataType, RegistrationFormItemType
+from indico.modules.registration.models.registrations import Registration, RegistrationData, RegistrationState
+from indico.modules.registration.notifications import (notify_registration_receipt_created,
+                                                       notify_registration_state_update)
+from indico.modules.registration.placeholders.registrations import PicturePlaceholder
+from indico.modules.registration.settings import event_badge_settings
+from indico.modules.registration.util import (ActionMenuEntry, create_registration,
+                                              generate_spreadsheet_from_registrations, get_flat_section_submission_data,
+                                              get_initial_form_values, get_ticket_attachments, get_title_uuid,
+                                              get_user_data, import_registrations_from_csv, load_registration_schema,
+                                              make_registration_schema)
+from indico.modules.registration.views import WPManageRegistration
 from indico.util.date_time import format_currency, now_utc, relativedelta
 from indico.util.fs import secure_filename
 from indico.util.i18n import _, ngettext
@@ -81,7 +78,7 @@ badge_cache = make_scoped_cache('badge-printing')
 
 
 def _render_registration_details(registration):
-    from indico.modules.events.registration.schemas import RegistrationTagSchema
+    from indico.modules.registration.schemas import RegistrationTagSchema
 
     event = registration.registration_form.event
     tpl = get_template_module('events/registration/management/_registration_details.html')

@@ -12,7 +12,7 @@ from indico.core.config import config
 from indico.core.notifications import make_email, send_email
 from indico.modules.core.settings import core_settings
 from indico.modules.events.ical import MIMECalendar, event_to_ical
-from indico.modules.events.registration.models.registrations import RegistrationState
+from indico.modules.registration.models.registrations import RegistrationState
 from indico.util.placeholders import replace_placeholders
 from indico.util.signals import make_interceptable, values_from_signal
 from indico.web.flask.templating import get_template_module
@@ -31,7 +31,7 @@ def notify_invitation(invitation, email_subject, email_body, sender_address):
 @make_interceptable
 def _notify_registration(registration, template_name, *, to_managers=False, attach_rejection_reason=False,
                          diff=None, old_price=None, receipt=None, allow_session_locale=False, include_pictures=False):
-    from indico.modules.events.registration.util import get_ticket_attachments
+    from indico.modules.registration.util import get_ticket_attachments
     attachments = []
     regform = registration.registration_form
     tickets_handled = values_from_signal(signals.event.is_ticketing_handled.send(regform), single_value=True)

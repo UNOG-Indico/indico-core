@@ -16,8 +16,8 @@ from speaklater import is_lazy_string
 from indico.core.marshmallow import mm
 from indico.modules.events.models.events import Event
 from indico.modules.events.payment.models.transactions import PaymentTransaction
-from indico.modules.events.registration.models.registrations import Registration
 from indico.modules.receipts.models.templates import ReceiptTemplate
+from indico.modules.registration.models.registrations import Registration
 from indico.util.marshmallow import YAML, not_empty
 from indico.util.string import slugify
 

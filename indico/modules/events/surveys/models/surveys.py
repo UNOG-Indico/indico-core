@@ -17,8 +17,8 @@ from indico.core.db import db
 from indico.core.db.sqlalchemy import UTCDateTime
 from indico.core.errors import IndicoError
 from indico.core.notifications import make_email, send_email
-from indico.modules.events.registration.models.registrations import Registration
 from indico.modules.events.surveys import logger
+from indico.modules.registration.models.registrations import Registration
 from indico.util.date_time import now_utc
 from indico.util.enum import IndicoEnum
 from indico.util.locators import locator_property

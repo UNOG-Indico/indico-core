@@ -11,11 +11,11 @@ from indico.core.db.sqlalchemy.util.session import no_autoflush
 from indico.modules.events.cloning import EventCloner, get_attrs_to_clone
 from indico.modules.events.features.util import is_feature_enabled
 from indico.modules.events.models.events import EventType
-from indico.modules.events.registration.models.form_fields import RegistrationFormFieldData
-from indico.modules.events.registration.models.forms import RegistrationForm
-from indico.modules.events.registration.models.items import RegistrationFormItem, RegistrationFormSection
-from indico.modules.events.registration.models.registrations import Registration, RegistrationData
-from indico.modules.events.registration.models.tags import RegistrationTag
+from indico.modules.registration.models.form_fields import RegistrationFormFieldData
+from indico.modules.registration.models.forms import RegistrationForm
+from indico.modules.registration.models.items import RegistrationFormItem, RegistrationFormSection
+from indico.modules.registration.models.registrations import Registration, RegistrationData
+from indico.modules.registration.models.tags import RegistrationTag
 from indico.util.i18n import _
 
 

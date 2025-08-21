@@ -13,7 +13,7 @@ from indico.core.db import db
 from indico.core.plugins import plugin_engine
 from indico.modules.events.payment import PaymentPluginMixin
 from indico.modules.events.payment.models.transactions import PaymentTransaction, TransactionAction, TransactionStatus
-from indico.modules.events.registration.notifications import notify_registration_state_update
+from indico.modules.registration.notifications import notify_registration_state_update
 
 
 remove_prefix_re = re.compile(r'^payment_')

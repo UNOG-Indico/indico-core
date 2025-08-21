@@ -14,11 +14,11 @@ from werkzeug.exceptions import BadRequest
 
 from indico.core.db import db
 from indico.core.notifications import make_email, send_email
-from indico.modules.events.registration.controllers.management import RHManageRegFormBase
-from indico.modules.events.registration.forms import ImportInvitationsForm, InvitationFormExisting, InvitationFormNew
-from indico.modules.events.registration.models.invitations import InvitationState, RegistrationInvitation
-from indico.modules.events.registration.util import create_invitation, import_invitations_from_csv
-from indico.modules.events.registration.views import WPManageRegistration
+from indico.modules.registration.controllers.management import RHManageRegFormBase
+from indico.modules.registration.forms import ImportInvitationsForm, InvitationFormExisting, InvitationFormNew
+from indico.modules.registration.models.invitations import InvitationState, RegistrationInvitation
+from indico.modules.registration.util import create_invitation, import_invitations_from_csv
+from indico.modules.registration.views import WPManageRegistration
 from indico.util.i18n import ngettext
 from indico.util.marshmallow import LowercaseString, no_relative_urls, not_empty
 from indico.util.placeholders import get_sorted_placeholders, replace_placeholders

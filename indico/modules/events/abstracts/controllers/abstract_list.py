@@ -30,8 +30,8 @@ from indico.modules.events.contributions.models.persons import AuthorType
 from indico.modules.events.management.controllers.emails import (EmailRolesMetadataMixin, EmailRolesPreviewMixin,
                                                                  EmailRolesSendMixin)
 from indico.modules.events.persons.util import get_event_person_for_user
-from indico.modules.events.registration.util import get_registered_event_persons
 from indico.modules.events.util import get_field_values
+from indico.modules.registration.util import get_registered_event_persons
 from indico.modules.users.models.users import User
 from indico.util.i18n import _, ngettext, pgettext
 from indico.web.args import use_kwargs

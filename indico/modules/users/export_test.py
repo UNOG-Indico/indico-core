@@ -27,7 +27,7 @@ from indico.modules.users.models.export import DataExportOptions, DataExportRequ
 from indico.util.date_time import now_utc
 
 
-pytest_plugins = ('indico.modules.events.registration.testing.fixtures',
+pytest_plugins = ('indico.modules.registration.testing.fixtures',
                   'indico.modules.users.testing.fixtures')
 
 

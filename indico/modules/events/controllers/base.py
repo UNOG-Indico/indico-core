@@ -11,10 +11,10 @@ from flask import flash, redirect, request, session
 from werkzeug.exceptions import Forbidden, NotFound
 
 from indico.modules.events import Event
-from indico.modules.events.registration.util import get_event_regforms_registrations
 from indico.modules.events.views import WPAccessKey
 from indico.modules.logs.models.entries import EventLogRealm, LogKind
 from indico.modules.logs.util import make_diff_log
+from indico.modules.registration.util import get_event_regforms_registrations
 from indico.util.i18n import _
 from indico.web.flask.util import url_for
 from indico.web.forms.base import FormDefaults

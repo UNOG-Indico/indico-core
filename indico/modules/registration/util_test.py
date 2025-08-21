@@ -16,21 +16,20 @@ from flask import session
 from indico.core.db import db
 from indico.core.errors import UserValueError
 from indico.modules.events.models.persons import EventPerson
-from indico.modules.events.registration.controllers.management.fields import _fill_form_field_with_data
-from indico.modules.events.registration.models.form_fields import RegistrationFormField
-from indico.modules.events.registration.models.invitations import RegistrationInvitation
-from indico.modules.events.registration.models.items import RegistrationFormItemType, RegistrationFormSection
-from indico.modules.events.registration.models.registrations import RegistrationVisibility
-from indico.modules.events.registration.util import (create_registration, get_event_regforms_registrations,
-                                                     get_registered_event_persons, get_ticket_qr_code_data,
-                                                     get_user_data, import_invitations_from_csv,
-                                                     import_registrations_from_csv, import_user_records_from_csv,
-                                                     modify_registration)
+from indico.modules.registration.controllers.management.fields import _fill_form_field_with_data
+from indico.modules.registration.models.form_fields import RegistrationFormField
+from indico.modules.registration.models.invitations import RegistrationInvitation
+from indico.modules.registration.models.items import RegistrationFormItemType, RegistrationFormSection
+from indico.modules.registration.models.registrations import RegistrationVisibility
+from indico.modules.registration.util import (create_registration, get_event_regforms_registrations,
+                                              get_registered_event_persons, get_ticket_qr_code_data, get_user_data,
+                                              import_invitations_from_csv, import_registrations_from_csv,
+                                              import_user_records_from_csv, modify_registration)
 from indico.modules.users.models.users import UserTitle
 from indico.testing.util import assert_json_snapshot
 
 
-pytest_plugins = 'indico.modules.events.registration.testing.fixtures'
+pytest_plugins = 'indico.modules.registration.testing.fixtures'
 
 
 @pytest.mark.usefixtures('dummy_regform')
@@ -195,7 +194,7 @@ def test_import_registrations_error(dummy_regform, dummy_user):
 
 
 def test_import_invitations(monkeypatch, dummy_regform, dummy_user):
-    monkeypatch.setattr('indico.modules.events.registration.util.notify_invitation', lambda *args, **kwargs: None)
+    monkeypatch.setattr('indico.modules.registration.util.notify_invitation', lambda *args, **kwargs: None)
 
     # normal import with no conflicts
     csv = b'\n'.join([b'Bob,Doe,ACME Inc.,bdoe@example.test',
@@ -224,7 +223,7 @@ def test_import_invitations(monkeypatch, dummy_regform, dummy_user):
 
 
 def test_import_invitations_duplicate_invitation(monkeypatch, dummy_regform, dummy_user):
-    monkeypatch.setattr('indico.modules.events.registration.util.notify_invitation', lambda *args, **kwargs: None)
+    monkeypatch.setattr('indico.modules.registration.util.notify_invitation', lambda *args, **kwargs: None)
 
     invitation = RegistrationInvitation(skip_moderation=True, email='awang@example.test', first_name='Amy',
                                         last_name='Wang', affiliation='ACME Inc.')
@@ -249,7 +248,7 @@ def test_import_invitations_duplicate_invitation(monkeypatch, dummy_regform, dum
 
 
 def test_import_invitations_duplicate_registration(monkeypatch, dummy_regform):
-    monkeypatch.setattr('indico.modules.events.registration.util.notify_invitation', lambda *args, **kwargs: None)
+    monkeypatch.setattr('indico.modules.registration.util.notify_invitation', lambda *args, **kwargs: None)
 
     create_registration(dummy_regform, {
         'email': 'boss@example.test',
@@ -276,7 +275,7 @@ def test_import_invitations_duplicate_registration(monkeypatch, dummy_regform):
 
 
 def test_import_invitations_duplicate_user(monkeypatch, dummy_regform, dummy_user):
-    monkeypatch.setattr('indico.modules.events.registration.util.notify_invitation', lambda *args, **kwargs: None)
+    monkeypatch.setattr('indico.modules.registration.util.notify_invitation', lambda *args, **kwargs: None)
 
     dummy_user.secondary_emails.add('dummy@example.test')
     create_registration(dummy_regform, {
@@ -649,7 +648,7 @@ def test_modify_registration_update_consent(dummy_reg):
 
 @pytest.mark.usefixtures('request_context')
 def test_get_user_data(monkeypatch, dummy_event, dummy_user, dummy_regform):
-    monkeypatch.setattr('indico.modules.events.registration.util.notify_invitation', lambda *args, **kwargs: None)
+    monkeypatch.setattr('indico.modules.registration.util.notify_invitation', lambda *args, **kwargs: None)
     session.set_session_user(dummy_user)
 
     assert get_user_data(dummy_regform, None) == {}
@@ -720,7 +719,7 @@ def test_get_ticket_qr_code_data(request, mocker, snapshot, dummy_reg, url, tick
     class MockConfig:
         BASE_URL = url
 
-    mocker.patch('indico.modules.events.registration.util.config', MockConfig())
+    mocker.patch('indico.modules.registration.util.config', MockConfig())
 
     dummy_reg.ticket_uuid = ticket_uuid
     person = {

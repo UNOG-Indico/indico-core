@@ -40,9 +40,9 @@ def principal_from_identifier(identifier, *, allow_groups=False, allow_external_
     from indico.modules.events.models.events import Event
     from indico.modules.events.models.persons import EventPerson
     from indico.modules.events.models.roles import EventRole
-    from indico.modules.events.registration.models.forms import RegistrationForm
     from indico.modules.groups import GroupProxy
     from indico.modules.networks.models.networks import IPNetworkGroup
+    from indico.modules.registration.models.forms import RegistrationForm
     from indico.modules.users import User
     from indico.modules.users.models.affiliations import Affiliation
     from indico.modules.users.models.users import UserTitle

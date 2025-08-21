@@ -27,7 +27,7 @@ from indico.web.forms.widgets import JinjaWidget
 
 def serialize_principal(principal):
     from indico.modules.categories.util import serialize_category_role
-    from indico.modules.events.registration.util import serialize_registration_form
+    from indico.modules.registration.util import serialize_registration_form
     if principal.principal_type == PrincipalType.email:
         return serialize_email_principal(principal)
     elif principal.principal_type == PrincipalType.network:
@@ -186,7 +186,7 @@ class PermissionsField(SearchTokenMixin, JSONField):
 
     @property
     def registration_forms(self):
-        from indico.modules.events.registration.util import serialize_registration_form
+        from indico.modules.registration.util import serialize_registration_form
         if not self.event.has_feature('registration'):
             return []
         registration_forms = self.event.registration_forms

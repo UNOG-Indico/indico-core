@@ -21,7 +21,7 @@ from indico.modules.users.models.users import NameFormat
 from indico.testing.util import assert_yaml_snapshot
 
 
-pytest_plugins = ('indico.modules.events.registration.testing.fixtures',
+pytest_plugins = ('indico.modules.registration.testing.fixtures',
                   'indico.modules.users.testing.fixtures')
 
 SNAPSHOT_DIR = Path(__file__).parent / 'tests'

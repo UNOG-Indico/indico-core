@@ -21,7 +21,7 @@ from indico.web.args import use_kwargs
 
 class RHAPIRegistrationForms(RHProtectedEventBase):
     def _process(self):
-        from indico.modules.events.registration.schemas import RegistrationFormPrincipalSchema
+        from indico.modules.registration.schemas import RegistrationFormPrincipalSchema
         return RegistrationFormPrincipalSchema(many=True).jsonify(self.event.registration_forms)
 
 

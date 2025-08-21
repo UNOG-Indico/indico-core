@@ -12,11 +12,11 @@ from marshmallow import ValidationError, fields, validate, validates_schema
 from sqlalchemy.orm import joinedload
 
 from indico.core.db.sqlalchemy import db
-from indico.modules.events.registration.controllers.display import RHRegistrationForm
-from indico.modules.events.registration.fields.base import FieldSetupSchemaBase, RegistrationFormFieldBase
-from indico.modules.events.registration.models.registrations import RegistrationData
 from indico.modules.events.sessions.models.blocks import SessionBlock
 from indico.modules.events.sessions.models.sessions import Session
+from indico.modules.registration.controllers.display import RHRegistrationForm
+from indico.modules.registration.fields.base import FieldSetupSchemaBase, RegistrationFormFieldBase
+from indico.modules.registration.models.registrations import RegistrationData
 from indico.util.date_time import format_interval, format_skeleton
 from indico.util.i18n import _
 

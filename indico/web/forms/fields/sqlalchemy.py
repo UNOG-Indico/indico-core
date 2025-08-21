@@ -57,7 +57,7 @@ class IndicoQuerySelectMultipleTagField(IndicoQuerySelectMultipleField):
         )
 
     def _get_query(self):
-        from indico.modules.events.registration.models.tags import RegistrationTag
+        from indico.modules.registration.models.tags import RegistrationTag
         return RegistrationTag.query.with_parent(self.get_form().event)
 
     @property

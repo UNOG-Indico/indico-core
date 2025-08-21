@@ -8,8 +8,8 @@
 from flask import session
 
 from indico.core import signals
-from indico.modules.events.registration.util import ActionMenuEntry
 from indico.modules.receipts.util import can_user_manage_receipt_templates, has_any_receipts
+from indico.modules.registration.util import ActionMenuEntry
 from indico.util.i18n import _
 from indico.web.flask.util import url_for
 from indico.web.menu import SideMenuItem

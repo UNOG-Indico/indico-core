@@ -7,11 +7,11 @@
 
 import pytest
 
-from indico.modules.events.registration.models.form_fields import RegistrationFormField
-from indico.modules.events.registration.models.forms import RegistrationForm
-from indico.modules.events.registration.models.items import RegistrationFormSection
-from indico.modules.events.registration.models.registrations import Registration, RegistrationData, RegistrationState
-from indico.modules.events.registration.util import create_personal_data_fields
+from indico.modules.registration.models.form_fields import RegistrationFormField
+from indico.modules.registration.models.forms import RegistrationForm
+from indico.modules.registration.models.items import RegistrationFormSection
+from indico.modules.registration.models.registrations import Registration, RegistrationData, RegistrationState
+from indico.modules.registration.util import create_personal_data_fields
 
 
 @pytest.fixture

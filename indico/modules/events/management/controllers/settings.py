@@ -22,12 +22,12 @@ from indico.modules.events.management.views import WPEventSettings, render_event
 from indico.modules.events.models.labels import EventLabel
 from indico.modules.events.models.references import ReferenceType
 from indico.modules.events.operations import update_event
-from indico.modules.events.registration.models.forms import RegistrationForm
 from indico.modules.events.util import should_show_draft_warning, track_location_changes, track_time_changes
 from indico.modules.rb.models.reservation_occurrences import ReservationOccurrence
 from indico.modules.rb.models.reservations import Reservation
 from indico.modules.rb.models.rooms import Room
 from indico.modules.rb.util import rb_check_if_visible
+from indico.modules.registration.models.forms import RegistrationForm
 from indico.util.signals import values_from_signal
 from indico.web.flask.templating import get_template_module
 from indico.web.forms.base import FormDefaults

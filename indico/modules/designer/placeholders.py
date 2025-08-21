@@ -8,7 +8,7 @@
 from io import BytesIO
 
 from indico.modules.designer.models.images import DesignerImageFile
-from indico.modules.events.registration.util import generate_ticket_qr_code
+from indico.modules.registration.util import generate_ticket_qr_code
 from indico.util.date_time import format_currency, format_date, format_datetime, format_interval
 from indico.util.i18n import _, pgettext
 from indico.util.placeholders import Placeholder

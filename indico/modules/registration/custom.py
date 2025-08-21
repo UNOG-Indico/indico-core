@@ -9,7 +9,7 @@ import dataclasses
 
 from markupsafe import Markup
 
-from indico.modules.events.registration.models.registrations import Registration
+from indico.modules.registration.models.registrations import Registration
 
 
 @dataclasses.dataclass(frozen=True)

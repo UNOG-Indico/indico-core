@@ -19,7 +19,7 @@ from indico.modules.events.controllers.base import AccessKeyRequired, Registrati
 from indico.util.date_time import now_utc
 
 
-pytest_plugins = 'indico.modules.events.registration.testing.fixtures'
+pytest_plugins = 'indico.modules.registration.testing.fixtures'
 
 
 def _make_attachment(user, obj):

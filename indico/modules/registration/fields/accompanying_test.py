@@ -9,11 +9,11 @@ import pytest
 from marshmallow import ValidationError
 
 from indico.modules.events.features.util import set_feature_enabled
-from indico.modules.events.registration.models.forms import RegistrationForm
-from indico.modules.events.registration.models.registrations import Registration, RegistrationState
+from indico.modules.registration.models.forms import RegistrationForm
+from indico.modules.registration.models.registrations import Registration, RegistrationState
 
 
-pytest_plugins = 'indico.modules.events.registration.testing.fixtures'
+pytest_plugins = 'indico.modules.registration.testing.fixtures'
 
 
 @pytest.fixture

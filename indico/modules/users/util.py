@@ -125,11 +125,11 @@ def get_linked_events(user, dt=None, limit=None, load_also=(), extra_options=())
                                                       get_events_with_abstract_reviewer_convener)
     from indico.modules.events.contributions.util import get_events_with_linked_contributions
     from indico.modules.events.papers.util import get_events_with_paper_roles
-    from indico.modules.events.registration.util import get_events_registered
     from indico.modules.events.sessions.util import get_events_with_linked_sessions
     from indico.modules.events.surveys.util import get_events_with_submitted_surveys
     from indico.modules.events.util import (get_events_created_by, get_events_managed_by,
                                             get_events_with_linked_event_persons)
+    from indico.modules.registration.util import get_events_registered
 
     links = {}
     for event_id in get_events_registered(user, dt):

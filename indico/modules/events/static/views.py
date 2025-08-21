@@ -8,11 +8,11 @@
 from indico.modules.events.contributions.views import WPAuthorList, WPContributions, WPSpeakerList
 from indico.modules.events.layout.views import WPPage
 from indico.modules.events.management.views import WPEventManagement
-from indico.modules.events.registration.views import WPDisplayRegistrationParticipantList
 from indico.modules.events.sessions.views import WPDisplaySession
 from indico.modules.events.timetable.views import WPDisplayTimetable
 from indico.modules.events.tracks.views import WPDisplayTracks
 from indico.modules.events.views import WPConferenceDisplay, WPConferencePrivacyDisplay, WPSimpleEventDisplay
+from indico.modules.registration.views import WPDisplayRegistrationParticipantList
 
 
 class WPStaticSites(WPEventManagement):

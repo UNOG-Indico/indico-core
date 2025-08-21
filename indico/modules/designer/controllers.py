@@ -35,9 +35,9 @@ from indico.modules.designer.util import (can_link_to_regform, get_all_templates
 from indico.modules.designer.views import WPCategoryManagementDesigner, WPEventManagementDesigner
 from indico.modules.events import Event, EventLogRealm
 from indico.modules.events.management.controllers import RHManageEventBase
-from indico.modules.events.registration.models.forms import RegistrationForm
 from indico.modules.events.util import check_event_locked
 from indico.modules.logs import LogKind
+from indico.modules.registration.models.forms import RegistrationForm
 from indico.util.fs import secure_filename
 from indico.util.i18n import _
 from indico.util.marshmallow import ModelField

@@ -17,7 +17,7 @@ from indico.modules.events.models.persons import EventPerson
 from indico.modules.events.models.roles import EventRole
 
 
-pytest_plugins = 'indico.modules.events.registration.testing.fixtures'
+pytest_plugins = 'indico.modules.registration.testing.fixtures'
 
 
 def test_update_principal(

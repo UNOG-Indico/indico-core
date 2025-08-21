@@ -20,7 +20,7 @@ from werkzeug.exceptions import ServiceUnavailable
 from indico.core import signals
 from indico.core.config import config
 from indico.core.logger import Logger
-from indico.modules.events.registration.settings import event_wallet_settings
+from indico.modules.registration.settings import event_wallet_settings
 from indico.util.i18n import _
 from indico.web.flask.util import url_for
 
@@ -214,7 +214,7 @@ class GoogleWalletManager:
 
     def build_ticket_object_data(self, registration) -> dict:
         """Generate the object data for an individual ticket."""
-        from indico.modules.events.registration.util import get_persons, get_ticket_qr_code_data
+        from indico.modules.registration.util import get_persons, get_ticket_qr_code_data
         qr_data = get_ticket_qr_code_data(get_persons([registration])[0])
         data = {
             'id': self._make_id(registration.google_wallet_ticket_id),

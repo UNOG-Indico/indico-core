@@ -26,11 +26,11 @@ from indico.modules.events.editing.models.revisions import EditingRevision, Revi
 from indico.modules.events.notes.models.notes import EventNote, EventNoteRevision
 from indico.modules.events.papers.models.files import PaperFile
 from indico.modules.events.papers.models.papers import PaperRevisionState
-from indico.modules.events.registration.models.registrations import Registration
 from indico.modules.events.static.models.static import StaticSite
 from indico.modules.events.surveys.schemas import SurveySubmissionSchema
 from indico.modules.rb.models.rooms import Room
 from indico.modules.receipts.models.files import ReceiptFile
+from indico.modules.registration.models.registrations import Registration
 from indico.modules.users import User
 from indico.modules.users.export import (build_storage_path, get_abstracts, get_attachments, get_contributions,
                                          get_editables, get_note_revisions, get_papers, get_registrations,

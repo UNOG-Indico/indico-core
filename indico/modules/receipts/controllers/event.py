@@ -19,10 +19,6 @@ from werkzeug.exceptions import Forbidden
 
 from indico.core.db import db
 from indico.modules.categories.models.categories import Category
-from indico.modules.events.registration.controllers.management import RHManageRegFormsBase
-from indico.modules.events.registration.models.forms import RegistrationForm
-from indico.modules.events.registration.models.registrations import Registration
-from indico.modules.events.registration.notifications import notify_registration_receipt_created
 from indico.modules.events.util import ZipGeneratorMixin
 from indico.modules.files.models.files import File
 from indico.modules.logs.models.entries import EventLogRealm, LogKind
@@ -33,6 +29,10 @@ from indico.modules.receipts.settings import receipt_defaults
 from indico.modules.receipts.util import (TemplateStackEntry, compile_jinja_code, create_pdf,
                                           get_event_attachment_images, get_inherited_templates,
                                           get_safe_template_context)
+from indico.modules.registration.controllers.management import RHManageRegFormsBase
+from indico.modules.registration.models.forms import RegistrationForm
+from indico.modules.registration.models.registrations import Registration
+from indico.modules.registration.notifications import notify_registration_receipt_created
 from indico.util.caching import memoize_redis
 from indico.util.fs import secure_filename
 from indico.util.i18n import _

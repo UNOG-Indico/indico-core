@@ -10,7 +10,7 @@ from indico.modules.events.contributions.models.persons import AuthorType, Contr
 from indico.modules.events.models.persons import EventPerson
 
 
-pytest_plugins = 'indico.modules.events.registration.testing.fixtures'
+pytest_plugins = 'indico.modules.registration.testing.fixtures'
 
 
 def test_filter_contrib_entries(app, dummy_event, create_user, create_contribution, dummy_regform, create_registration):

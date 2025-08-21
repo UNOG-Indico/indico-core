@@ -13,7 +13,7 @@ import pytest
 from indico.modules.receipts.settings import receipts_settings
 
 
-pytest_plugins = 'indico.modules.events.registration.testing.fixtures'
+pytest_plugins = 'indico.modules.registration.testing.fixtures'
 
 
 @pytest.mark.parametrize('owner_type', ('event', 'category'))

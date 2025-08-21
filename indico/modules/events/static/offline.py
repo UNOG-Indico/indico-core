@@ -33,7 +33,6 @@ from indico.modules.events.controllers.display import RHDisplayPrivacyPolicy
 from indico.modules.events.layout.models.menu import MenuEntryType
 from indico.modules.events.layout.util import menu_entries_for_event
 from indico.modules.events.models.events import EventType
-from indico.modules.events.registration.controllers.display import RHParticipantList
 from indico.modules.events.sessions.controllers.display import RHDisplaySession
 from indico.modules.events.sessions.ical import session_to_ical
 from indico.modules.events.sessions.util import generate_session_pdf_timetable
@@ -47,6 +46,7 @@ from indico.modules.events.static.views import (WPStaticAuthorList, WPStaticConf
 from indico.modules.events.timetable.controllers.display import RHTimetable
 from indico.modules.events.timetable.util import generate_pdf_timetable
 from indico.modules.events.tracks.controllers import RHDisplayTracks
+from indico.modules.registration.controllers.display import RHParticipantList
 from indico.util.fs import chmod_umask
 from indico.util.string import strip_tags
 from indico.web.assets.vars_js import generate_global_file, generate_i18n_file, generate_user_file

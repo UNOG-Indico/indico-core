@@ -32,23 +32,21 @@ from indico.modules.events import EventLogRealm
 from indico.modules.events.models.events import Event
 from indico.modules.events.models.persons import EventPerson
 from indico.modules.events.payment.models.transactions import TransactionStatus
-from indico.modules.events.registration import logger
-from indico.modules.events.registration.constants import REGISTRATION_PICTURE_SIZE, REGISTRATION_PICTURE_THUMBNAIL_SIZE
-from indico.modules.events.registration.fields.accompanying import AccompanyingPersonsField
-from indico.modules.events.registration.fields.choices import (AccommodationField, ChoiceBaseField,
-                                                               get_field_merged_options)
-from indico.modules.events.registration.models.form_fields import (RegistrationFormFieldData,
-                                                                   RegistrationFormPersonalDataField)
-from indico.modules.events.registration.models.forms import RegistrationForm
-from indico.modules.events.registration.models.invitations import InvitationState, RegistrationInvitation
-from indico.modules.events.registration.models.items import (PersonalDataType, RegistrationFormItemType,
-                                                             RegistrationFormPersonalDataSection)
-from indico.modules.events.registration.models.registrations import (Registration, RegistrationData, RegistrationState,
-                                                                     RegistrationVisibility)
-from indico.modules.events.registration.notifications import (notify_invitation, notify_registration_creation,
-                                                              notify_registration_modification)
 from indico.modules.logs import LogKind
 from indico.modules.logs.util import make_diff_log
+from indico.modules.registration import logger
+from indico.modules.registration.constants import REGISTRATION_PICTURE_SIZE, REGISTRATION_PICTURE_THUMBNAIL_SIZE
+from indico.modules.registration.fields.accompanying import AccompanyingPersonsField
+from indico.modules.registration.fields.choices import AccommodationField, ChoiceBaseField, get_field_merged_options
+from indico.modules.registration.models.form_fields import RegistrationFormFieldData, RegistrationFormPersonalDataField
+from indico.modules.registration.models.forms import RegistrationForm
+from indico.modules.registration.models.invitations import InvitationState, RegistrationInvitation
+from indico.modules.registration.models.items import (PersonalDataType, RegistrationFormItemType,
+                                                      RegistrationFormPersonalDataSection)
+from indico.modules.registration.models.registrations import (Registration, RegistrationData, RegistrationState,
+                                                              RegistrationVisibility)
+from indico.modules.registration.notifications import (notify_invitation, notify_registration_creation,
+                                                       notify_registration_modification)
 from indico.modules.users.util import get_user_by_email
 from indico.util.countries import get_country_reverse
 from indico.util.date_time import now_utc
@@ -439,7 +437,7 @@ def create_registration(regform, data, invitation=None, management=False, notify
 
 @no_autoflush
 def modify_registration(registration, data, management=False, notify_user=True):
-    from indico.modules.events.registration.tasks import delete_previous_registration_file
+    from indico.modules.registration.tasks import delete_previous_registration_file
 
     user = session.user if session else None
     old_data = snapshot_registration_data(registration)
@@ -866,8 +864,8 @@ def get_event_regforms_registrations(event, user, include_scheduled=True, only_i
 
 
 def generate_ticket(registration):
-    from indico.modules.events.registration.badges import RegistrantsListToBadgesPDF, RegistrantsListToBadgesPDFFoldable
-    from indico.modules.events.registration.controllers.management.tickets import DEFAULT_TICKET_PRINTING_SETTINGS
+    from indico.modules.registration.badges import RegistrantsListToBadgesPDF, RegistrantsListToBadgesPDFFoldable
+    from indico.modules.registration.controllers.management.tickets import DEFAULT_TICKET_PRINTING_SETTINGS
     template = registration.registration_form.get_ticket_template()
     registrations = [registration]
     signals.event.designer.print_badge_template.send(template, regform=registration.registration_form,

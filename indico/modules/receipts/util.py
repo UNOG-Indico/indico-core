@@ -36,11 +36,11 @@ from indico.modules.attachments.models.attachments import Attachment, Attachment
 from indico.modules.attachments.util import get_attached_items
 from indico.modules.categories.models.categories import Category
 from indico.modules.events.models.events import Event
-from indico.modules.events.registration.models.forms import RegistrationForm
-from indico.modules.events.registration.models.registrations import Registration
 from indico.modules.receipts.models.files import ReceiptFile
 from indico.modules.receipts.models.templates import ReceiptTemplate
 from indico.modules.receipts.settings import receipts_settings
+from indico.modules.registration.models.forms import RegistrationForm
+from indico.modules.registration.models.registrations import Registration
 from indico.util.date_time import format_currency, format_date, format_datetime, format_interval, format_time, now_utc
 from indico.util.i18n import _
 from indico.util.iterables import materialize_iterable

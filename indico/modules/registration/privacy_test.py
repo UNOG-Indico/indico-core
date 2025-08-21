@@ -11,11 +11,11 @@ import pytest
 from pytz import utc
 
 from indico.modules.events.features.util import set_feature_enabled
-from indico.modules.events.registration.models.registrations import (PublishRegistrationsMode, Registration,
-                                                                     RegistrationState, RegistrationVisibility)
+from indico.modules.registration.models.registrations import (PublishRegistrationsMode, Registration, RegistrationState,
+                                                              RegistrationVisibility)
 
 
-pytest_plugins = 'indico.modules.events.registration.testing.fixtures'
+pytest_plugins = 'indico.modules.registration.testing.fixtures'
 
 
 def assert_visibility(reg, visibility, test_visibility_prop=True):

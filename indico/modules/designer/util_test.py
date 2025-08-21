@@ -10,7 +10,7 @@ from indico.modules.designer.util import can_link_to_regform, get_printable_even
 
 
 pytest_plugins = ('indico.modules.designer.testing.fixtures',
-                  'indico.modules.events.registration.testing.fixtures')
+                  'indico.modules.registration.testing.fixtures')
 
 
 def test_get_printable_event_templates(dummy_category, dummy_event, create_regform, create_dummy_designer_template):

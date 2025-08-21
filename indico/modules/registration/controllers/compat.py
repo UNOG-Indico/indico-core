@@ -7,7 +7,7 @@
 
 from flask import current_app, redirect, request
 
-from indico.modules.events.registration.models.legacy_mapping import LegacyRegistrationMapping
+from indico.modules.registration.models.legacy_mapping import LegacyRegistrationMapping
 from indico.web.flask.util import url_for
 from indico.web.rh import RHSimple
 

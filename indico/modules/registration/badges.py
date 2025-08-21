@@ -16,7 +16,7 @@ from werkzeug.exceptions import BadRequest
 from indico.core import signals
 from indico.modules.designer.pdf import DesignerPDFBase
 from indico.modules.designer.util import is_regform_field_placeholder
-from indico.modules.events.registration.settings import DEFAULT_BADGE_SETTINGS
+from indico.modules.registration.settings import DEFAULT_BADGE_SETTINGS
 from indico.util.i18n import _
 from indico.util.placeholders import get_placeholders
 from indico.util.signals import values_from_signal
@@ -33,7 +33,7 @@ def _get_font_size(text):
 class RegistrantsListToBadgesPDF(DesignerPDFBase):
     def __init__(self, template, config, event, registrations, include_accompanying_persons):
         super().__init__(template, config)
-        from indico.modules.events.registration.util import get_persons
+        from indico.modules.registration.util import get_persons
         self.persons = get_persons(registrations, include_accompanying_persons)
 
     def _build_config(self, config_data):

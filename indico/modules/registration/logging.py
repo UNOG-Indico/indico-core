@@ -9,8 +9,8 @@ from flask import session
 
 from indico.core import signals
 from indico.modules.events import EventLogRealm
-from indico.modules.events.registration.models.registrations import RegistrationState
 from indico.modules.logs import LogKind
+from indico.modules.registration.models.registrations import RegistrationState
 from indico.util.i18n import orig_string
 
 

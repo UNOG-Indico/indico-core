@@ -9,10 +9,10 @@ import pytest
 
 from indico.modules.events.cloning import EventCloner
 from indico.modules.events.features.util import set_feature_enabled
-from indico.modules.events.registration.models.tags import RegistrationTag
+from indico.modules.registration.models.tags import RegistrationTag
 
 
-pytest_plugins = 'indico.modules.events.registration.testing.fixtures'
+pytest_plugins = 'indico.modules.registration.testing.fixtures'
 
 
 @pytest.mark.parametrize('has_tags', (False, True))

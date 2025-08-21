@@ -10,22 +10,22 @@ from flask import request, session
 from marshmallow import fields
 from werkzeug.exceptions import Forbidden, UnprocessableEntity
 
-from indico.modules.events.registration.controllers.display import (RHRegistrationDisplayEdit, RHRegistrationForm,
-                                                                    RHRegistrationWithdraw)
-from indico.modules.events.registration.controllers.management.fields import _fill_form_field_with_data
-from indico.modules.events.registration.models.form_fields import RegistrationFormField
-from indico.modules.events.registration.models.forms import ModificationMode
-from indico.modules.events.registration.models.invitations import RegistrationInvitation
-from indico.modules.events.registration.models.items import RegistrationFormSection
-from indico.modules.events.registration.models.registrations import RegistrationState
-from indico.modules.events.registration.util import create_registration
+from indico.modules.registration.controllers.display import (RHRegistrationDisplayEdit, RHRegistrationForm,
+                                                             RHRegistrationWithdraw)
+from indico.modules.registration.controllers.management.fields import _fill_form_field_with_data
+from indico.modules.registration.models.form_fields import RegistrationFormField
+from indico.modules.registration.models.forms import ModificationMode
+from indico.modules.registration.models.invitations import RegistrationInvitation
+from indico.modules.registration.models.items import RegistrationFormSection
+from indico.modules.registration.models.registrations import RegistrationState
+from indico.modules.registration.util import create_registration
 from indico.testing.util import extract_emails
 from indico.util.date_time import now_utc
 from indico.util.marshmallow import UUIDString
 from indico.util.string import snakify_keys
 
 
-pytest_plugins = 'indico.modules.events.registration.testing.fixtures'
+pytest_plugins = 'indico.modules.registration.testing.fixtures'
 
 
 @pytest.mark.usefixtures('request_context')
@@ -217,8 +217,8 @@ condition_field_params = pytest.mark.parametrize(
 @condition_field_params
 def test_display_register_conditional(db, dummy_regform, dummy_user, app_context, mocker, monkeypatch,
                                       input_type, input_data, false_values, true_value, condition):
-    mocker.patch('indico.modules.events.registration.util.notify_registration_creation')
-    mocker.patch('indico.modules.events.registration.util.notify_registration_modification')
+    mocker.patch('indico.modules.registration.util.notify_registration_creation')
+    mocker.patch('indico.modules.registration.util.notify_registration_modification')
     monkeypatch.setattr(UUIDString, '_deserialize', fields.String._deserialize)  # for accommodation field
     monkeypatch.setattr(fields.UUID, '_deserialize', fields.String._deserialize)  # for choice fields
 
@@ -328,8 +328,8 @@ def test_display_register_conditional(db, dummy_regform, dummy_user, app_context
 @condition_field_params
 def test_display_modify_conditional(db, dummy_regform, dummy_user, app_context, mocker, monkeypatch,
                                     input_type, input_data, false_values, true_value, condition):
-    mocker.patch('indico.modules.events.registration.util.notify_registration_creation')
-    mocker.patch('indico.modules.events.registration.util.notify_registration_modification')
+    mocker.patch('indico.modules.registration.util.notify_registration_creation')
+    mocker.patch('indico.modules.registration.util.notify_registration_modification')
     monkeypatch.setattr(UUIDString, '_deserialize', fields.String._deserialize)  # for accommodation field
     monkeypatch.setattr(fields.UUID, '_deserialize', fields.String._deserialize)  # for choice fields
 

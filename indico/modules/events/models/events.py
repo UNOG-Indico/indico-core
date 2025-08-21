@@ -539,13 +539,13 @@ class Event(SearchableTitleMixin, DescriptionMixin, LocationMixin, ProtectionMan
 
     @memoize_request
     def get_published_registrations(self, user):
-        from indico.modules.events.registration.util import get_published_registrations
+        from indico.modules.registration.util import get_published_registrations
         is_participant = self.is_user_registered(user)
         return get_published_registrations(self, is_participant)
 
     @memoize_request
     def count_hidden_registrations(self, user):
-        from indico.modules.events.registration.util import count_hidden_registrations
+        from indico.modules.registration.util import count_hidden_registrations
         is_participant = self.is_user_registered(user)
         return count_hidden_registrations(self, is_participant)
 
@@ -1102,8 +1102,8 @@ class Event(SearchableTitleMixin, DescriptionMixin, LocationMixin, ProtectionMan
 
         This takes both unpaid and complete registrations into account.
         """
-        from indico.modules.events.registration.models.forms import RegistrationForm
-        from indico.modules.events.registration.models.registrations import Registration, RegistrationState
+        from indico.modules.registration.models.forms import RegistrationForm
+        from indico.modules.registration.models.registrations import Registration, RegistrationState
         if user is None:
             return False
         return (Registration.query.with_parent(self)

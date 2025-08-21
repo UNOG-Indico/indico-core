@@ -11,14 +11,14 @@ from marshmallow import fields
 
 from indico.core.db import db
 from indico.modules.events import EventLogRealm
-from indico.modules.events.registration.controllers.display import RHRegistrationFormRegistrationBase
-from indico.modules.events.registration.controllers.management import RHManageRegFormBase
-from indico.modules.events.registration.forms import RegistrationPrivacyForm
-from indico.modules.events.registration.models.registrations import RegistrationVisibility
-from indico.modules.events.registration.util import update_registration_consent_to_publish
-from indico.modules.events.registration.views import WPManageRegistration
 from indico.modules.logs.models.entries import LogKind
 from indico.modules.logs.util import make_diff_log
+from indico.modules.registration.controllers.display import RHRegistrationFormRegistrationBase
+from indico.modules.registration.controllers.management import RHManageRegFormBase
+from indico.modules.registration.forms import RegistrationPrivacyForm
+from indico.modules.registration.models.registrations import RegistrationVisibility
+from indico.modules.registration.util import update_registration_consent_to_publish
+from indico.modules.registration.views import WPManageRegistration
 from indico.util.i18n import _
 from indico.web.args import use_kwargs
 from indico.web.flask.util import url_for

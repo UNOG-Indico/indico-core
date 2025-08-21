@@ -6,7 +6,7 @@
 # LICENSE file for more details.
 
 pytest_plugins = ('indico.modules.designer.testing.fixtures',
-                  'indico.modules.events.registration.testing.fixtures')
+                  'indico.modules.registration.testing.fixtures')
 
 
 def test_template_is_unlinkable(dummy_designer_template):

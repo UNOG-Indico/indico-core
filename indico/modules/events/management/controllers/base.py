@@ -14,8 +14,8 @@ from indico.modules.events.contributions.models.persons import (AuthorType, Cont
                                                                 SubContributionPersonLink)
 from indico.modules.events.contributions.models.subcontributions import SubContribution
 from indico.modules.events.controllers.base import RHEventBase
-from indico.modules.events.registration.util import get_registered_event_persons
 from indico.modules.events.util import check_event_locked
+from indico.modules.registration.util import get_registered_event_persons
 from indico.util.i18n import _
 
 

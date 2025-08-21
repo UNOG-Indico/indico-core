@@ -16,9 +16,9 @@ from indico.modules.events import Event
 from indico.modules.events.features.base import EventFeature
 from indico.modules.events.layout.util import MenuEntryData
 from indico.modules.events.models.events import EventType
-from indico.modules.events.registration.logging import connect_log_signals
-from indico.modules.events.registration.settings import RegistrationSettingsProxy
-from indico.modules.events.registration.wallets.google import GoogleWalletManager
+from indico.modules.registration.logging import connect_log_signals
+from indico.modules.registration.settings import RegistrationSettingsProxy
+from indico.modules.registration.wallets.google import GoogleWalletManager
 from indico.util.i18n import _, ngettext
 from indico.util.signals import values_from_signal
 from indico.web.flask.templating import template_hook
@@ -43,14 +43,14 @@ registration_settings = RegistrationSettingsProxy('registrations', {
 
 @signals.core.import_tasks.connect
 def _import_tasks(sender, **kwargs):
-    import indico.modules.events.registration.tasks  # noqa: F401
+    import indico.modules.registration.tasks  # noqa: F401
 
 
 @signals.users.merged.connect
 def _merge_users(target, source, **kwargs):
     # registrations are unique per user, so we can only update the user
     # if no registration for the merge target exists yet
-    from indico.modules.events.registration.models.registrations import Registration
+    from indico.modules.registration.models.registrations import Registration
     Registration.merge_users(target, source)
 
 
@@ -69,7 +69,7 @@ def _extend_event_management_menu(sender, event, **kwargs):
 
 @template_hook('conference-home-info')
 def _inject_regform_announcement(event, **kwargs):
-    from indico.modules.events.registration.util import get_event_regforms, get_registrations_with_tickets
+    from indico.modules.registration.util import get_event_regforms, get_registrations_with_tickets
     if event.has_feature('registration'):
         all_regforms = get_event_regforms(event, session.user)
         user_registrations = sum(regform[1] for regform in all_regforms)
@@ -84,7 +84,7 @@ def _inject_regform_announcement(event, **kwargs):
 
 @template_hook('event-header')
 def _inject_event_header(event, **kwargs):
-    from indico.modules.events.registration.util import get_event_regforms_registrations
+    from indico.modules.registration.util import get_event_regforms_registrations
     if event.has_feature('registration'):
         displayed_regforms, user_registrations = get_event_regforms_registrations(event, session.user,
                                                                                   include_scheduled=False)
@@ -102,8 +102,8 @@ def _inject_event_header(event, **kwargs):
 
 @signals.event.sidemenu.connect
 def _extend_event_menu(sender, **kwargs):
-    from indico.modules.events.registration.models.forms import RegistrationForm
-    from indico.modules.events.registration.models.registrations import Registration
+    from indico.modules.registration.models.forms import RegistrationForm
+    from indico.modules.registration.models.registrations import Registration
 
     def _visible_registration(event):
         if not event.has_feature('registration'):
@@ -138,7 +138,7 @@ def _extend_event_menu(sender, **kwargs):
 @signals.users.registered.connect
 @signals.users.email_added.connect
 def _associate_registrations(user, silent=False, **kwargs):
-    from indico.modules.events.registration.models.registrations import Registration
+    from indico.modules.registration.models.registrations import Registration
     reg_alias = db.aliased(Registration)
     subquery = db.session.query(reg_alias).filter(reg_alias.user_id == user.id,
                                                   reg_alias.registration_form_id == Registration.registration_form_id,
@@ -174,9 +174,8 @@ def _get_event_management_url(event, **kwargs):
 
 @signals.core.get_placeholders.connect_via('registration-invitation-email')
 def _get_invitation_placeholders(sender, invitation, **kwargs):
-    from indico.modules.events.registration.placeholders.invitations import (FirstNamePlaceholder,
-                                                                             InvitationLinkPlaceholder,
-                                                                             LastNamePlaceholder)
+    from indico.modules.registration.placeholders.invitations import (FirstNamePlaceholder, InvitationLinkPlaceholder,
+                                                                      LastNamePlaceholder)
     yield FirstNamePlaceholder
     yield LastNamePlaceholder
     yield InvitationLinkPlaceholder
@@ -184,12 +183,11 @@ def _get_invitation_placeholders(sender, invitation, **kwargs):
 
 @signals.core.get_placeholders.connect_via('registration-email')
 def _get_registration_placeholders(sender, regform, registration, **kwargs):
-    from indico.modules.events.registration.placeholders.registrations import (EventLinkPlaceholder,
-                                                                               EventTitlePlaceholder, FieldPlaceholder,
-                                                                               FirstNamePlaceholder, IDPlaceholder,
-                                                                               LastNamePlaceholder, LinkPlaceholder,
-                                                                               PicturePlaceholder,
-                                                                               RejectionReasonPlaceholder)
+    from indico.modules.registration.placeholders.registrations import (EventLinkPlaceholder, EventTitlePlaceholder,
+                                                                        FieldPlaceholder, FirstNamePlaceholder,
+                                                                        IDPlaceholder, LastNamePlaceholder,
+                                                                        LinkPlaceholder, PicturePlaceholder,
+                                                                        RejectionReasonPlaceholder)
     yield FirstNamePlaceholder
     yield LastNamePlaceholder
     yield PicturePlaceholder
@@ -204,7 +202,7 @@ def _get_registration_placeholders(sender, regform, registration, **kwargs):
 @signals.core.get_placeholders.connect_via('registration-invitation-reminder-email')
 def _get_placeholders(sender, invitation=None, event=None, **kwargs):
     from indico.modules.events import placeholders as event_placeholders
-    from indico.modules.events.registration.placeholders import invitations as invitation_placeholders
+    from indico.modules.registration.placeholders import invitations as invitation_placeholders
 
     yield invitation_placeholders.InvitationLinkPlaceholder
     yield invitation_placeholders.FirstNamePlaceholder
@@ -226,7 +224,7 @@ def _get_management_permissions(sender, **kwargs):
 
 @signals.event_management.get_cloners.connect
 def _get_registration_cloners(sender, **kwargs):
-    from indico.modules.events.registration import clone
+    from indico.modules.registration import clone
     yield clone.RegistrationTagCloner
     yield clone.RegistrationFormCloner
     yield clone.RegistrationCloner

@@ -12,8 +12,8 @@ from markupsafe import Markup
 from marshmallow import fields, validate
 
 from indico.core.marshmallow import mm
-from indico.modules.events.registration.custom import RegistrationListColumn
-from indico.modules.events.registration.models.registrations import RegistrationData
+from indico.modules.registration.custom import RegistrationListColumn
+from indico.modules.registration.models.registrations import RegistrationData
 from indico.util.i18n import _
 from indico.util.marshmallow import not_empty
 
@@ -170,7 +170,7 @@ class RegistrationFormFieldBase:
 
         # Managers should be able to register without all required fields, but the personal data
         # fields are mandatory either way.
-        from indico.modules.events.registration.models.form_fields import RegistrationFormPersonalDataField
+        from indico.modules.registration.models.form_fields import RegistrationFormPersonalDataField
         required_personal_field = (
             isinstance(self.form_item, RegistrationFormPersonalDataField) and
             self.form_item.personal_data_type.is_required

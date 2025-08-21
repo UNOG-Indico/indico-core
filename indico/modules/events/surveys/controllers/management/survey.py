@@ -12,13 +12,13 @@ from webargs.flaskparser import abort
 
 from indico.core.db import db
 from indico.core.notifications import make_email, send_email
-from indico.modules.events.registration.models.registrations import Registration
 from indico.modules.events.surveys import logger
 from indico.modules.events.surveys.controllers.management import RHManageSurveyBase, RHManageSurveysBase
 from indico.modules.events.surveys.forms import ScheduleSurveyForm, SurveyForm
 from indico.modules.events.surveys.models.items import SurveySection
 from indico.modules.events.surveys.models.surveys import Survey, SurveyState
 from indico.modules.events.surveys.views import WPManageSurvey
+from indico.modules.registration.models.registrations import Registration
 from indico.util.i18n import _
 from indico.util.marshmallow import LowercaseString, make_validate_indico_placeholders, no_relative_urls, not_empty
 from indico.util.placeholders import get_sorted_placeholders, replace_placeholders

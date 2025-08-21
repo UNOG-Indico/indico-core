@@ -6,7 +6,7 @@
 # LICENSE file for more details.
 
 from indico.core import signals
-from indico.modules.events.registration.fields.base import RegistrationFormFieldBase
+from indico.modules.registration.fields.base import RegistrationFormFieldBase
 from indico.web.fields import get_field_definitions
 
 

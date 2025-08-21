@@ -106,7 +106,7 @@ class AppleWalletManager:
         return ticket
 
     def build_pass_object(self, registration):
-        from indico.modules.events.registration.util import get_persons, get_ticket_qr_code_data
+        from indico.modules.registration.util import get_persons, get_ticket_qr_code_data
 
         # Extract Certificate details from certificate.pem itself
         self.cert = x509.load_pem_x509_certificate(self.settings['apple_wallet_certificate'].encode())

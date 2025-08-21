@@ -12,7 +12,7 @@ from marshmallow import ValidationError, fields, post_load, pre_load, validate
 
 from indico.core import signals
 from indico.core.marshmallow import mm
-from indico.modules.events.registration.fields.base import RegistrationFormBillableField
+from indico.modules.registration.fields.base import RegistrationFormBillableField
 from indico.modules.users.models.users import PersonMixin
 from indico.util.i18n import _
 from indico.util.marshmallow import not_empty

@@ -13,7 +13,7 @@ from indico.modules.events.features.util import set_feature_enabled
 from indico.web.flask.templating import get_template_module
 
 
-pytest_plugins = 'indico.modules.events.registration.testing.fixtures'
+pytest_plugins = 'indico.modules.registration.testing.fixtures'
 
 
 @pytest.mark.usefixtures('request_context')

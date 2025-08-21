@@ -40,10 +40,10 @@ from indico.modules.events.contributions import Contribution
 from indico.modules.events.contributions.models.principals import ContributionPrincipal
 from indico.modules.events.models.persons import EventPerson
 from indico.modules.events.models.principals import EventPrincipal
-from indico.modules.events.registration.models.registrations import Registration
 from indico.modules.events.sessions import Session
 from indico.modules.events.sessions.models.principals import SessionPrincipal
 from indico.modules.logs.models.entries import LogKind
+from indico.modules.registration.models.registrations import Registration
 from indico.modules.users import User
 from indico.modules.users.models.affiliations import Affiliation
 from indico.modules.users.util import get_user_by_email

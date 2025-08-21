@@ -14,7 +14,7 @@ from indico.modules.events.features.util import set_feature_enabled
 from indico.testing.util import remove_dynamic_data
 
 
-pytest_plugins = 'indico.modules.events.registration.testing.fixtures'
+pytest_plugins = 'indico.modules.registration.testing.fixtures'
 
 
 @pytest.fixture(autouse=True)

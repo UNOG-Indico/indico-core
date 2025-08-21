@@ -15,7 +15,7 @@ from wtforms.fields import (BooleanField, Field, HiddenField, PasswordField, Rad
 from wtforms.widgets import CheckboxInput
 
 from indico.modules.events.management.settings import global_event_settings
-from indico.modules.events.registration.models.registrations import PublishRegistrationsMode
+from indico.modules.registration.models.registrations import PublishRegistrationsMode
 from indico.util.i18n import _
 from indico.util.string import sanitize_email, validate_email
 from indico.web.forms.fields.util import is_preprocessed_formdata

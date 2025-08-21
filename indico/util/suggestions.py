@@ -13,8 +13,8 @@ from sqlalchemy.orm import joinedload, load_only
 from indico.modules.events import Event
 from indico.modules.events.abstracts.util import get_events_with_abstract_persons
 from indico.modules.events.contributions.util import get_events_with_linked_contributions
-from indico.modules.events.registration.util import get_events_registered
 from indico.modules.events.surveys.util import get_events_with_submitted_surveys
+from indico.modules.registration.util import get_events_registered
 from indico.util.date_time import now_utc, utc_to_server
 from indico.util.iterables import window
 

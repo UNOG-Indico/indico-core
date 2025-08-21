@@ -11,8 +11,8 @@ from werkzeug.exceptions import BadRequest, Forbidden
 
 from indico.core import signals
 from indico.modules.events import Event
-from indico.modules.events.registration.models.registrations import RegistrationState
-from indico.modules.events.registration.util import build_registration_api_data, build_registrations_api_data
+from indico.modules.registration.models.registrations import RegistrationState
+from indico.modules.registration.util import build_registration_api_data, build_registrations_api_data
 from indico.web.rh import RH, oauth_scope
 
 
