@@ -18,7 +18,7 @@ from indico.modules.registration.controllers.management import RHManageRegFormBa
 from indico.modules.registration.forms import ImportInvitationsForm, InvitationFormExisting, InvitationFormNew
 from indico.modules.registration.models.invitations import InvitationState, RegistrationInvitation
 from indico.modules.registration.util import create_invitation, import_invitations_from_csv
-from indico.modules.registration.views import WPManageRegistration
+from indico.modules.registration.views import WPEventManageRegistration
 from indico.util.i18n import ngettext
 from indico.util.marshmallow import LowercaseString, no_relative_urls, not_empty
 from indico.util.placeholders import get_sorted_placeholders, replace_placeholders
@@ -66,7 +66,7 @@ class RHRegistrationFormInvitations(RHManageRegFormBase):
 
     def _process(self):
         invitations = _query_invitation_list(self.regform)
-        return WPManageRegistration.render_template('management/regform_invitations.html', self.event,
+        return WPEventManageRegistration.render_template('management/regform_invitations.html', self.event,
                                                     regform=self.regform, invitations=invitations,
                                                     has_pending_invitations=_has_pending_invitations(invitations))
 

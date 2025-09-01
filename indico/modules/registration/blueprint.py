@@ -34,22 +34,20 @@ _bp = IndicoBlueprint('event_registration', __name__, template_folder='templates
 
 # Endpoints available in both category and event management areas
 for object_type in ('event', 'category'):
-    if object_type == 'category':
-        prefix = '/category/<int:category_id>'
-    else:
-        prefix = '/event/<int:event_id>'
-    prefix += '/manage/receipts'
+    prefix = '/category/<int:category_id>' if object_type == 'category' else '/event/<int:event_id>'
     defaults = {'object_type': object_type}
-    # Clone existing template
-    # _bp.add_url_rule(f'{prefix}/manage/registration/', 'manage_regform_list',
-    #                  _dispatch(regforms.RHManageEventRegistrationForms, regforms.RHManageCategoryRegistrationForms),
-    #                  defaults=defaults)
+
+    _bp.add_url_rule(f'{prefix}/manage/registration/', 'manage_regform_list',
+                     _dispatch(regforms.RHManageEventRegistrationForms, regforms.RHManageCategoryRegistrationForms),
+                     defaults=defaults)
+    _bp.add_url_rule(f'{prefix}/manage/registration/create', 'create_regform',
+                     _dispatch(regforms.RHEventRegistrationFormCreate, regforms.RHCategoryRegistrationFormCreate),
+                     defaults=defaults, methods=('GET', 'POST'))
+    _bp.add_url_rule(f'{prefix}/manage/registration/<int:reg_form_id>/', 'manage_regform',
+                     _dispatch(regforms.RHRegistrationFormManage, regforms.RHRegistrationFormManage))
 
 event_url_prefix = '/event/<int:event_id>'
 # Management
-_bp.add_url_rule(f'{event_url_prefix}/manage/registration/', 'manage_regform_list', regforms.RHManageRegistrationForms)
-_bp.add_url_rule(f'{event_url_prefix}/manage/registration/create', 'create_regform', regforms.RHRegistrationFormCreate,
-                 methods=('GET', 'POST'))
 _bp.add_url_rule(f'{event_url_prefix}/manage/registration/display', 'manage_regforms_display',
                  regforms.RHManageRegistrationFormsDisplay, methods=('GET', 'POST'))
 _bp.add_url_rule(f'{event_url_prefix}/manage/registration/managers', 'manage_registration_managers',
@@ -58,8 +56,6 @@ _bp.add_url_rule(f'{event_url_prefix}/manage/registration/participant-list-previ
                  regforms.RHParticipantListPreview)
 
 # Single registration form management
-_bp.add_url_rule(f'{event_url_prefix}/manage/registration/<int:reg_form_id>/', 'manage_regform',
-                 regforms.RHRegistrationFormManage)
 _bp.add_url_rule(f'{event_url_prefix}/manage/registration/<int:reg_form_id>/edit', 'edit_regform',
                  regforms.RHRegistrationFormEdit, methods=('GET', 'POST'))
 _bp.add_url_rule(f'{event_url_prefix}/manage/registration/<int:reg_form_id>/notification-preview',

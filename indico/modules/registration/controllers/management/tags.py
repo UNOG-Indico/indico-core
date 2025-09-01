@@ -9,11 +9,11 @@ from flask import flash, redirect, request, session
 
 from indico.core.db import db
 from indico.modules.registration import logger
-from indico.modules.registration.controllers.management import RHManageRegFormsBase
+from indico.modules.registration.controllers.management import RHEventManageRegFormsBase
 from indico.modules.registration.controllers.management.reglists import RHRegistrationsActionBase
 from indico.modules.registration.forms import RegistrationTagForm, RegistrationTagsAssignForm
 from indico.modules.registration.models.tags import RegistrationTag
-from indico.modules.registration.views import WPManageRegistration
+from indico.modules.registration.views import WPEventManageRegistration
 from indico.util.i18n import _
 from indico.util.marshmallow import ModelList
 from indico.web.args import use_rh_kwargs
@@ -21,24 +21,24 @@ from indico.web.flask.util import url_for
 from indico.web.util import jsonify_data, jsonify_form
 
 
-class RHManageRegistrationTagBase(RHManageRegFormsBase):
+class RHManageRegistrationTagBase(RHEventManageRegFormsBase):
     """Base class for a specific registration tag."""
 
     def _process_args(self):
-        RHManageRegFormsBase._process_args(self)
+        RHEventManageRegFormsBase._process_args(self)
         self.tag = RegistrationTag.query.with_parent(self.event).filter(
             RegistrationTag.id == request.view_args['tag_id']
         ).first_or_404()
 
 
-class RHManageRegistrationTags(RHManageRegFormsBase):
+class RHManageRegistrationTags(RHEventManageRegFormsBase):
     """List all registration tags for an event."""
 
     def _process(self):
-        return WPManageRegistration.render_template('management/registration_tags.html', self.event)
+        return WPEventManageRegistration.render_template('management/registration_tags.html', self.event)
 
 
-class RHRegistrationTagAdd(RHManageRegFormsBase):
+class RHRegistrationTagAdd(RHEventManageRegFormsBase):
     """Add a new registration tag."""
 
     def _process(self):

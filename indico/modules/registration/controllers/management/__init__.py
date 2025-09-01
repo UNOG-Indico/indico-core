@@ -8,6 +8,7 @@
 from flask import request
 from sqlalchemy.orm import contains_eager, defaultload
 
+from indico.modules.categories.controllers.base import RHManageCategoryBase
 from indico.modules.events.management.controllers import RHManageEventBase
 from indico.modules.registration.controllers import RegistrationFormMixin
 from indico.modules.registration.lists import RegistrationListGenerator
@@ -16,17 +17,21 @@ from indico.modules.registration.models.forms import RegistrationForm
 from indico.modules.registration.models.registrations import Registration
 
 
-class RHManageRegFormsBase(RHManageEventBase):
-    """Base class for all registration management RHs."""
+class RHEventManageRegFormsBase(RHManageEventBase):
+    """Base class for all event registration management RHs."""
 
     PERMISSION = 'registration'
 
 
-class RHManageRegFormBase(RegistrationFormMixin, RHManageRegFormsBase):
+class RHCategoryManageRegformsBase(RHManageCategoryBase):
+    """Base class for all category registration form management RHs."""
+
+
+class RHManageRegFormBase(RegistrationFormMixin, RHEventManageRegFormsBase):
     """Base class for a specific registration form."""
 
     def _process_args(self):
-        RHManageRegFormsBase._process_args(self)
+        RHEventManageRegFormsBase._process_args(self)
         RegistrationFormMixin._process_args(self)
         self.list_generator = RegistrationListGenerator(regform=self.regform)
 

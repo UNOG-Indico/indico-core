@@ -5,14 +5,15 @@
 # modify it under the terms of the MIT License; see the
 # LICENSE file for more details.
 
+from indico.modules.categories.views import WPCategoryManagement
 from indico.modules.events.management.views import WPEventManagement
 from indico.modules.events.models.events import EventType
 from indico.modules.events.views import WPConferenceDisplayBase, WPSimpleEventDisplayBase
 from indico.web.views import WPJinjaMixin
 
 
-class WPManageRegistration(WPEventManagement):
-    template_prefix = 'events/registration/'
+class WPEventManageRegistration(WPEventManagement):
+    template_prefix = 'registration/'
     bundles = ('module_events.registration.js', 'module_events.registration.css', 'module_receipts.js',
                'module_receipts.css')
 
@@ -27,17 +28,27 @@ class WPManageRegistration(WPEventManagement):
             regform = self.regform
             if not regform:
                 if self.registration:
-                    regform = self.registration.registration_form
+                    regform = self.registration.registration_forms
             if regform and regform.is_participation:
                 return 'participants'
         return 'registration'
 
 
-class WPManageRegistrationStats(WPManageRegistration):
+class WPCategoryManageRegistration(WPCategoryManagement):
+    template_prefix = 'registration/'
+    bundles = ('module_events.registration.js', 'module_events.registration.css', 'module_receipts.js',
+               'module_receipts.css')
+
+    def __init__(self, rh, category, active_menu_item=None, **kwargs):
+        self.regform = kwargs.get('regform')
+        WPCategoryManagement.__init__(self, rh, category, active_menu_item, **kwargs)
+
+
+class WPManageRegistrationStats(WPEventManageRegistration):
     bundles = ('statistics.js', 'statistics.css')
 
 
-class WPManageParticipants(WPManageRegistration):
+class WPManageParticipants(WPEventManageRegistration):
     sidemenu_option = 'participants'
 
 

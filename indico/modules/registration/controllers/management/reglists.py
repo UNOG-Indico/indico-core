@@ -42,7 +42,7 @@ from indico.modules.registration.badges import (RegistrantsListToBadgesPDF, Regi
                                                 RegistrantsListToBadgesPDFFoldable)
 from indico.modules.registration.controllers import (CheckEmailMixin, RegistrationEditMixin,
                                                      UploadRegistrationFileMixin, UploadRegistrationPictureMixin)
-from indico.modules.registration.controllers.management import (RHManageRegFormBase, RHManageRegFormsBase,
+from indico.modules.registration.controllers.management import (RHManageRegFormBase, RHEventManageRegFormsBase,
                                                                 RHManageRegistrationBase,
                                                                 RHManageRegistrationFieldActionBase)
 from indico.modules.registration.forms import (BadgeSettingsForm, CreateMultipleRegistrationsForm, EmailRegistrantsForm,
@@ -59,7 +59,7 @@ from indico.modules.registration.util import (ActionMenuEntry, create_registrati
                                               get_initial_form_values, get_ticket_attachments, get_title_uuid,
                                               get_user_data, import_registrations_from_csv, load_registration_schema,
                                               make_registration_schema)
-from indico.modules.registration.views import WPManageRegistration
+from indico.modules.registration.views import WPEventManageRegistration
 from indico.util.date_time import format_currency, now_utc, relativedelta
 from indico.util.fs import secure_filename
 from indico.util.i18n import _, ngettext
@@ -175,7 +175,7 @@ class RHRegistrationsListManage(RHManageRegFormBase):
             reverse=True
         )
 
-        return WPManageRegistration.render_template('management/regform_reglist.html', self.event,
+        return WPEventManageRegistration.render_template('management/regform_reglist.html', self.event,
                                                     action_menu_items=action_menu_items, **reg_list_kwargs)
 
 
@@ -213,12 +213,12 @@ class RHRegistrationDetails(RHManageRegistrationBase):
 
     def _process(self):
         registration_details_html = _render_registration_details(self.registration)
-        return WPManageRegistration.render_template('management/registration_details.html', self.event,
+        return WPEventManageRegistration.render_template('management/registration_details.html', self.event,
                                                     registration=self.registration,
                                                     registration_details_html=registration_details_html)
 
 
-class RHRegistrationDownloadAttachment(RHManageRegFormsBase):
+class RHRegistrationDownloadAttachment(RHEventManageRegFormsBase):
     """Download a file attached to a registration."""
 
     normalize_url_spec = {
@@ -228,7 +228,7 @@ class RHRegistrationDownloadAttachment(RHManageRegFormsBase):
     }
 
     def _process_args(self):
-        RHManageRegFormsBase._process_args(self)
+        RHEventManageRegFormsBase._process_args(self)
         self.field_data = (RegistrationData.query
                            .filter(RegistrationData.registration_id == request.view_args['registration_id'],
                                    RegistrationData.field_data_id == request.view_args['field_data_id'],
@@ -243,7 +243,7 @@ class RHRegistrationDownloadAttachment(RHManageRegFormsBase):
 class RHRegistrationEdit(RegistrationEditMixin, RHManageRegistrationBase):
     """Edit the submitted information of a registration."""
 
-    view_class = WPManageRegistration
+    view_class = WPEventManageRegistration
     template_file = 'management/registration_modify.html'
     management = True
 
@@ -389,7 +389,7 @@ class RHRegistrationCreate(RHManageRegFormBase):
         user_data = self._get_user_data()
         initial_values = get_initial_form_values(self.regform, management=True) | user_data
         form_data = get_flat_section_submission_data(self.regform, management=True)
-        return WPManageRegistration.render_template('display/regform_display.html', self.event,
+        return WPEventManageRegistration.render_template('display/regform_display.html', self.event,
                                                     regform=self.regform,
                                                     form_data=form_data,
                                                     initial_values=initial_values,

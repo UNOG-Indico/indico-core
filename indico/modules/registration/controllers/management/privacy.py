@@ -18,7 +18,7 @@ from indico.modules.registration.controllers.management import RHManageRegFormBa
 from indico.modules.registration.forms import RegistrationPrivacyForm
 from indico.modules.registration.models.registrations import RegistrationVisibility
 from indico.modules.registration.util import update_registration_consent_to_publish
-from indico.modules.registration.views import WPManageRegistration
+from indico.modules.registration.views import WPEventManageRegistration
 from indico.util.i18n import _
 from indico.web.args import use_kwargs
 from indico.web.flask.util import url_for
@@ -57,7 +57,7 @@ class RHRegistrationPrivacy(RHManageRegFormBase):
             flash(_('Settings saved'), 'success')
             return redirect(url_for('.manage_registration_privacy_settings', self.regform))
 
-        return WPManageRegistration.render_template('management/regform_privacy.html', self.event,
+        return WPEventManageRegistration.render_template('management/regform_privacy.html', self.event,
                                                     regform=self.regform, form=form)
 
 
