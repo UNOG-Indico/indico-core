@@ -1,4 +1,4 @@
-{% extends 'events/registration/management/regform_actions/open.html' %}
+{% extends 'registration/management/regform_actions/open.html' %}
 
 {% block label %}
     {% trans -%}
@@ -16,7 +16,7 @@
 {% block now_button %}
     <div class="group">
         <button data-href="{{ url_for('.open_regform', regform) }}"
-                data-method="POST" 
+                data-method="POST"
                 class="i-button"
                 data-confirm="{% trans %}Registrations finished already. Do you want to open them again?{% endtrans %}">
             {% trans %}Reopen now{% endtrans %}
