@@ -1,4 +1,4 @@
-{% extends 'events/registration/management/regform_actions/_base.html' %}
+{% extends 'registration/management/regform_actions/_base.html' %}
 
 {% block label %}
     {% trans -%}
@@ -30,8 +30,8 @@
         </button>
     </div>
     <div class="group">
-        <button data-href="{{ url_for('.open_regform', regform) }}" 
-                data-method="POST" 
+        <button data-href="{{ url_for('.open_regform', regform) }}"
+                data-method="POST"
                 class="i-button highlight">
             {% trans %}Start now{% endtrans %}
         </button>
