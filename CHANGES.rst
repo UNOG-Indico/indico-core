@@ -12,6 +12,19 @@ Improvements
 
 - Add a CAPTCHA and rate limiting to the material package endpoint, and an event
   setting to restrict who can generate one (defaults to managers only) (:pr:`6996`)
+- Add support for custom event reminders with freely chosen subject and body, and
+  allow rich-text for the custom message in standard reminders (:pr:`6989`, thanks
+  :user:`tomako, unconventionaldotdev`)
+- Allow specifying a maximum session lifetime via :data:`SESSION_MAX_LIFETIME`
+  beyond which it cannot be refreshed by activity (:pr:`7030`)
+- Make displaying corresponding author email addresses in the Book of Abstracts
+  opt-in (:pr:`7002`, thanks :user:`adamjenkins`)
+- Allow selecting which invitees to remind on the invitations list (:issue:`6804`,
+  :pr:`6918`, thanks :user:`duartegalvao, unconventionaldotdev`)
+- Add option in the invitation form to lock registrations to the specified email address
+  (:issue:`6803`, :pr:`6972`, thanks :user:`duartegalvao, unconventionaldotdev`)
+- Add plugin support for scanning custom QR codes in the Check-in app (:pr:`6954`,
+  thanks :user:`SegiNyn`)
 
 Bugfixes
 ^^^^^^^^
