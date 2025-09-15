@@ -28,24 +28,26 @@
                         <div class="label">{{ regform.title }}</div>
                     </div>
                     <div class="toolbar">
-                        <div class="group">
-                            {% set purged_title %}
-                                {% trans %}Registration is disabled due to an expired retention period{% endtrans %}
-                            {% endset %}
-                            <a href="{{ url_for('event_registration.manage_reglist', regform) }}"
-                               class="i-button icon-users {% if regform.is_purged %}disabled{% endif %}"
-                               {% if regform.is_purged %}title="{{ purged_title }}"{% endif %}>
-                                {%- trans %}Registrations{% endtrans -%}
-                                {% block existing_count scoped %}
-                                    <span class="badge">
-                                        {{- regform.active_registration_count -}}
-                                        {% if regform.registration_limit %}
-                                            / {{ regform.registration_limit }}
-                                        {%- endif -%}
-                                    </span>
-                                {% endblock %}
-                            </a>
-                        </div>
+                        {% if event is defined %}
+                            <div class="group">
+                                {% set purged_title %}
+                                    {% trans %}Registration is disabled due to an expired retention period{% endtrans %}
+                                {% endset %}
+                                <a href="{{ url_for('event_registration.manage_reglist', regform) }}"
+                                class="i-button icon-users {% if regform.is_purged %}disabled{% endif %}"
+                                {% if regform.is_purged %}title="{{ purged_title }}"{% endif %}>
+                                    {%- trans %}Registrations{% endtrans -%}
+                                    {% block existing_count scoped %}
+                                        <span class="badge">
+                                            {{- regform.active_registration_count -}}
+                                            {% if regform.registration_limit %}
+                                                / {{ regform.registration_limit }}
+                                            {%- endif -%}
+                                        </span>
+                                    {% endblock %}
+                                </a>
+                            </div>
+                        {% endif %}
                         <div class="group">
                             <a href="{{ url_for('event_registration.manage_regform', regform) }}" class="i-button highlight icon-settings">
                                 {% trans %}Manage{% endtrans %}

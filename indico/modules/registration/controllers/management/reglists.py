@@ -42,7 +42,7 @@ from indico.modules.registration.badges import (RegistrantsListToBadgesPDF, Regi
                                                 RegistrantsListToBadgesPDFFoldable)
 from indico.modules.registration.controllers import (CheckEmailMixin, RegistrationEditMixin,
                                                      UploadRegistrationFileMixin, UploadRegistrationPictureMixin)
-from indico.modules.registration.controllers.management import (RHManageRegFormBase, RHEventManageRegFormsBase,
+from indico.modules.registration.controllers.management import (RHEventManageRegFormBase, RHEventManageRegFormsBase,
                                                                 RHManageRegistrationBase,
                                                                 RHManageRegistrationFieldActionBase)
 from indico.modules.registration.forms import (BadgeSettingsForm, CreateMultipleRegistrationsForm, EmailRegistrantsForm,
@@ -81,7 +81,7 @@ def _render_registration_details(registration):
     from indico.modules.registration.schemas import RegistrationTagSchema
 
     event = registration.registration_form.event
-    tpl = get_template_module('events/registration/management/_registration_details.html')
+    tpl = get_template_module('registration/management/_registration_details.html')
 
     schema = RegistrationTagSchema(many=True)
     assigned_tags = schema.dump(registration.tags)
@@ -91,7 +91,7 @@ def _render_registration_details(registration):
                                            assigned_tags=assigned_tags, all_tags=all_tags)
 
 
-class RHRegistrationsListManage(RHManageRegFormBase):
+class RHRegistrationsListManage(RHEventManageRegFormBase):
     """List all registrations of a specific registration form of an event."""
 
     def _process(self):
@@ -179,14 +179,14 @@ class RHRegistrationsListManage(RHManageRegFormBase):
                                                     action_menu_items=action_menu_items, **reg_list_kwargs)
 
 
-class RHRegistrationsListCustomize(RHManageRegFormBase):
+class RHRegistrationsListCustomize(RHEventManageRegFormBase):
     """Filter options and columns to display for a registrations list of an event."""
 
     ALLOW_LOCKED = True
 
     def _process_GET(self):
         reg_list_config = self.list_generator._get_config()
-        return jsonify_template('events/registration/management/reglist_filter.html',
+        return jsonify_template('registration/management/reglist_filter.html',
                                 regform=self.regform,
                                 RegistrationFormItemType=RegistrationFormItemType,
                                 visible_items=reg_list_config['items'],
@@ -199,7 +199,7 @@ class RHRegistrationsListCustomize(RHManageRegFormBase):
         return jsonify_data(**self.list_generator.render_list())
 
 
-class RHRegistrationListStaticURL(RHManageRegFormBase):
+class RHRegistrationListStaticURL(RHEventManageRegFormBase):
     """Generate a static URL for the configuration of the registrations list."""
 
     ALLOW_LOCKED = True
@@ -258,7 +258,7 @@ class RHRegistrationEdit(RegistrationEditMixin, RHManageRegistrationBase):
         return url_for('event_registration.registration_details', self.registration)
 
 
-class RHRegistrationsActionBase(RHManageRegFormBase):
+class RHRegistrationsActionBase(RHEventManageRegFormBase):
     """Base class for classes performing actions on registrations."""
 
     registration_query_options = ()
@@ -267,7 +267,7 @@ class RHRegistrationsActionBase(RHManageRegFormBase):
         'registration_ids': fields.List(fields.Integer(), data_key='registration_id', load_default=lambda: []),
     })
     def _process_args(self, registration_ids):
-        RHManageRegFormBase._process_args(self)
+        RHEventManageRegFormBase._process_args(self)
         self.registrations = (Registration.query.with_parent(self.regform)
                               .filter(Registration.id.in_(registration_ids),
                                       ~Registration.is_deleted)
@@ -290,7 +290,7 @@ class RHRegistrationEmailRegistrantsPreview(RHRegistrationsActionBase):
         with self.regform.event.force_event_locale():
             tpl = get_template_module('events/registration/emails/custom_email.html', email_subject=email_subject,
                                       email_body=email_body)
-            html = render_template('events/registration/management/email_preview.html', subject=tpl.get_subject(),
+            html = render_template('registration/management/email_preview.html', subject=tpl.get_subject(),
                                    body=tpl.get_body())
         return jsonify(html=html)
 
@@ -343,7 +343,7 @@ class RHRegistrationEmailRegistrants(RHRegistrationsActionBase):
 
         template_is_ticket = self.regform.get_ticket_template().is_ticket
         registrations_without_ticket = [r for r in self.registrations if template_is_ticket and r.is_ticket_blocked]
-        return jsonify_template('events/registration/management/email.html', form=form, regform=self.regform,
+        return jsonify_template('registration/management/email.html', form=form, regform=self.regform,
                                 all_registrations_count=len(self.registrations),
                                 registrations_without_ticket_count=len(registrations_without_ticket))
 
@@ -365,7 +365,7 @@ class RHRegistrationDelete(RHRegistrationsActionBase):
         return jsonify_data()
 
 
-class RHRegistrationCreate(RHManageRegFormBase):
+class RHRegistrationCreate(RHEventManageRegFormBase):
     """Create new registration (management area)."""
 
     @use_kwargs({
@@ -401,7 +401,7 @@ class RHRegistrationCreate(RHManageRegFormBase):
                                                     captcha_required=False)
 
 
-class RHRegistrationCreateMultiple(RHManageRegFormBase):
+class RHRegistrationCreateMultiple(RHEventManageRegFormBase):
     """Create multiple registrations for Indico users (management area)."""
 
     def _register_user(self, user, notify):
@@ -423,14 +423,14 @@ class RHRegistrationCreateMultiple(RHManageRegFormBase):
                 self._register_user(user, form.notify_users.data)
             return jsonify_data(**self.list_generator.render_list())
 
-        return jsonify_template('events/registration/management/registration_create_multiple.html', form=form)
+        return jsonify_template('registration/management/registration_create_multiple.html', form=form)
 
 
-class RHRegistrationCheckEmail(CheckEmailMixin, RHManageRegFormBase):
+class RHRegistrationCheckEmail(CheckEmailMixin, RHEventManageRegFormBase):
     """Check how an email will affect the registration."""
 
     def _process_args(self):
-        RHManageRegFormBase._process_args(self)
+        RHEventManageRegFormBase._process_args(self)
         CheckEmailMixin._process_args(self)
 
     def _process(self):
@@ -511,7 +511,7 @@ class RHRegistrationsImport(RHRegistrationsActionBase):
                            len(registrations)).format(len(registrations)), 'success')
             return jsonify_data(flash=False, redirect=url_for('.manage_reglist', self.regform),
                                 redirect_no_loading=True)
-        return jsonify_template('events/registration/management/import_registrations.html', form=form,
+        return jsonify_template('registration/management/import_registrations.html', form=form,
                                 regform=self.regform)
 
 
@@ -570,7 +570,7 @@ class RHRegistrationsConfigBadges(RHRegistrationsActionBase):
     TICKET_BADGES = False
 
     def _process_args(self):
-        RHManageRegFormBase._process_args(self)
+        RHEventManageRegFormBase._process_args(self)
         ids = set(request.form.getlist('registration_id'))
         self.registrations = (Registration.query.with_parent(self.regform)
                               .filter(Registration.id.in_(ids),
@@ -628,7 +628,7 @@ class RHRegistrationsConfigBadges(RHRegistrationsActionBase):
             badge_cache.set(key, data, timeout=1800)
             download_url = url_for('.registrations_print_badges', self.regform, template_id=template_id, uuid=key)
             return jsonify_data(flash=False, redirect=download_url, redirect_no_loading=True)
-        return jsonify_template('events/registration/management/print_badges.html', event=self.event,
+        return jsonify_template('registration/management/print_badges.html', event=self.event,
                                 regform=self.regform, settings_form=form, templates=badge_templates,
                                 registrations=registrations, all_registrations=all_registrations)
 
@@ -1064,7 +1064,7 @@ class RHManageReceiptBase(RHManageRegistrationBase):
                              .first_or_404())
 
     def _render_receipts_list(self):
-        tpl_summary = get_template_module('events/registration/display/_registration_summary_blocks.html')
+        tpl_summary = get_template_module('registration/display/_registration_summary_blocks.html')
         return tpl_summary.render_receipts_list(self.registration, from_management=True)
 
 

@@ -44,7 +44,24 @@ for object_type in ('event', 'category'):
                      _dispatch(regforms.RHEventRegistrationFormCreate, regforms.RHCategoryRegistrationFormCreate),
                      defaults=defaults, methods=('GET', 'POST'))
     _bp.add_url_rule(f'{prefix}/manage/registration/<int:reg_form_id>/', 'manage_regform',
-                     _dispatch(regforms.RHRegistrationFormManage, regforms.RHRegistrationFormManage))
+                     _dispatch(regforms.RHEventRegistrationFormManage, regforms.RHCategoryRegistrationFormManage),
+                     defaults=defaults)
+    # Single registration form management
+    _bp.add_url_rule(f'{prefix}/manage/registration/<int:reg_form_id>/edit', 'edit_regform',
+                     _dispatch(regforms.RHEventRegistrationFormEdit, regforms.RHCategoryRegistrationFormEdit),
+                     methods=('GET', 'POST'), defaults=defaults)
+    _bp.add_url_rule(f'{prefix}/manage/registration/<int:reg_form_id>/delete', 'delete_regform',
+                     _dispatch(regforms.RHEventRegistrationFormDelete, regforms.RHCategoryRegistrationFormDelete),
+                     methods=('POST',), defaults=defaults)
+    _bp.add_url_rule(f'{prefix}/manage/registration/<int:reg_form_id>/form/', 'modify_regform',
+                     _dispatch(regforms.RHEventRegistrationFormModify, regforms.RHCategoryRegistrationFormModify),
+                     defaults=defaults)
+
+    # Privacy
+    _bp.add_url_rule(f'{prefix}/manage/registration/<int:reg_form_id>/privacy/settings',
+                     'manage_registration_privacy_settings',
+                     _dispatch(privacy.RHEventRegistrationPrivacy, privacy.RHCategoryRegistrationPrivacy),
+                     methods=('GET', 'POST'), defaults=defaults)
 
 event_url_prefix = '/event/<int:event_id>'
 # Management
@@ -56,20 +73,14 @@ _bp.add_url_rule(f'{event_url_prefix}/manage/registration/participant-list-previ
                  regforms.RHParticipantListPreview)
 
 # Single registration form management
-_bp.add_url_rule(f'{event_url_prefix}/manage/registration/<int:reg_form_id>/edit', 'edit_regform',
-                 regforms.RHRegistrationFormEdit, methods=('GET', 'POST'))
 _bp.add_url_rule(f'{event_url_prefix}/manage/registration/<int:reg_form_id>/notification-preview',
                  'notification_preview', regforms.RHRegistrationFormNotificationPreview, methods=('POST',))
-_bp.add_url_rule(f'{event_url_prefix}/manage/registration/<int:reg_form_id>/delete', 'delete_regform',
-                 regforms.RHRegistrationFormDelete, methods=('POST',))
 _bp.add_url_rule(f'{event_url_prefix}/manage/registration/<int:reg_form_id>/open', 'open_regform',
                  regforms.RHRegistrationFormOpen, methods=('POST',))
 _bp.add_url_rule(f'{event_url_prefix}/manage/registration/<int:reg_form_id>/close', 'close_regform',
                  regforms.RHRegistrationFormClose, methods=('POST',))
 _bp.add_url_rule(f'{event_url_prefix}/manage/registration/<int:reg_form_id>/schedule', 'schedule_regform',
                  regforms.RHRegistrationFormSchedule, methods=('GET', 'POST'))
-_bp.add_url_rule(f'{event_url_prefix}/manage/registration/<int:reg_form_id>/form/', 'modify_regform',
-                 regforms.RHRegistrationFormModify)
 _bp.add_url_rule(f'{event_url_prefix}/manage/registration/<int:reg_form_id>/stats/', 'regform_stats',
                  regforms.RHRegistrationFormStats)
 _bp.add_url_rule(f'{event_url_prefix}/manage/registration/<int:reg_form_id>/display', 'manage_regform_display',
@@ -310,10 +321,6 @@ _bp_participation = IndicoBlueprint('event_participation', __name__, url_prefix=
                                     template_folder='templates', virtual_template_folder='registration')
 _bp_participation.add_url_rule('/manage/participants/', 'manage', regforms.RHManageParticipants,
                                methods=('GET', 'POST'))
-
-# Privacy
-_bp.add_url_rule(f'{event_url_prefix}/manage/registration/<int:reg_form_id>/privacy/settings',
-                 'manage_registration_privacy_settings', privacy.RHRegistrationPrivacy, methods=('GET', 'POST'))
 
 # Legacy URLs
 _compat_bp = IndicoBlueprint('compat_event_registration', __name__, url_prefix='/event/<int:event_id>')

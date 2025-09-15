@@ -53,7 +53,7 @@ class WPManageParticipants(WPEventManageRegistration):
 
 
 class DisplayRegistrationFormMixin(WPJinjaMixin):
-    template_prefix = 'events/registration/'
+    template_prefix = 'registration/'
     base_class = None
 
     def _get_body(self, params):
@@ -61,7 +61,7 @@ class DisplayRegistrationFormMixin(WPJinjaMixin):
 
 
 class WPDisplayRegistrationFormConference(DisplayRegistrationFormMixin, WPConferenceDisplayBase):
-    template_prefix = 'events/registration/'
+    template_prefix = 'registration/'
     base_class = WPConferenceDisplayBase
     menu_entry_name = 'registration'
     bundles = ('module_events.registration.js', 'module_events.registration.css')
@@ -72,6 +72,6 @@ class WPDisplayRegistrationParticipantList(WPDisplayRegistrationFormConference):
 
 
 class WPDisplayRegistrationFormSimpleEvent(DisplayRegistrationFormMixin, WPSimpleEventDisplayBase):
-    template_prefix = 'events/registration/'
+    template_prefix = 'registration/'
     base_class = WPSimpleEventDisplayBase
     bundles = ('module_events.registration.js', 'module_events.registration.css')

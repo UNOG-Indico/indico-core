@@ -287,7 +287,7 @@ class RegistrationListGenerator(ListGeneratorBase):
 
     def render_list(self):
         reg_list_kwargs = self.get_list_kwargs()
-        tpl = get_template_module('events/registration/management/_reglist.html')
+        tpl = get_template_module('registration/management/_reglist.html')
         filtering_enabled = reg_list_kwargs.pop('filtering_enabled')
         return {
             'html': tpl.render_registration_list(**reg_list_kwargs),

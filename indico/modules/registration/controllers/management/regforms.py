@@ -25,10 +25,11 @@ from indico.modules.events.models.events import Event, EventType
 from indico.modules.events.payment import payment_settings
 from indico.modules.events.settings import data_retention_settings
 from indico.modules.events.util import update_object_principals
-from indico.modules.logs.models.entries import EventLogRealm, LogKind
+from indico.modules.logs.models.entries import CategoryLogRealm, EventLogRealm, LogKind
 from indico.modules.registration import logger, registration_settings
 from indico.modules.registration.controllers.display import ParticipantListMixin
-from indico.modules.registration.controllers.management import RHCategoryManageRegformsBase, RHManageRegFormBase, RHEventManageRegFormsBase
+from indico.modules.registration.controllers.management import (RHCategoryManageRegFormBase, RHCategoryManageRegformsBase,
+                                                                RHEventManageRegFormsBase, RHEventManageRegFormBase)
 from indico.modules.registration.forms import (ParticipantsDisplayForm, ParticipantsDisplayFormColumnsForm,
                                                RegistrationFormCreateForm, RegistrationFormEditForm,
                                                RegistrationFormScheduleForm, RegistrationManagersForm)
@@ -111,16 +112,18 @@ class RHRegistrationFormCreateMixin(RHManageRegistrationFormsAreaMixin):
             db.session.flush()
             signals.event.registration_form_created.send(regform)
             flash(_('Registration form has been successfully created'), 'success')
-            regform.log(EventLogRealm.management, LogKind.positive, 'Registration',
+            regform.log(EventLogRealm.management if self.object_type == 'event' else CategoryLogRealm.management,
+                        LogKind.positive, 'Registration',
                         f'Registration form "{regform.title}" has been created', session.user,
                         data=_get_regform_creation_log_data(regform))
             return redirect(url_for('.manage_regform', regform))
         if self.object_type == 'event':
             return WPEventManageRegistration.render_template('management/regform_create.html', self.event,
-                                                             form=form, regform=None)
+                                                             form=form, target=self.target, regform=None)
         else:
             return WPCategoryManageRegistration.render_template('management/regform_create.html', self.category,
-                                                                'registration', form=form, regform=None)
+                                                                'registration', form=form, target=self.target,
+                                                                regform=None)
 
 
 class RHManageEventRegistrationForms(RHManageRegistrationFormsMixin, RHEventManageRegFormsBase):
@@ -151,6 +154,21 @@ class RHParticipantListPreview(ParticipantListMixin, RHEventManageRegFormsBase):
 
     def is_participant(self, user):
         return self.preview == 'participant'
+
+
+class RHEventRegistrationFormManage(RHManageRegistrationFormsAreaMixin, RHEventManageRegFormBase):
+    """Specific event registration form management."""
+
+    def _process(self):
+        return WPEventManageRegistration.render_template('management/regform.html', self.event, regform=self.regform)
+
+
+class RHCategoryRegistrationFormManage(RHManageRegistrationFormsAreaMixin, RHCategoryManageRegFormBase):
+    """Specific category registration form management."""
+
+    def _process(self):
+        return WPCategoryManageRegistration.render_template('management/regform.html', self.category,
+                                                            regform=self.regform)
 
 
 class RHManageRegistrationFormsDisplay(RHEventManageRegFormsBase):
@@ -200,7 +218,7 @@ class RHManageRegistrationFormsDisplay(RHEventManageRegFormsBase):
                                                     merge_forms=merge_forms, form=form)
 
 
-class RHManageRegistrationFormDisplay(RHManageRegFormBase):
+class RHManageRegistrationFormDisplay(RHEventManageRegFormBase):
     """
     Choose the columns to be shown on the participant list for
     a particular form.
@@ -224,7 +242,7 @@ class RHManageRegistrationFormDisplay(RHManageRegFormBase):
             del active_fields[field_id]
 
         disabled_fields = list(active_fields.values())
-        return jsonify_template('events/registration/management/regform_display_form_columns.html', form=form,
+        return jsonify_template('registration/management/regform_display_form_columns.html', form=form,
                                 enabled_columns=enabled_fields, disabled_columns=disabled_fields)
 
 
@@ -280,63 +298,33 @@ class RHManageParticipants(RHEventManageRegFormsBase):
         return redirect(url_for('event_registration.manage_regform', regform))
 
 
-class RHRegistrationFormCreate(RHEventManageRegFormsBase):
-    """Create a new registration form."""
-
-    def _get_form_defaults(self):
-        participant_visibility = (PublishRegistrationsMode.hide_all
-                                  if self.event.type_ == EventType.conference
-                                  else PublishRegistrationsMode.show_all)
-        public_visibility = PublishRegistrationsMode.hide_all
-        return FormDefaults(visibility=[participant_visibility.name, public_visibility.name, None])
-
-    def _process(self):
-        form = RegistrationFormCreateForm(obj=self._get_form_defaults(), event=self.event)
-        if form.validate_on_submit():
-            regform = RegistrationForm(event=self.event, currency=payment_settings.get('currency'))
-            create_personal_data_fields(regform)
-            form.populate_obj(regform, skip=['visibility'])
-            participant_visibility, public_visibility, visibility_duration = form.visibility.data
-            regform.publish_registrations_participants = PublishRegistrationsMode[participant_visibility]
-            regform.publish_registrations_public = PublishRegistrationsMode[public_visibility]
-            regform.publish_registrations_duration = (timedelta(weeks=visibility_duration)
-                                                      if visibility_duration is not None else None)
-            db.session.add(regform)
-            db.session.flush()
-            signals.event.registration_form_created.send(regform)
-            flash(_('Registration form has been successfully created'), 'success')
-            regform.log(EventLogRealm.management, LogKind.positive, 'Registration',
-                        f'Registration form "{regform.title}" has been created', session.user,
-                        data=_get_regform_creation_log_data(regform))
-            return redirect(url_for('.manage_regform', regform))
-        return WPEventManageRegistration.render_template('management/regform_create.html', self.event,
-                                                    form=form, regform=None)
-
-
-class RHRegistrationFormManage(RHManageRegFormBase):
-    """Specific registration form management."""
-
-    def _process(self):
-        return WPEventManageRegistration.render_template('management/regform.html', self.event, regform=self.regform)
-
-
-class RHRegistrationFormEdit(RHManageRegFormBase):
-    """Edit a registration form."""
+class RHRegistrationFormEditMixin(RHManageRegistrationFormsAreaMixin):
+    """Mixin to edit a registration form."""
 
     def _get_form_defaults(self):
         return FormDefaults(self.regform, limit_registrations=self.regform.registration_limit is not None)
 
     def _process(self):
-        form = RegistrationFormEditForm(obj=self._get_form_defaults(), event=self.event, regform=self.regform)
+        form = RegistrationFormEditForm(obj=self._get_form_defaults(), target=self.target, regform=self.regform)
         if form.validate_on_submit():
             update_registration_form_settings(self.regform, form.data, skip={'limit_registrations'})
             flash(_('Registration form has been successfully modified'), 'success')
             return redirect(url_for('.manage_regform', self.regform))
-        return WPEventManageRegistration.render_template('management/regform_edit.html', self.event, form=form,
-                                                    regform=self.regform)
+        view_class = (WPCategoryManageRegistration if self.object_type == 'category'
+                      else WPEventManageRegistration)
+        return view_class.render_template('management/regform_edit.html', self.target, form=form,
+                                          regform=self.regform)
 
 
-class RHRegistrationFormNotificationPreview(RHManageRegFormBase):
+class RHEventRegistrationFormEdit(RHRegistrationFormEditMixin, RHEventManageRegFormBase):
+    """Edit a registration form in an event."""
+
+
+class RHCategoryRegistrationFormEdit(RHRegistrationFormEditMixin, RHCategoryManageRegFormBase):
+    """Edit a registration form in a categoory."""
+
+
+class RHRegistrationFormNotificationPreview(RHEventManageRegFormBase):
     """Preview registration emails."""
 
     @use_kwargs({
@@ -374,13 +362,13 @@ class RHRegistrationFormNotificationPreview(RHManageRegFormBase):
         tpl = get_template_module('events/registration/emails/registration_creation_to_registrant.html',
                                   registration=mock_registration, event=self.event, attach_rejection_reason=True,
                                   old_price=None, diff=None)
-        html = render_template('events/registration/management/email_preview.html', subject=tpl.get_subject(),
+        html = render_template('registration/management/email_preview.html', subject=tpl.get_subject(),
                                body=tpl.get_body())
         return jsonify(html=html)
 
 
-class RHRegistrationFormDelete(RHManageRegFormBase):
-    """Delete a registration form."""
+class RHRegistrationFormDeleteMixin(RHManageRegistrationFormsAreaMixin):
+    """Mixin to delete a registration form."""
 
     def _process(self):
         rels = ('in_attachment_acls', 'in_attachment_folder_acls', 'in_contribution_acls', 'in_event_acls',
@@ -391,12 +379,21 @@ class RHRegistrationFormDelete(RHManageRegFormBase):
         signals.event.registration_form_deleted.send(self.regform)
         flash(_('Registration form deleted'), 'success')
         logger.info('Registration form %s deleted by %s', self.regform, session.user)
-        self.regform.log(EventLogRealm.management, LogKind.negative, 'Registration',
+        self.regform.log(EventLogRealm.management if self.object_type == 'event' else CategoryLogRealm.management,
+                         LogKind.negative, 'Registration',
                          f'Registration form "{self.regform.title}" was deleted', session.user)
-        return redirect(url_for('.manage_regform_list', self.event))
+        return redirect(url_for('.manage_regform_list', self.target))
 
 
-class RHRegistrationFormOpen(RHManageRegFormBase):
+class RHEventRegistrationFormDelete(RHRegistrationFormDeleteMixin, RHEventManageRegFormBase):
+    """Delete a registration form in an event."""
+
+
+class RHCategoryRegistrationFormDelete(RHRegistrationFormDeleteMixin, RHCategoryManageRegFormBase):
+    """Delete a registration form in a category."""
+
+
+class RHRegistrationFormOpen(RHEventManageRegFormBase):
     """Open registration for a registration form."""
 
     def _process(self):
@@ -417,7 +414,7 @@ class RHRegistrationFormOpen(RHManageRegFormBase):
         return redirect(url_for('.manage_regform', self.regform))
 
 
-class RHRegistrationFormClose(RHManageRegFormBase):
+class RHRegistrationFormClose(RHEventManageRegFormBase):
     """Close registrations for a registration form."""
 
     def _process(self):
@@ -429,7 +426,7 @@ class RHRegistrationFormClose(RHManageRegFormBase):
         return redirect(url_for('.manage_regform', self.regform))
 
 
-class RHRegistrationFormSchedule(RHManageRegFormBase):
+class RHRegistrationFormSchedule(RHEventManageRegFormBase):
     """Schedule registrations for a registration form."""
 
     def _process(self):
@@ -452,23 +449,33 @@ class RHRegistrationFormSchedule(RHManageRegFormBase):
         return jsonify_form(form, submit=_('Schedule'))
 
 
-class RHRegistrationFormModify(RHManageRegFormBase):
-    """Modify the form of a registration form."""
+class RHRegistrationFormModifyMixin(RHManageRegistrationFormsAreaMixin):
+    """Mixin to modify the form of a registration form."""
 
     def _process(self):
         min_data_retention = data_retention_settings.get('minimum_data_retention')
         max_data_retention = data_retention_settings.get('maximum_data_retention') or timedelta(days=3650)
         regform_retention_weeks = self.regform.retention_period.days // 7 if self.regform.retention_period else None
-        return WPEventManageRegistration.render_template('management/regform_modify.html', self.event,
-                                                    form_data=get_flat_section_setup_data(self.regform),
-                                                    regform=self.regform,
-                                                    data_retention_range={'min': min_data_retention.days // 7,
-                                                                          'max': max_data_retention.days // 7,
-                                                                          'regform': regform_retention_weeks},
-                                                    has_predefined_affiliations=Affiliation.query.has_rows())
+        view_class = (WPCategoryManageRegistration if self.object_type == 'category'
+                      else WPEventManageRegistration)
+        return view_class.render_template('management/regform_modify.html', self.target,
+                                          form_data=get_flat_section_setup_data(self.regform),
+                                          regform=self.regform,
+                                          data_retention_range={'min': min_data_retention.days // 7,
+                                                                'max': max_data_retention.days // 7,
+                                                                'regform': regform_retention_weeks},
+                                          has_predefined_affiliations=Affiliation.query.has_rows())
 
 
-class RHRegistrationFormStats(RHManageRegFormBase):
+class RHEventRegistrationFormModify(RHRegistrationFormModifyMixin, RHEventManageRegFormBase):
+    """Modify the form of a registration form for an event."""
+
+
+class RHCategoryRegistrationFormModify(RHRegistrationFormModifyMixin, RHCategoryManageRegFormBase):
+    """Modify the form of a registration form for a category."""
+
+
+class RHRegistrationFormStats(RHEventManageRegFormBase):
     """Display registration form stats page."""
 
     def _process(self):

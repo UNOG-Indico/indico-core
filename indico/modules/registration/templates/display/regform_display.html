@@ -7,8 +7,8 @@
 {% endif %}
 
 {% from 'events/registration/_template_hooks.html' import regform_attrs_template_hook %}
-{% from 'events/registration/display/_regform_invitation_info.html' import render_invitation_info %}
-{% from 'events/registration/display/_regform_info.html' import render_regform_info %}
+{% from 'registration/display/_regform_invitation_info.html' import render_invitation_info %}
+{% from 'registration/display/_regform_info.html' import render_regform_info %}
 {% from 'message_box.html' import message_box %}
 
 
@@ -54,7 +54,7 @@
     {% endif %}
 
     {% if registration %}
-        {% include 'events/registration/display/registration_summary.html' %}
+        {% include 'registration/display/registration_summary.html' %}
     {% elif not management and not regform.is_active and not invitation %}
         {% if regform.limit_reached %}
             {% call message_box('error', fixed_width=true, large_icon=true) %}

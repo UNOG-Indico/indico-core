@@ -14,14 +14,14 @@ from indico.core.errors import NoReportError
 from indico.modules.logs.models.entries import EventLogRealm, LogKind
 from indico.modules.logs.util import make_diff_log
 from indico.modules.registration import logger
-from indico.modules.registration.controllers.management import RHManageRegFormBase
+from indico.modules.registration.controllers.management import RHEventManageRegFormBase
 from indico.modules.registration.models.items import RegistrationFormItemType, RegistrationFormSection
 from indico.modules.registration.util import get_flat_section_positions_setup_data, update_regform_item_positions
 from indico.util.i18n import _
 from indico.web.util import jsonify_data
 
 
-class RHManageRegFormSectionBase(RHManageRegFormBase):
+class RHManageRegFormSectionBase(RHEventManageRegFormBase):
     """Base class for a specific registration form section."""
 
     normalize_url_spec = {
@@ -31,11 +31,11 @@ class RHManageRegFormSectionBase(RHManageRegFormBase):
     }
 
     def _process_args(self):
-        RHManageRegFormBase._process_args(self)
+        RHEventManageRegFormBase._process_args(self)
         self.section = RegistrationFormSection.get_or_404(request.view_args['section_id'])
 
 
-class RHRegistrationFormAddSection(RHManageRegFormBase):
+class RHRegistrationFormAddSection(RHEventManageRegFormBase):
     """Add a section to the registration form."""
 
     def _process(self):

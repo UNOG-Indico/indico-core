@@ -20,6 +20,7 @@ from wtforms.widgets import NumberInput, html_params
 from indico.core import signals
 from indico.core.config import config
 from indico.core.db import db
+from indico.modules.events import Event
 from indico.modules.designer import PageLayout, PageOrientation, PageSize, TemplateType
 from indico.modules.designer.util import get_inherited_templates
 from indico.modules.events.features.util import is_feature_enabled
@@ -130,7 +131,8 @@ class RegistrationFormEditForm(IndicoForm):
     )
 
     def __init__(self, *args, **kwargs):
-        self.event = kwargs.pop('event')
+        target = kwargs.pop('target')
+        self.event = target if isinstance(target, Event) else None
         self.regform = kwargs.pop('regform', None)
         super().__init__(*args, **kwargs)
         self._set_currencies()

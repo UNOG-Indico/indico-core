@@ -27,8 +27,8 @@ class RHCategoryManageRegformsBase(RHManageCategoryBase):
     """Base class for all category registration form management RHs."""
 
 
-class RHManageRegFormBase(RegistrationFormMixin, RHEventManageRegFormsBase):
-    """Base class for a specific registration form."""
+class RHEventManageRegFormBase(RegistrationFormMixin, RHEventManageRegFormsBase):
+    """Base class for a specific registration form in an event."""
 
     def _process_args(self):
         RHEventManageRegFormsBase._process_args(self)
@@ -36,7 +36,16 @@ class RHManageRegFormBase(RegistrationFormMixin, RHEventManageRegFormsBase):
         self.list_generator = RegistrationListGenerator(regform=self.regform)
 
 
-class RHManageRegistrationBase(RHManageRegFormBase):
+class RHCategoryManageRegFormBase(RegistrationFormMixin, RHCategoryManageRegformsBase):
+    """Base class for a specific registration form in a category."""
+
+    def _process_args(self):
+        RHCategoryManageRegformsBase._process_args(self)
+        RegistrationFormMixin._process_args(self)
+        # self.list_generator = RegistrationListGenerator(regform=self.regform)
+
+
+class RHManageRegistrationBase(RHEventManageRegFormBase):
     """Base class for a specific registration."""
 
     normalize_url_spec = {
@@ -46,7 +55,7 @@ class RHManageRegistrationBase(RHManageRegFormBase):
     }
 
     def _process_args(self):
-        RHManageRegFormBase._process_args(self)
+        RHEventManageRegFormBase._process_args(self)
         self.registration = (Registration.query
                              .filter(Registration.id == request.view_args['registration_id'],
                                      ~Registration.is_deleted,
@@ -60,7 +69,7 @@ class RHManageRegistrationBase(RHManageRegFormBase):
                              .one())
 
 
-class RHManageRegistrationFieldActionBase(RHManageRegFormBase):
+class RHManageRegistrationFieldActionBase(RHEventManageRegFormBase):
     """Base class for a specific registration field."""
 
     normalize_url_spec = {
@@ -71,7 +80,7 @@ class RHManageRegistrationFieldActionBase(RHManageRegFormBase):
     }
 
     def _process_args(self):
-        RHManageRegFormBase._process_args(self)
+        RHEventManageRegFormBase._process_args(self)
         self.field = (RegistrationFormField.query
                       .filter(RegistrationFormField.id == request.view_args['field_id'],
                               RegistrationFormField.registration_form == self.regform,

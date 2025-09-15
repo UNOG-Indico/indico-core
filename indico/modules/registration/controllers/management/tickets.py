@@ -14,7 +14,7 @@ from indico.core.config import config
 from indico.core.db import db
 from indico.core.oauth.models.applications import OAuthApplication, SystemAppType
 from indico.modules.designer import PageOrientation, PageSize
-from indico.modules.registration.controllers.management import RHManageRegFormBase
+from indico.modules.registration.controllers.management import RHEventManageRegFormBase
 from indico.modules.registration.forms import TicketsForm
 from indico.web.flask.util import send_file
 from indico.web.util import jsonify_data, jsonify_template
@@ -34,7 +34,7 @@ DEFAULT_TICKET_PRINTING_SETTINGS = {
 }
 
 
-class RHRegistrationFormTickets(RHManageRegFormBase):
+class RHRegistrationFormTickets(RHEventManageRegFormBase):
     """Display and modify ticket settings."""
 
     def _process(self):
@@ -44,10 +44,10 @@ class RHRegistrationFormTickets(RHManageRegFormBase):
             db.session.flush()
             return jsonify_data(flash=False, tickets_enabled=self.regform.tickets_enabled)
 
-        return jsonify_template('events/registration/management/regform_tickets.html', regform=self.regform, form=form)
+        return jsonify_template('registration/management/regform_tickets.html', regform=self.regform, form=form)
 
 
-class RHTicketConfigQRCodeImage(RHManageRegFormBase):
+class RHTicketConfigQRCodeImage(RHEventManageRegFormBase):
     """Display configuration QRCode."""
 
     def _process(self):
@@ -85,6 +85,6 @@ class RHTicketConfigQRCodeImage(RHManageRegFormBase):
         return send_file('config.png', output, 'image/png')
 
 
-class RHTicketConfigQRCode(RHManageRegFormBase):
+class RHTicketConfigQRCode(RHEventManageRegFormBase):
     def _process(self):
-        return render_template('events/registration/management/regform_qr_code.html', regform=self.regform)
+        return render_template('registration/management/regform_qr_code.html', regform=self.regform)

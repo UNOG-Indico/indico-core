@@ -82,7 +82,7 @@ def _inject_regform_announcement(event, **kwargs):
         open_and_registered_regforms = [regform[0] for regform in all_regforms
                                         if (regform[0].is_open and not regform[0].private) or regform[1]]
         if open_and_registered_regforms:
-            return render_template('events/registration/display/conference_home.html',
+            return render_template('registration/display/conference_home.html',
                                    regforms=open_and_registered_regforms, event=event,
                                    user_registrations=user_registrations,
                                    registrations_with_tickets=get_registrations_with_tickets(session.user, event))
@@ -97,7 +97,7 @@ def _inject_event_header(event, **kwargs):
         # A participant could appear more than once in the list in case they register to multiple registration form.
         # This is deemed very unlikely in the case of meetings and lectures and thus not worth the extra complexity.
         return render_template(
-            'events/registration/display/event_header.html',
+            'registration/display/event_header.html',
             event=event,
             regforms=displayed_regforms,
             user_registrations=user_registrations,
