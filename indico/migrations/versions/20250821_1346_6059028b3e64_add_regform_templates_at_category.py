@@ -45,6 +45,8 @@ def upgrade():
         FOR EACH ROW
         EXECUTE FUNCTION disallow_registration_on_forms_linked_to_categories();
     ''')
+    op.drop_constraint('ck_logs_valid_enum_realm', 'logs', schema='categories')
+    op.create_check_constraint('valid_enum_realm', 'logs', '(realm = ANY (ARRAY[1, 2, 3]))', schema='categories')
 
 
 def downgrade():
@@ -54,3 +56,5 @@ def downgrade():
     op.drop_column('forms', 'category_id', schema='event_registration')
     op.drop_column('forms', 'cloned_from_id', schema='event_registration')
     op.alter_column('forms', 'event_id', existing_type=sa.Integer(), nullable=False, schema='event_registration')
+    op.drop_constraint('ck_logs_valid_enum_realm', 'logs', schema='categories')
+    op.create_check_constraint('valid_enum_realm', 'logs', '(realm = ANY (ARRAY[1, 2]))', schema='categories')

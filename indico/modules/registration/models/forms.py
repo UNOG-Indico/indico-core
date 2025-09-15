@@ -663,7 +663,7 @@ class RegistrationForm(db.Model):
 
     def log(self, *args, **kwargs):
         """Log with prefilled metadata for the regform."""
-        return self.event.log(*args, meta={'registration_form_id': self.id}, **kwargs)
+        return self.owner.log(*args, meta={'registration_form_id': self.id}, **kwargs)
 
 
 @listens_for(orm.mapper, 'after_configured', once=True)
