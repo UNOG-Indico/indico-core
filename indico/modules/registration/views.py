@@ -5,6 +5,7 @@
 # modify it under the terms of the MIT License; see the
 # LICENSE file for more details.
 
+from indico.web.flask.util import url_for
 from indico.modules.categories.views import WPCategoryManagement
 from indico.modules.events.management.views import WPEventManagement
 from indico.modules.events.models.events import EventType
@@ -38,10 +39,17 @@ class WPCategoryManageRegistration(WPCategoryManagement):
     template_prefix = 'registration/'
     bundles = ('module_events.registration.js', 'module_events.registration.css', 'module_receipts.js',
                'module_receipts.css')
-    # TODO there is something wrong with the breadcrumbs when in a page like this: http://127.0.0.1:9000/category/3/manage/registration/15/
+
     def __init__(self, rh, category, active_menu_item=None, **kwargs):
         self.regform = kwargs.get('regform')
         WPCategoryManagement.__init__(self, rh, category, active_menu_item, **kwargs)
+
+    def _get_parent_category_breadcrumb_url(self, category, management=False):
+        if not management:
+            return category.url
+        # we don't want template-specific urls since those may be tied
+        # to the previous category
+        return url_for('event_registration.manage_regform_list', category)
 
 
 class WPManageRegistrationStats(WPEventManageRegistration):
