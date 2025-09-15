@@ -56,7 +56,7 @@ def _notify_registration(registration, template_name, *, to_managers=False, atta
     sender_address = registration.registration_form.notification_sender_address if not to_managers else None
     with registration.event.force_event_locale(registration.user if not to_managers else None,
                                                allow_session=allow_session_locale):
-        tpl = get_template_module(f'events/registration/emails/{template_name}', registration=registration,
+        tpl = get_template_module(f'registration/emails/{template_name}', registration=registration,
                                   attach_rejection_reason=attach_rejection_reason, diff=diff, old_price=old_price,
                                   receipt=receipt)
         mail = make_email(to_list=to_list, template=tpl, html=True, sender_address=sender_address,

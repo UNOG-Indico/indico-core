@@ -76,7 +76,7 @@ class RHRegistrationFormInvite(RHEventManageRegFormBase):
 
     def _process(self):
         with self.event.force_event_locale():
-            tpl = get_template_module('events/registration/emails/invitation_default.html', event=self.event)
+            tpl = get_template_module('registration/emails/invitation_default.html', event=self.event)
             defaults = FormDefaults(email_body=tpl.get_html_body(), email_subject=tpl.get_subject())
         form_cls = InvitationFormExisting if request.args.get('existing') == '1' else InvitationFormNew
         form = form_cls(obj=defaults, regform=self.regform)
@@ -129,7 +129,7 @@ class RHRegistrationFormRemindersMetadata(RHEventManageRegFormBase):
 
     def _process(self):
         with self.event.force_event_locale():
-            tpl = get_template_module('events/registration/emails/registration_reminder_default.html', event=self.event)
+            tpl = get_template_module('registration/emails/registration_reminder_default.html', event=self.event)
             body = tpl.get_html_body()
             subject = tpl.get_subject()
         placeholders = get_sorted_placeholders('registration-invitation-reminder-email')
@@ -177,7 +177,7 @@ class RHRegistrationFormInviteImport(RHEventManageRegFormBase):
 
     def _process(self):
         with self.event.force_event_locale():
-            tpl = get_template_module('events/registration/emails/invitation_default.html', event=self.event)
+            tpl = get_template_module('registration/emails/invitation_default.html', event=self.event)
             defaults = FormDefaults(email_body=tpl.get_html_body(), email_subject=tpl.get_subject())
         form = ImportInvitationsForm(obj=defaults, regform=self.regform)
         if form.validate_on_submit():

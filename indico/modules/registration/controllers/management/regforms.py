@@ -359,7 +359,7 @@ class RHRegistrationFormNotificationPreview(RHEventManageRegFormBase):
             mock_registration.data.append(data_entry)
             for attr, field_value in form_item.field_impl.process_form_data(mock_registration, value).items():
                 setattr(data_entry, attr, field_value)
-        tpl = get_template_module('events/registration/emails/registration_creation_to_registrant.html',
+        tpl = get_template_module('registration/emails/registration_creation_to_registrant.html',
                                   registration=mock_registration, event=self.event, attach_rejection_reason=True,
                                   old_price=None, diff=None)
         html = render_template('registration/management/email_preview.html', subject=tpl.get_subject(),

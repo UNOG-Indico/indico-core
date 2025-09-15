@@ -288,7 +288,7 @@ class RHRegistrationEmailRegistrantsPreview(RHRegistrationsActionBase):
         email_subject = replace_placeholders('registration-email', request.form['subject'], regform=self.regform,
                                              registration=registration)
         with self.regform.event.force_event_locale():
-            tpl = get_template_module('events/registration/emails/custom_email.html', email_subject=email_subject,
+            tpl = get_template_module('registration/emails/custom_email.html', email_subject=email_subject,
                                       email_body=email_body)
             html = render_template('registration/management/email_preview.html', subject=tpl.get_subject(),
                                    body=tpl.get_body())
@@ -306,7 +306,7 @@ class RHRegistrationEmailRegistrants(RHRegistrationsActionBase):
             email_subject = replace_placeholders('registration-email', form.subject.data, regform=self.regform,
                                                  registration=registration)
             with self.regform.event.force_event_locale(registration.user):
-                template = get_template_module('events/registration/emails/custom_email.html',
+                template = get_template_module('registration/emails/custom_email.html',
                                                email_subject=email_subject, email_body=email_body)
                 bcc = [session.user.email] if form.copy_for_sender.data else []
                 ticket_template = self.regform.get_ticket_template()
@@ -327,7 +327,7 @@ class RHRegistrationEmailRegistrants(RHRegistrationsActionBase):
 
     def _process(self):
         with self.regform.event.force_event_locale():
-            tpl = get_template_module('events/registration/emails/custom_email_default.html')
+            tpl = get_template_module('registration/emails/custom_email_default.html')
         default_body = tpl.get_html_body()
         registration_ids = request.form.getlist('registration_id')
         form = EmailRegistrantsForm(body=default_body, regform=self.regform, registration_id=registration_ids,

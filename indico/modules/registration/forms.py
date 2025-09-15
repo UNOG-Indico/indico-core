@@ -111,9 +111,14 @@ class RegistrationFormEditForm(IndicoForm):
     currency = SelectField(_('Currency'), [DataRequired()], description=_('The currency for new registrations'))
     notification_sender_address = StringField(_('Notification sender address'), [IndicoEmail()],
                                               filters=[lambda x: (x or None)])
-    message_pending = TextAreaField(_('Message for pending registrations'))
-    message_unpaid = TextAreaField(_('Message for unpaid registrations'))
-    message_complete = TextAreaField(_('Message for complete registrations'))
+    message_pending = TextAreaField(_('Message for pending registrations'),
+        description=_('Text included in emails sent to pending registrations (Markdown syntax).'))
+    # TODO: come back to previewing the email when the registration form is not linked to an event
+    # for now just adding the description
+    message_unpaid = TextAreaField(_('Message for unpaid registrations'),
+        description=_('Text included in emails sent to unpaid registrations (Markdown syntax).'))
+    message_complete = TextAreaField(_('Message for complete registrations'),
+        description=_('Text included in emails sent to complete registrations (Markdown syntax).'))
     attach_ical = BooleanField(
         _('Attach iCalendar file'),
         widget=SwitchWidget(),
@@ -136,7 +141,8 @@ class RegistrationFormEditForm(IndicoForm):
         self.regform = kwargs.pop('regform', None)
         super().__init__(*args, **kwargs)
         self._set_currencies()
-        self._set_links()
+        if self.event:
+            self._set_links()
         self.notification_sender_address.description = _('Email address set as the sender of all '
                                                          'notifications sent to users. If empty, '
                                                          'then {email} is used.').format(email=config.NO_REPLY_EMAIL)
