@@ -38,7 +38,7 @@ class WPCategoryManageRegistration(WPCategoryManagement):
     template_prefix = 'registration/'
     bundles = ('module_events.registration.js', 'module_events.registration.css', 'module_receipts.js',
                'module_receipts.css')
-
+    # TODO there is something wrong with the breadcrumbs when in a page like this: http://127.0.0.1:9000/category/3/manage/registration/15/
     def __init__(self, rh, category, active_menu_item=None, **kwargs):
         self.regform = kwargs.get('regform')
         WPCategoryManagement.__init__(self, rh, category, active_menu_item, **kwargs)
