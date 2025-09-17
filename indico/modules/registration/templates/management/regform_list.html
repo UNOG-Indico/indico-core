@@ -18,6 +18,10 @@
 {% endblock %}
 
 {% block content %}
+    {% if event is defined %}
+        {% include 'registration/management/_regform_list_event_features.html' %}
+    {% endif %}
+    {{ template_hook('extra-registration-settings', target=target) }}
     <div class="regform-list">
         <h3>{% trans %}List of registration forms{% endtrans %}</h3>
         {% for regform in regforms %}
@@ -81,4 +85,9 @@
             </a>
         {% endblock %}
     </div>
+    {% if event is defined %}
+        <script>
+            setupRegistrationFormListPage();
+        </script>
+    {% endif %}
 {% endblock %}
