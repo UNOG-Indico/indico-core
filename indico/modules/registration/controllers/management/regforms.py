@@ -17,9 +17,7 @@ from wtforms.validators import ValidationError
 from indico.core import signals
 from indico.core.db import db
 from indico.core.db.sqlalchemy.util.session import no_autoflush
-from indico.modules.categories.controllers.base import RHManageCategoryBase
 from indico.modules.categories.models.categories import Category
-from indico.modules.categories.views import WPCategoryManagement
 from indico.modules.events.features.util import set_feature_enabled
 from indico.modules.events.models.events import Event, EventType
 from indico.modules.events.payment import payment_settings
@@ -28,8 +26,9 @@ from indico.modules.events.util import update_object_principals
 from indico.modules.logs.models.entries import CategoryLogRealm, EventLogRealm, LogKind
 from indico.modules.registration import logger, registration_settings
 from indico.modules.registration.controllers.display import ParticipantListMixin
-from indico.modules.registration.controllers.management import (RHCategoryManageRegFormBase, RHCategoryManageRegformsBase,
-                                                                RHEventManageRegFormsBase, RHEventManageRegFormBase)
+from indico.modules.registration.controllers.management import (RHCategoryManageRegFormBase,
+                                                                RHCategoryManageRegformsBase, RHEventManageRegFormBase,
+                                                                RHEventManageRegFormsBase)
 from indico.modules.registration.forms import (ParticipantsDisplayForm, ParticipantsDisplayFormColumnsForm,
                                                RegistrationFormCreateForm, RegistrationFormEditForm,
                                                RegistrationFormScheduleForm, RegistrationManagersForm)
@@ -40,7 +39,8 @@ from indico.modules.registration.operations import update_registration_form_sett
 from indico.modules.registration.stats import AccommodationStats, OverviewStats
 from indico.modules.registration.util import (close_registration, create_personal_data_fields,
                                               get_flat_section_setup_data)
-from indico.modules.registration.views import WPCategoryManageRegistration, WPManageParticipants, WPEventManageRegistration, WPManageRegistrationStats
+from indico.modules.registration.views import (WPCategoryManageRegistration, WPEventManageRegistration,
+                                               WPManageParticipants, WPManageRegistrationStats)
 from indico.modules.users.models.affiliations import Affiliation
 from indico.util.date_time import format_human_timedelta, now_utc
 from indico.util.i18n import _, force_locale, orig_string

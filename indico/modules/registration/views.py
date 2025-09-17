@@ -5,11 +5,11 @@
 # modify it under the terms of the MIT License; see the
 # LICENSE file for more details.
 
-from indico.web.flask.util import url_for
 from indico.modules.categories.views import WPCategoryManagement
 from indico.modules.events.management.views import WPEventManagement
 from indico.modules.events.models.events import EventType
 from indico.modules.events.views import WPConferenceDisplayBase, WPSimpleEventDisplayBase
+from indico.web.flask.util import url_for
 from indico.web.views import WPJinjaMixin
 
 

@@ -20,9 +20,9 @@ from wtforms.widgets import NumberInput, html_params
 from indico.core import signals
 from indico.core.config import config
 from indico.core.db import db
-from indico.modules.events import Event
 from indico.modules.designer import PageLayout, PageOrientation, PageSize, TemplateType
 from indico.modules.designer.util import get_inherited_templates
+from indico.modules.events import Event
 from indico.modules.events.features.util import is_feature_enabled
 from indico.modules.events.payment import payment_settings
 from indico.modules.events.settings import data_retention_settings
