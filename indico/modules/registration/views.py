@@ -15,7 +15,7 @@ from indico.web.views import WPJinjaMixin
 
 class WPEventManageRegistration(WPEventManagement):
     template_prefix = 'registration/'
-    bundles = ('module_events.registration.js', 'module_events.registration.css', 'module_receipts.js',
+    bundles = ('module_registration.js', 'module_registration.css', 'module_receipts.js',
                'module_receipts.css')
 
     def __init__(self, rh, event_, active_menu_item=None, **kwargs):
@@ -37,7 +37,7 @@ class WPEventManageRegistration(WPEventManagement):
 
 class WPCategoryManageRegistration(WPCategoryManagement):
     template_prefix = 'registration/'
-    bundles = ('module_events.registration.js', 'module_events.registration.css', 'module_receipts.js',
+    bundles = ('module_registration.js', 'module_registration.css', 'module_receipts.js',
                'module_receipts.css')
 
     def __init__(self, rh, category, active_menu_item=None, **kwargs):
@@ -72,7 +72,7 @@ class WPDisplayRegistrationFormConference(DisplayRegistrationFormMixin, WPConfer
     template_prefix = 'registration/'
     base_class = WPConferenceDisplayBase
     menu_entry_name = 'registration'
-    bundles = ('module_events.registration.js', 'module_events.registration.css')
+    bundles = ('module_registration.js', 'module_registration.css')
 
 
 class WPDisplayRegistrationParticipantList(WPDisplayRegistrationFormConference):
@@ -82,4 +82,4 @@ class WPDisplayRegistrationParticipantList(WPDisplayRegistrationFormConference):
 class WPDisplayRegistrationFormSimpleEvent(DisplayRegistrationFormMixin, WPSimpleEventDisplayBase):
     template_prefix = 'registration/'
     base_class = WPSimpleEventDisplayBase
-    bundles = ('module_events.registration.js', 'module_events.registration.css')
+    bundles = ('module_registration.js', 'module_registration.css')

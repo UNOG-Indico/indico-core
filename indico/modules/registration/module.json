@@ -1,3 +1,4 @@
 {
-  "name": "registration"
+  "name": "registration",
+  "produceBundle": false
 }
