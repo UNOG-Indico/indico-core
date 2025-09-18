@@ -52,6 +52,7 @@ def upgrade():
 def downgrade():
     op.execute('DROP TRIGGER IF EXISTS registrations_prevent_forms_linked_to_categories ON event_registration.registrations;')
     op.execute('DROP FUNCTION IF EXISTS disallow_registration_on_forms_linked_to_categories;')
+    op.execute('''DELETE FROM event_registration.forms WHERE category_id IS NOT NULL; ''')  # I thought there was cascading delete between registration form and the form fields?
     op.drop_constraint('ck_forms_event_xor_category_id_null', 'forms', schema='event_registration')
     op.drop_column('forms', 'category_id', schema='event_registration')
     op.drop_column('forms', 'cloned_from_id', schema='event_registration')
