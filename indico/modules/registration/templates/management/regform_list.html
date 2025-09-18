@@ -80,9 +80,21 @@
 
     <div class="toolbar f-j-end hide-if-locked">
         {% block create_form_button %}
-            <a href="{{ url_for('event_registration.create_regform', target) }}" class="i-button icon-plus">
-                {%- trans %}Create form{% endtrans -%}
-            </a>
+            {% if event is defined %}
+                <a href="{{ url_for('event_registration.create_regform', target) }}" class="i-button icon-plus">
+                    {%- trans %}Create form{% endtrans -%}
+                </a>
+            {% else %}
+                <a href="" class="i-button icon-plus arrow js-dropdown"
+                   title="Create form"
+                   data-toggle="dropdown">
+                    Create form
+                </a>
+                <ul class="i-dropdown">
+                    <li>{{ create_regform_link(target, 'new', _('Create new Form')) }}</li>
+                    <li>{{ create_regform_link(target, 'clone', _('Clone from Template')) }}</li>
+                </ul>
+            {% endif %}
         {% endblock %}
     </div>
     {% if event is defined %}
@@ -91,3 +103,14 @@
         </script>
     {% endif %}
 {% endblock %}
+
+{% macro create_regform_link(category, type, text) -%}
+    {%- set url = url_for('event_registration.create_regform', category) -%}
+    <a href="{{ url }}"
+        data-href="{{ url }}"
+        data-title="{{ text }}"
+        data-ajax-dialog
+        data-ignore-href>
+        {{ text }}
+    </a>
+{%- endmacro %}

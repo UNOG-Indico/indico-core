@@ -29,7 +29,7 @@ class EventLogRealm(RichIntEnum):
 
 
 class CategoryLogRealm(RichIntEnum):
-    __titles__ = (None, _('Category'), _('Events')), _('Management')
+    __titles__ = (None, _('Category'), _('Events'), _('Management'))
     category = 1
     events = 2
     management = 3
