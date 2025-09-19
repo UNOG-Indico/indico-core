@@ -72,5 +72,4 @@ class RHListTemplateRegistrationForms(RHProtectedEventBase):
         result = [{'id': regform.id, 'friendly_id': regform.id, 'title': regform.title,
                    'full_title': f'# {regform.title}: in category: {regform.owner.id}'}
                   for regform in query]
-        print(result)
         return jsonify(result)

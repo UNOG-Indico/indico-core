@@ -586,7 +586,7 @@ class RegistrationForm(db.Model):
         return ~cls.is_deleted & (cls.publish_registrations_public != PublishRegistrationsMode.hide_all)
 
     def __repr__(self):
-        return format_repr(self, 'id', 'event_id', is_deleted=False, _text=self.title)
+        return format_repr(self, 'id', 'event_id', 'category_id', is_deleted=False, _text=self.title)
 
     def is_modification_allowed(self, registration):
         """Check whether a registration may be modified."""

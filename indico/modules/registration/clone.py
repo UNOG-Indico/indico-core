@@ -122,30 +122,26 @@ class RegistrationFormCloner(EventCloner):
 
     @classmethod
     @no_autoflush
-    def clone_regform_from_template(cls, regform):
-        """Clone a single contribution within the same event.
+    def clone_from_template_regform(cls, event, regform, title):
+        """Clone a regform from one in a category to the given event.
 
-        :param contribution: The `Contribution` to clone
-        :param preserve_session: Whether to assign and schedule
-        :return: The newly created contribution
+        :param event: The `Event` into which the regform will be cloned
+        :param regform: The `RegistrationForm` to clone
+        :param title: The title of the new RegistrationForm
+        :return: The newly created RegistrationForm
         """
         attrs = get_attrs_to_clone(RegistrationForm,
-                               # registration form open times probably not needed
-                               skip={'start_dt', 'end_dt', 'modification_end_dt', 'is_purged', 'uuid'})
-
-        cloned_form = RegistrationForm(event=regform.event, title=f'Copy of {regform.title}',
-                                    **{attr: getattr(regform, attr) for attr in attrs
-                                    if attr != 'title'})
-
-        # Use the cloning logic from RegistrationFormCloner with the current event
-        cloner = RegistrationFormCloner(regform.event)
-        cloner._field_data_map = {}  # Initialize field_data_map attribute (normally done in run())
-        cloner._clone_form_items(regform, cloned_form, clone_all_revisions=False)
-
-        db.session.add(cloned_form)
+                                   skip={'start_dt', 'end_dt', 'modification_end_dt', 'is_purged', 'uuid', 'title',
+                                         'cloned_from_id'})
+        cloner = cls(None)
+        cloner._field_data_map = {}
+        cloner._item_map = {}
+        new_form = RegistrationForm(event=event, title=title, cloned_from=regform,
+                                    **{attr: getattr(regform, attr) for attr in attrs})
+        cloner._clone_form_items(regform, new_form, False)
+        signals.event.registration.after_registration_form_clone.send(regform, new_form=new_form)
         db.session.flush()
-
-        return cloned_form
+        return new_form
 
 
 class RegistrationCloner(EventCloner):

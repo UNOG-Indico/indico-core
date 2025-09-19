@@ -72,7 +72,8 @@ _bp.add_url_rule(f'{event_url_prefix}/manage/registration/managers', 'manage_reg
 _bp.add_url_rule(f'{event_url_prefix}/manage/registration/participant-list-preview', 'manage_participant_list_preview',
                  regforms.RHParticipantListPreview)
 _bp.add_url_rule(f'{event_url_prefix}/manage/registration/clone-regform-from-template',
-                 'clone_regform_from_template', regforms.RHRegistrationFormCloneFromTemplate)
+                 'clone_regform_from_template', regforms.RHRegistrationFormCloneFromTemplate,
+                 methods=('GET', 'POST'))
 
 # Single registration form management
 _bp.add_url_rule(f'{event_url_prefix}/manage/registration/<int:reg_form_id>/notification-preview',

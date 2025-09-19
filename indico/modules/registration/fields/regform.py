@@ -17,7 +17,7 @@ class RegformField(QuerySelectField):
     """A field with dynamic fetching to select a registration form."""
 
     widget = DropdownWidget(allow_by_id=True, search_field='title', label_field='full_title', preload=True,
-                            search_method='POST', inline_js=True)
+                            search_method='POST', inline_js=False)
 
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('allow_blank', True)
@@ -33,7 +33,10 @@ class RegformField(QuerySelectField):
                 'full_title': f'# {regform.title}: in category: {regform.owner.id}'}
 
     def _get_query(self):
-        return RegistrationForm.query.filter(RegistrationForm.category_id in self.event.category_chain)
+        return RegistrationForm.query.filter(RegistrationForm.category_id.in_(self.event.category_chain))
+
+    def pre_validate(self, form):
+        super().pre_validate(form)
 
     def _value(self, for_react=False):
         if not self.data:

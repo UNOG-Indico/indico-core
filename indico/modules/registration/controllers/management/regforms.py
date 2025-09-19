@@ -25,6 +25,7 @@ from indico.modules.events.settings import data_retention_settings
 from indico.modules.events.util import update_object_principals
 from indico.modules.logs.models.entries import CategoryLogRealm, EventLogRealm, LogKind
 from indico.modules.registration import logger, registration_settings
+from indico.modules.registration.clone import RegistrationFormCloner
 from indico.modules.registration.controllers.display import ParticipantListMixin
 from indico.modules.registration.controllers.management import (RHCategoryManageRegFormBase,
                                                                 RHCategoryManageRegformsBase, RHEventManageRegFormBase,
@@ -330,16 +331,20 @@ class RHRegistrationFormCloneFromTemplate(RHEventManageRegFormsBase):
     def _process(self):
         form = RegistrationFormCloneFromTemplateForm(event=self.event)
         if form.validate_on_submit():
-            form_title = form.data.title
-            regform = RegistrationForm(currency=payment_settings.get('currency'), **self.target_dict)
-            signals.event.registration_form_created.send(regform)
+            title = form.title.data
+            regform = form.clone_from.data
+            new_regform = RegistrationFormCloner.clone_from_template_regform(self.event, regform, title)
+            signals.event.registration_form_created.send(new_regform)
             flash(_('Registration form has been successfully cloned'), 'success')
-            regform.log(EventLogRealm.management, LogKind.positive, 'Registration',
-                        f'Registration form "{regform.title}" has been cloned from {form_title}', session.user,
-                        data=_get_regform_creation_log_data(regform))
-            return redirect(url_for('.manage_regform', regform))
+            data = {'cloned from': f'{regform!r}'}
+            data.update(_get_regform_creation_log_data(new_regform))
+            print(data)
+            new_regform.log(EventLogRealm.management, LogKind.positive, 'Registration',
+                            f'Registration form "{new_regform.title}" has been cloned from {regform}',
+                            session.user, data=data)
+            return redirect(url_for('.manage_regform', new_regform))
         return WPEventManageRegistration.render_template('management/regform_clone.html', self.event,
-                                                             form=form, event=self.event, regform=None)
+                                                             form=form, event=self.event)
 
 
 class RHRegistrationFormNotificationPreview(RHEventManageRegFormBase):
