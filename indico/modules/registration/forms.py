@@ -26,6 +26,7 @@ from indico.modules.events import Event
 from indico.modules.events.features.util import is_feature_enabled
 from indico.modules.events.payment import payment_settings
 from indico.modules.events.settings import data_retention_settings
+from indico.modules.registration.fields.regform import RegformField
 from indico.modules.registration.models.forms import ModificationMode
 from indico.modules.registration.models.invitations import RegistrationInvitation
 from indico.modules.registration.models.items import RegistrationFormItem
@@ -761,3 +762,14 @@ class PublishReceiptForm(IndicoForm):
 
     notify_user = BooleanField(_('Notify users'), widget=SwitchWidget(),
                                description=_('Whether users should be notified about the published receipt'))
+
+
+class RegistrationFormCloneFromTemplateForm(IndicoForm):
+    title = StringField(_('Title'), [DataRequired()], description=_('The title of the registration form'))
+    clone_from = RegformField(_('Registration form'), [DataRequired()],
+                              description=_('Available registration forms to clone from'),
+                              ajax_endpoint='event_registration.regform_template_list')
+
+    def __init__(self, *args, **kwargs):
+        self.event = kwargs.pop('event')  # Is used by the RegformField
+        super().__init__(*args, **kwargs)

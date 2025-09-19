@@ -5,8 +5,10 @@
 # modify it under the terms of the MIT License; see the
 # LICENSE file for more details.
 
-from operator import itemgetter
+from flask import jsonify
 
+from operator import itemgetter
+from werkzeug.exceptions import Forbidden
 from flask import session
 from marshmallow import fields
 from sqlalchemy.orm import joinedload
@@ -14,6 +16,7 @@ from sqlalchemy.orm import joinedload
 from indico.modules.events.controllers.base import RHProtectedEventBase
 from indico.modules.events.sessions.models.blocks import SessionBlock
 from indico.modules.events.sessions.models.sessions import Session
+from indico.modules.registration.models.forms import RegistrationForm
 from indico.util.date_time import format_interval
 from indico.util.iterables import group_list
 from indico.web.args import use_kwargs
@@ -48,3 +51,26 @@ class RHAPIEventSessionBlocks(RHProtectedEventBase):
             if sb.can_access(session.user)
         ]
         return group_list(res, key=itemgetter('start_date'), sort_by=itemgetter('start_date', 'time'))
+
+
+class RHListTemplateRegistrationForms(RHProtectedEventBase):
+    """AJAX endpoint that lists all template registration forms usable by the event (dict representation)."""
+
+    ALLOW_LOCKED = True
+
+    def _check_access(self):
+        if not session.user:
+            raise Forbidden
+        RHProtectedEventBase._check_access(self)
+
+    def _process_args(self):
+        RHProtectedEventBase._process_args(self)
+
+    def _process(self):
+        query = RegistrationForm.query.filter(RegistrationForm.category_id.in_(self.event.category_chain))
+
+        result = [{'id': regform.id, 'friendly_id': regform.id, 'title': regform.title,
+                   'full_title': f'# {regform.title}: in category: {regform.owner.id}'}
+                  for regform in query]
+        print(result)
+        return jsonify(result)

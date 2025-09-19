@@ -1,0 +1,22 @@
+{% extends 'registration/management/_regform_base.html' %}
+{% from 'forms/_form.html' import simple_form %}
+
+{% block subtitle %}{% endblock %}
+
+{% block content %}
+    <div class="action-box highlight">
+        <div class="section">
+            <div class="icon icon-users"></div>
+            <div class="text">
+                <div class="label">
+                    {% trans %}Create a new registration form by cloning one of the template forms below{% endtrans %}
+                </div>
+                {% trans -%}
+                    To clone from a template form, specify the title for your new form and select the template
+                    registration form from the list below to use as base for your new form.
+                {%- endtrans %}
+            </div>
+        </div>
+    </div>
+    {{ simple_form(form, submit=_('Clone'), back_url=url_for('.manage_regform_list', event)) }}
+{% endblock %}

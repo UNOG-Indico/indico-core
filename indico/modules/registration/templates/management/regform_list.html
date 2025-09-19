@@ -81,19 +81,28 @@
     <div class="toolbar f-j-end hide-if-locked">
         {% block create_form_button %}
             {% if event is defined %}
-                <a href="{{ url_for('event_registration.create_regform', target) }}" class="i-button icon-plus">
-                    {%- trans %}Create form{% endtrans -%}
-                </a>
-            {% else %}
                 <a href="" class="i-button icon-plus arrow js-dropdown"
                    title="Create form"
                    data-toggle="dropdown">
                     Create form
                 </a>
                 <ul class="i-dropdown">
-                    <li>{{ create_regform_link(target, 'new', _('Create new Form')) }}</li>
-                    <li>{{ create_regform_link(target, 'clone', _('Clone from Template')) }}</li>
+                    <li>
+                        <a href="{{ url_for('event_registration.create_regform', target) }}">
+                            {%- trans %}Create new form{% endtrans -%}
+                        </a>
+                    </li>
+                    {# TODO Segi, if there are no template regforms in any category then this option shouldn't show #}
+                    <li>
+                        <a href="{{ url_for('event_registration.clone_regform_from_template', target) }}">
+                            {%- trans %}Create from template{% endtrans -%}
+                        </a>
+                    </li>
                 </ul>
+            {% else %}
+                <a href="{{ url_for('event_registration.create_regform', target) }}" class="i-button icon-plus">
+                    {%- trans %}Create form{% endtrans -%}
+                </a>
             {% endif %}
         {% endblock %}
     </div>
@@ -103,14 +112,3 @@
         </script>
     {% endif %}
 {% endblock %}
-
-{% macro create_regform_link(category, type, text) -%}
-    {%- set url = url_for('event_registration.create_regform', category) -%}
-    <a href="{{ url }}"
-        data-href="{{ url }}"
-        data-title="{{ text }}"
-        data-ajax-dialog
-        data-ignore-href>
-        {{ text }}
-    </a>
-{%- endmacro %}

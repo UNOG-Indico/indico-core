@@ -71,6 +71,8 @@ _bp.add_url_rule(f'{event_url_prefix}/manage/registration/managers', 'manage_reg
                  regforms.RHManageRegistrationManagers, methods=('GET', 'POST'))
 _bp.add_url_rule(f'{event_url_prefix}/manage/registration/participant-list-preview', 'manage_participant_list_preview',
                  regforms.RHParticipantListPreview)
+_bp.add_url_rule(f'{event_url_prefix}/manage/registration/clone-regform-from-template',
+                 'clone_regform_from_template', regforms.RHRegistrationFormCloneFromTemplate)
 
 # Single registration form management
 _bp.add_url_rule(f'{event_url_prefix}/manage/registration/<int:reg_form_id>/notification-preview',
@@ -294,6 +296,8 @@ _bp.add_url_rule(f'{event_url_prefix}/api/registration/<int:reg_form_id>/tags/as
                  tags.RHAPIRegistrationTagsAssign, methods=('POST',))
 _bp.add_url_rule(f'{event_url_prefix}/api/registration/<int:reg_form_id>/privacy/consent',
                  'api_registration_change_consent', privacy.RHAPIRegistrationChangeConsent, methods=('POST',))
+_bp.add_url_rule(f'{event_url_prefix}/api/regform-template-list', 'regform_template_list',
+                 api_misc.RHListTemplateRegistrationForms, methods=('POST',))
 
 
 # Check-in app API
