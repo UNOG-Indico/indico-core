@@ -63,6 +63,43 @@ for object_type in ('event', 'category'):
                      _dispatch(privacy.RHEventRegistrationPrivacy, privacy.RHCategoryRegistrationPrivacy),
                      methods=('GET', 'POST'), defaults=defaults)
 
+    # Regform edition: sections
+    _bp.add_url_rule(f'{prefix}/manage/registration/<int:reg_form_id>/form/sections', 'add_section',
+                    _dispatch(sections.RHRegistrationFormAddSection, sections.RHRegistrationFormAddSection), defaults=defaults, methods=('POST',))
+    _bp.add_url_rule(f'{prefix}/manage/registration/<int:reg_form_id>/form/sections/<section_id>',
+                    'modify_section', _dispatch(sections.RHRegistrationFormModifySection, sections.RHRegistrationFormModifySection), defaults=defaults,
+                    methods=('PATCH', 'DELETE', 'POST'))
+    _bp.add_url_rule(f'{prefix}/manage/registration/<int:reg_form_id>/form/sections/<section_id>/toggle',
+                    'toggle_section', _dispatch(sections.RHRegistrationFormToggleSection, sections.RHRegistrationFormToggleSection), defaults=defaults,
+                    methods=('POST',))
+    _bp.add_url_rule(f'{prefix}/manage/registration/<int:reg_form_id>/form/sections/<section_id>/move',
+                    'move_section', _dispatch(sections.RHRegistrationFormMoveSection, sections.RHRegistrationFormMoveSection), defaults=defaults,
+                    methods=('POST',))
+
+    # Regform edition: Fields
+    _bp.add_url_rule(f'{prefix}/manage/registration/<int:reg_form_id>/form/sections/<section_id>/fields',
+                    'add_field', _dispatch(fields.RHRegistrationFormAddField, fields.RHRegistrationFormAddField), defaults=defaults, methods=('POST',))
+    _bp.add_url_rule(f'{prefix}/manage/registration/<int:reg_form_id>/form/sections/<section_id>/fields/<field_id>',
+                    'modify_field', _dispatch(fields.RHRegistrationFormModifyField, fields.RHRegistrationFormModifyField), defaults=defaults,
+                    methods=('DELETE', 'PATCH'))
+    _bp.add_url_rule(f'{prefix}/manage/registration/<int:reg_form_id>/form/sections/<section_id>/fields/<field_id>/toggle',
+                    'toggle_field', _dispatch(fields.RHRegistrationFormToggleFieldState, fields.RHRegistrationFormToggleFieldState), defaults=defaults,
+                    methods=('POST',))
+    _bp.add_url_rule(f'{prefix}/manage/registration/<int:reg_form_id>/form/sections/<section_id>/fields/<field_id>/move',
+                    'move_field', _dispatch(fields.RHRegistrationFormMoveField, fields.RHRegistrationFormMoveField), defaults=defaults, methods=('POST',))
+
+    # Regform edition: Static text
+    _bp.add_url_rule(f'{prefix}/manage/registration/<int:reg_form_id>/form/sections/<section_id>/text',
+                    'add_text', _dispatch(fields.RHRegistrationFormAddText, fields.RHRegistrationFormAddText), defaults=defaults, methods=('POST',))
+    _bp.add_url_rule(f'{prefix}/manage/registration/<int:reg_form_id>/form/sections/<section_id>/text/<field_id>',
+                    'modify_text', _dispatch(fields.RHRegistrationFormModifyText, fields.RHRegistrationFormModifyText), defaults=defaults,
+                    methods=('DELETE', 'PATCH'))
+    _bp.add_url_rule(f'{prefix}/manage/registration/<int:reg_form_id>/form/sections/<section_id>/text/<field_id>/toggle',
+                    'toggle_text', _dispatch(fields.RHRegistrationFormToggleTextState, fields.RHRegistrationFormToggleTextState), defaults=defaults,
+                    methods=('POST',))
+    _bp.add_url_rule(f'{prefix}/manage/registration/<int:reg_form_id>/form/sections/<section_id>/text/<field_id>/move',
+                    'move_text', _dispatch(fields.RHRegistrationFormMoveText, fields.RHRegistrationFormMoveText), defaults=defaults, methods=('POST',))
+
 event_url_prefix = '/event/<int:event_id>'
 # Management
 _bp.add_url_rule(f'{event_url_prefix}/manage/registration/display', 'manage_regforms_display',
@@ -223,37 +260,6 @@ _bp.add_url_rule(f'{event_url_prefix}/manage/registration/tags/<int:tag_id>/dele
                  tags.RHRegistrationTagDelete, methods=('POST',))
 _bp.add_url_rule(f'{event_url_prefix}/manage/registration/<int:reg_form_id>/tags/assign',
                  'manage_registration_tags_assign', tags.RHRegistrationTagsAssign, methods=('POST',))
-
-# Regform edition: sections
-_bp.add_url_rule(f'{event_url_prefix}/manage/registration/<int:reg_form_id>/form/sections', 'add_section',
-                 sections.RHRegistrationFormAddSection, methods=('POST',))
-_bp.add_url_rule(f'{event_url_prefix}/manage/registration/<int:reg_form_id>/form/sections/<section_id>',
-                 'modify_section', sections.RHRegistrationFormModifySection, methods=('PATCH', 'DELETE', 'POST'))
-_bp.add_url_rule(f'{event_url_prefix}/manage/registration/<int:reg_form_id>/form/sections/<section_id>/toggle',
-                 'toggle_section', sections.RHRegistrationFormToggleSection, methods=('POST',))
-_bp.add_url_rule(f'{event_url_prefix}/manage/registration/<int:reg_form_id>/form/sections/<section_id>/move',
-                 'move_section', sections.RHRegistrationFormMoveSection, methods=('POST',))
-
-# Regform edition: Fields
-_bp.add_url_rule(f'{event_url_prefix}/manage/registration/<int:reg_form_id>/form/sections/<section_id>/fields',
-                 'add_field', fields.RHRegistrationFormAddField, methods=('POST',))
-_bp.add_url_rule(f'{event_url_prefix}/manage/registration/<int:reg_form_id>/form/sections/<section_id>/fields/<field_id>',
-                 'modify_field', fields.RHRegistrationFormModifyField, methods=('DELETE', 'PATCH'))
-_bp.add_url_rule(f'{event_url_prefix}/manage/registration/<int:reg_form_id>/form/sections/<section_id>/fields/<field_id>/toggle',
-                 'toggle_field', fields.RHRegistrationFormToggleFieldState, methods=('POST',))
-_bp.add_url_rule(f'{event_url_prefix}/manage/registration/<int:reg_form_id>/form/sections/<section_id>/fields/<field_id>/move',
-                 'move_field', fields.RHRegistrationFormMoveField, methods=('POST',))
-
-# Regform edition: Static text
-_bp.add_url_rule(f'{event_url_prefix}/manage/registration/<int:reg_form_id>/form/sections/<section_id>/text',
-                 'add_text', fields.RHRegistrationFormAddText, methods=('POST',))
-_bp.add_url_rule(f'{event_url_prefix}/manage/registration/<int:reg_form_id>/form/sections/<section_id>/text/<field_id>',
-                 'modify_text', fields.RHRegistrationFormModifyText, methods=('DELETE', 'PATCH'))
-_bp.add_url_rule(f'{event_url_prefix}/manage/registration/<int:reg_form_id>/form/sections/<section_id>/text/<field_id>/toggle',
-                 'toggle_text', fields.RHRegistrationFormToggleTextState, methods=('POST',))
-_bp.add_url_rule(f'{event_url_prefix}/manage/registration/<int:reg_form_id>/form/sections/<section_id>/text/<field_id>/move',
-                 'move_text', fields.RHRegistrationFormMoveText, methods=('POST',))
-
 
 # Display
 _bp.add_url_rule(f'{event_url_prefix}/registrations/', 'display_regform_list', display.RHRegistrationFormList)

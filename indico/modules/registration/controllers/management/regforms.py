@@ -30,7 +30,8 @@ from indico.modules.registration.controllers.display import ParticipantListMixin
 from indico.modules.registration.controllers.management import (RHCategoryManageRegFormBase,
                                                                 RHCategoryManageRegformsBase, RHEventManageRegFormBase,
                                                                 RHEventManageRegFormsBase)
-from indico.modules.registration.forms import (ParticipantsDisplayForm, ParticipantsDisplayFormColumnsForm, RegistrationFormCloneFromTemplateForm,
+from indico.modules.registration.forms import (ParticipantsDisplayForm, ParticipantsDisplayFormColumnsForm,
+                                               RegistrationFormCloneFromTemplateForm,
                                                RegistrationFormCreateForm, RegistrationFormEditForm,
                                                RegistrationFormScheduleForm, RegistrationManagersForm)
 from indico.modules.registration.models.forms import Registration, RegistrationForm, RegistrationState
