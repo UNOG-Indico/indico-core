@@ -17,8 +17,7 @@ import RegistrationFormSetup from './RegistrationFormSetup';
 
 export default function setupRegformSetup(root) {
   const {
-    eventId,
-    categoryId,
+    targetLocator,
     eventStartDate,
     eventEndDate,
     regformId,
@@ -30,8 +29,7 @@ export default function setupRegformSetup(root) {
 
   const initialData = {
     staticData: {
-      eventId: parseInt(eventId, 10),
-      categoryId: parseInt(categoryId, 10),
+      targetLocator: JSON.parse(targetLocator),
       regformId: parseInt(regformId, 10),
       hasPredefinedAffiliations: JSON.parse(hasPredefinedAffiliations),
       eventStartDate,

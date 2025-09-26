@@ -483,6 +483,7 @@ class RHRegistrationFormModifyMixin(RHManageRegistrationFormsAreaMixin):
         view_class = (WPCategoryManageRegistration if self.object_type == 'category'
                       else WPEventManageRegistration)
         return view_class.render_template('management/regform_modify.html', self.target,
+                                          target_locator=self.target.locator,
                                           form_data=get_flat_section_setup_data(self.regform),
                                           regform=self.regform,
                                           data_retention_range={'min': min_data_retention.days // 7,

@@ -21,7 +21,7 @@ import '../../../styles/regform.module.scss';
 import './FileInput.module.scss';
 
 export default function FileInput({fieldId, htmlId, htmlName, disabled, isRequired}) {
-  const {eventId, regformId, registrationUuid, fileData} = useSelector(getStaticData);
+  const {regformId, targetLocator, registrationUuid, fileData} = useSelector(getStaticData);
   const isUpdateMode = useSelector(getUpdateMode);
   const isManagement = useSelector(getManagement);
   const [invitationToken, formToken] = useMemo(() => {
@@ -32,7 +32,7 @@ export default function FileInput({fieldId, htmlId, htmlName, disabled, isRequir
   const initialFileDetails = isUpdateMode ? fileData[htmlName] || null : null;
 
   const urlParams = {
-    event_id: eventId,
+    ...targetLocator,
     reg_form_id: regformId,
     field_id: fieldId,
   };
