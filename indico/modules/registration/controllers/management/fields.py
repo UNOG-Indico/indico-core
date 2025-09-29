@@ -17,7 +17,7 @@ from indico.core.db.sqlalchemy.util.session import no_autoflush
 from indico.core.errors import NoReportError
 from indico.core.marshmallow import mm
 from indico.modules.events.settings import data_retention_settings
-from indico.modules.logs.models.entries import EventLogRealm, LogKind
+from indico.modules.logs.models.entries import LogKind
 from indico.modules.logs.util import make_diff_log
 from indico.modules.registration import logger
 from indico.modules.registration.controllers.management import RHCategoryManageRegFormBase, RHEventManageRegFormBase
@@ -280,7 +280,7 @@ class RegistrationFormModifyFieldMixin:
         update_regform_item_positions(self.regform)
         db.session.flush()
         self.field.log(
-            EventLogRealm.management, LogKind.negative, 'Registration',
+            self.regform.management_log_realm, LogKind.negative, 'Registration',
             f'Field "{self.field.title}" in "{self.regform.title}" deleted', session.user
         )
         logger.info('Field %s deleted by %s', self.field, session.user)
@@ -301,7 +301,7 @@ class RegistrationFormModifyFieldMixin:
             'retention_period': {'title': 'Retention period'},
         })
         self.field.log(
-            EventLogRealm.management, LogKind.change, 'Registration',
+            self.regform.management_log_realm, LogKind.change, 'Registration',
             f'Field "{self.field.title}" in "{self.regform.title}" modified', session.user,
             data={'Changes': changes}
         )
@@ -360,7 +360,7 @@ class RegistrationFormAddFieldMixin:
         db.session.add(form_field)
         db.session.flush()
         form_field.log(
-            EventLogRealm.management, LogKind.positive, 'Registration',
+            self.regform.management_log_realm, LogKind.positive, 'Registration',
             f'Field "{form_field.title}" in "{self.regform.title}" added', session.user,
             data={'Type': form_field.input_type}
         )
@@ -403,7 +403,7 @@ class RegistrationFormModifyTextMixin(RegistrationFormModifyFieldMixin):
             'description': {'title': 'Description'},
         })
         self.field.log(
-            EventLogRealm.management, LogKind.change, 'Registration',
+            self.regform.management_log_realm, LogKind.change, 'Registration',
             f'Field "{self.field.title}" in "{self.regform.title}" modified', session.user,
             data={'Changes': changes}
         )
@@ -443,7 +443,7 @@ class RegistrationFormAddTextMixin:
         db.session.add(form_field)
         db.session.flush()
         form_field.log(
-            EventLogRealm.management, LogKind.positive, 'Registration',
+            self.regform.management_log_realm, LogKind.positive, 'Registration',
             f'Field "{form_field.title}" in "{self.regform.title}" added', session.user,
             data={'Type': 'label'}
         )
