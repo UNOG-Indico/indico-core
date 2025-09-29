@@ -2,6 +2,50 @@ Changelog
 =========
 
 
+Version 3.3.9
+-------------
+
+*Unreleased*
+
+Improvements
+^^^^^^^^^^^^
+
+- Disallow comments/judgments on outdated editables (:pr:`7067`)
+- Log original email content (with placeholders) when emailing registrants or
+  sending invitations (:pr:`7093`)
+- Disallow sending registration emails or invitations containing hardcoded (and
+  usually incorrect) token links (:pr:`7093`)
+- Add support for showing registration pictures in the check-in app (:pr:`7099`)
+
+Bugfixes
+^^^^^^^^
+
+- Do not allow sending registration invitation reminders without the invitation
+  link placeholder (:pr:`7093`)
+- Correctly log the user sending a registration invitation reminder (:pr:`7093`)
+
+Accessibility
+^^^^^^^^^^^^^
+
+- Fix category list link color contrast (:pr:`7070`, thanks :user:`foxbunny`)
+- Fix color contrast and semantics of the protection icon and event count in category link
+  (:pr:`7071`, thanks :user:`foxbunny`)
+- Fix color contrast and screen reader support of the icons in the event list
+  (:pr:`7073`, thanks :user:`foxbunny`)
+- Fix color contrast and screen reader support of the hidden block buttons
+  in the event list (:pr:`7079`, thanks :user:`foxbunny`)
+- Fix contrast of the category info text (:pr:`7078`, thanks :user:`foxbunny`)
+- Fix contrast and screen reader support in breadcrumbs (:pr:`7088`,
+  thanks :user:`foxbunny`)
+- Fix the semantics for the empty materials text (:pr:`7096`, thanks :user:`foxbunny`)
+- Fix announcements accessibility (:pr:`7098`, thanks :user:`foxbuny`)
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+
+- Nothing so far
+
+
 Version 3.3.8
 -------------
 
