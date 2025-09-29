@@ -11,17 +11,18 @@ from werkzeug.exceptions import BadRequest
 
 from indico.core.db import db
 from indico.core.errors import NoReportError
-from indico.modules.logs.models.entries import EventLogRealm, LogKind
+from indico.modules.logs.models.entries import LogKind
 from indico.modules.logs.util import make_diff_log
 from indico.modules.registration import logger
-from indico.modules.registration.controllers.management import RHEventManageRegFormBase
+from indico.modules.registration.controllers.management import RHCategoryManageRegFormBase, RHEventManageRegFormBase
+from indico.modules.registration.controllers.management.regforms import ManageRegistrationFormsAreaMixin
 from indico.modules.registration.models.items import RegistrationFormItemType, RegistrationFormSection
 from indico.modules.registration.util import get_flat_section_positions_setup_data, update_regform_item_positions
 from indico.util.i18n import _
 from indico.web.util import jsonify_data
 
 
-class RHManageRegFormSectionBase(RHEventManageRegFormBase):
+class ManageRegFormSectionBaseMixin:
     """Base class for a specific registration form section."""
 
     normalize_url_spec = {
@@ -31,12 +32,26 @@ class RHManageRegFormSectionBase(RHEventManageRegFormBase):
     }
 
     def _process_args(self):
-        RHEventManageRegFormBase._process_args(self)
         self.section = RegistrationFormSection.get_or_404(request.view_args['section_id'])
 
 
-class RHRegistrationFormAddSection(RHEventManageRegFormBase):
-    """Add a section to the registration form."""
+class RHEventManageRegFormSectionBase(ManageRegFormSectionBaseMixin, RHEventManageRegFormBase):
+    """Base class for a specific registration form section in an event."""
+
+    def _process_args(self):
+        RHEventManageRegFormBase._process_args(self)
+        ManageRegFormSectionBaseMixin._process_args(self)
+
+
+class RHCategoryManageRegFormSectionBase(ManageRegFormSectionBaseMixin, RHCategoryManageRegFormBase):
+    """Base class for a specific registration form section in a category."""
+
+    def _process_args(self):
+        RHCategoryManageRegFormBase._process_args(self)
+        ManageRegFormSectionBaseMixin._process_args(self)
+
+
+class RegistrationFormAddSectionMixin(ManageRegistrationFormsAreaMixin):
 
     def _process(self):
         section = RegistrationFormSection(registration_form=self.regform)
@@ -45,16 +60,23 @@ class RHRegistrationFormAddSection(RHEventManageRegFormBase):
         section.is_manager_only = request.json.get('is_manager_only', False)
         db.session.add(section)
         db.session.flush()
-        section.log(
-            EventLogRealm.management, LogKind.positive, 'Registration',
-            f'Section "{section.title}" in "{self.regform.title}" added', session.user,
-            data={'Manager-only': section.is_manager_only}
+        section.log(self.regform.management_log_realm, LogKind.positive, 'Registration',
+                    f'Section "{section.title}" in "{self.regform.title}" added', session.user,
+                    data={'Manager-only': section.is_manager_only}
         )
         logger.info('Section %s created by %s', section, session.user)
         return jsonify(section.view_data)
 
 
-class RHRegistrationFormModifySection(RHManageRegFormSectionBase):
+class RHEventRegistrationFormAddSection(RegistrationFormAddSectionMixin, RHEventManageRegFormBase):
+    """Add a section to the registration form inside an event."""
+
+
+class RHCategoryRegistrationFormAddSection(RegistrationFormAddSectionMixin, RHCategoryManageRegFormBase):
+    """Add a section to the registration form inside a category."""
+
+
+class RegistrationFormModifySectionMixin(ManageRegistrationFormsAreaMixin):
     """Delete/modify a section."""
 
     def _process_DELETE(self):
@@ -63,7 +85,7 @@ class RHRegistrationFormModifySection(RHManageRegFormSectionBase):
         self.section.is_deleted = True
         db.session.flush()
         self.section.log(
-            EventLogRealm.management, LogKind.negative, 'Registration',
+            self.regform.management_log_realm, LogKind.negative, 'Registration',
             f'Section "{self.section.title}" in "{self.regform.title}" deleted', session.user
         )
         logger.info('Section %s deleted by %s', self.section, session.user)
@@ -93,7 +115,7 @@ class RHRegistrationFormModifySection(RHManageRegFormSectionBase):
             'is_manager_only': {'title': 'Manager-only'},
         })
         self.section.log(
-            EventLogRealm.management, LogKind.change, 'Registration',
+            self.regform.management_log_realm, LogKind.change, 'Registration',
             f'Section "{self.section.title}" in "{self.regform.title}" modified', session.user,
             data={'Changes': changes}
         )
@@ -101,7 +123,16 @@ class RHRegistrationFormModifySection(RHManageRegFormSectionBase):
         return jsonify(self.section.view_data)
 
 
-class RHRegistrationFormToggleSection(RHManageRegFormSectionBase):
+class RHEventRegistrationFormModifySection(RegistrationFormModifySectionMixin, RHEventManageRegFormSectionBase):
+    """Delete/modify a section inside an event."""
+
+
+class RHCategoryRegistrationFormModifySection(RegistrationFormModifySectionMixin,
+                                                   RHCategoryManageRegFormSectionBase):
+    """Delete/modify a section inside a category."""
+
+
+class RegistrationFormToggleSection(ManageRegistrationFormsAreaMixin):
     """Enable/disable a section."""
 
     def _process_POST(self):
@@ -118,13 +149,13 @@ class RHRegistrationFormToggleSection(RHManageRegFormSectionBase):
         db.session.flush()
         if self.section.is_enabled:
             self.section.log(
-                EventLogRealm.management, LogKind.positive, 'Registration',
+                self.regform.management_log_realm, LogKind.positive, 'Registration',
                 f'Section "{self.section.title}" in "{self.regform.title}" enabled', session.user
             )
             logger.info('Section %s enabled by %s', self.section, session.user)
         else:
             self.section.log(
-                EventLogRealm.management, LogKind.negative, 'Registration',
+                self.regform.management_log_realm, LogKind.negative, 'Registration',
                 f'Section "{self.section.title}" in "{self.regform.title}" disabled', session.user
             )
             logger.info('Section %s disabled by %s', self.section, session.user)
@@ -132,7 +163,15 @@ class RHRegistrationFormToggleSection(RHManageRegFormSectionBase):
                             positions=get_flat_section_positions_setup_data(self.regform))
 
 
-class RHRegistrationFormMoveSection(RHManageRegFormSectionBase):
+class RHEventRegistrationFormToggleSection(RegistrationFormToggleSection, RHEventManageRegFormSectionBase):
+    """Enable/disable a section inside an event."""
+
+
+class RHCategoryRegistrationFormToggleSection(RegistrationFormToggleSection, RHCategoryManageRegFormSectionBase):
+    """Enable/disable a section inside a category."""
+
+
+class RegistrationFormMoveSection(ManageRegistrationFormsAreaMixin):
     """Move a section within the registration form."""
 
     def _process(self):
@@ -160,3 +199,11 @@ class RHRegistrationFormMoveSection(RHManageRegFormSectionBase):
             section.position = pos
         db.session.flush()
         return jsonify(success=True)
+
+
+class RHEventRegistrationFormMoveSection(RegistrationFormMoveSection, RHEventManageRegFormSectionBase):
+    """Move a section within the registration form inside an event."""
+
+
+class RHCategoryRegistrationFormMoveSection(RegistrationFormMoveSection, RHCategoryManageRegFormSectionBase):
+    """Move a section within the registration form insdie a category."""

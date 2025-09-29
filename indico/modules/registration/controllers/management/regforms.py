@@ -53,7 +53,7 @@ from indico.web.forms.base import FormDefaults
 from indico.web.util import jsonify_data, jsonify_form, jsonify_template
 
 
-class RHManageRegistrationFormsAreaMixin:
+class ManageRegistrationFormsAreaMixin:
     """Basic class for all registration form mixins.
 
     It resolves the target object type from the blueprint URL.
@@ -75,7 +75,7 @@ class RHManageRegistrationFormsAreaMixin:
         return Event.get_or_404(event_id) if self.object_type == 'event' else Category.get_or_404(categ_id)
 
 
-class RHManageRegistrationFormsMixin(RHManageRegistrationFormsAreaMixin):
+class RHManageRegistrationFormsMixin(ManageRegistrationFormsAreaMixin):
     """List all registration forms for a taget event or category."""
 
     def _process(self):
@@ -91,7 +91,7 @@ class RHManageRegistrationFormsMixin(RHManageRegistrationFormsAreaMixin):
                                                                 'registration', target=self.target, regforms=regforms)
 
 
-class RHRegistrationFormCreateMixin(RHManageRegistrationFormsAreaMixin):
+class RHRegistrationFormCreateMixin(ManageRegistrationFormsAreaMixin):
     def _get_form_defaults(self):
         participant_visibility = (PublishRegistrationsMode.hide_all
                                   if isinstance(self.target, Event) and self.event.type_ == EventType.conference
@@ -158,14 +158,14 @@ class RHParticipantListPreview(ParticipantListMixin, RHEventManageRegFormsBase):
         return self.preview == 'participant'
 
 
-class RHEventRegistrationFormManage(RHManageRegistrationFormsAreaMixin, RHEventManageRegFormBase):
+class RHEventRegistrationFormManage(ManageRegistrationFormsAreaMixin, RHEventManageRegFormBase):
     """Specific event registration form management."""
 
     def _process(self):
         return WPEventManageRegistration.render_template('management/regform.html', self.event, regform=self.regform)
 
 
-class RHCategoryRegistrationFormManage(RHManageRegistrationFormsAreaMixin, RHCategoryManageRegFormBase):
+class RHCategoryRegistrationFormManage(ManageRegistrationFormsAreaMixin, RHCategoryManageRegFormBase):
     """Specific category registration form management."""
 
     def _process(self):
@@ -300,7 +300,7 @@ class RHManageParticipants(RHEventManageRegFormsBase):
         return redirect(url_for('event_registration.manage_regform', regform))
 
 
-class RHRegistrationFormEditMixin(RHManageRegistrationFormsAreaMixin):
+class RHRegistrationFormEditMixin(ManageRegistrationFormsAreaMixin):
     """Mixin to edit a registration form."""
 
     def _get_form_defaults(self):
@@ -391,7 +391,7 @@ class RHRegistrationFormNotificationPreview(RHEventManageRegFormBase):
         return jsonify(html=html)
 
 
-class RHRegistrationFormDeleteMixin(RHManageRegistrationFormsAreaMixin):
+class RHRegistrationFormDeleteMixin(ManageRegistrationFormsAreaMixin):
     """Mixin to delete a registration form."""
 
     def _process(self):
@@ -473,7 +473,7 @@ class RHRegistrationFormSchedule(RHEventManageRegFormBase):
         return jsonify_form(form, submit=_('Schedule'))
 
 
-class RHRegistrationFormModifyMixin(RHManageRegistrationFormsAreaMixin):
+class RHRegistrationFormModifyMixin(ManageRegistrationFormsAreaMixin):
     """Mixin to modify the form of a registration form."""
 
     def _process(self):

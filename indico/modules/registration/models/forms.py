@@ -20,6 +20,7 @@ from indico.core.db import db
 from indico.core.db.sqlalchemy import PyIntEnum, UTCDateTime
 from indico.core.db.sqlalchemy.principals import PrincipalType
 from indico.modules.designer.models.templates import DesignerTemplate
+from indico.modules.logs.models.entries import CategoryLogRealm, EventLogRealm
 from indico.modules.registration.models.form_fields import RegistrationFormPersonalDataField
 from indico.modules.registration.models.registrations import PublishRegistrationsMode, Registration, RegistrationState
 from indico.util.caching import memoize_request
@@ -661,6 +662,10 @@ class RegistrationForm(db.Model):
             if (isinstance(field, RegistrationFormPersonalDataField) and
                     field.personal_data_type == personal_data_type):
                 return field.id
+
+    @property
+    def management_log_realm(self):
+        return EventLogRealm.management if self.event else CategoryLogRealm.management
 
     def log(self, *args, **kwargs):
         """Log with prefilled metadata for the regform."""

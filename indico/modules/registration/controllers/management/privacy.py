@@ -15,7 +15,7 @@ from indico.modules.logs.models.entries import CategoryLogRealm, LogKind
 from indico.modules.logs.util import make_diff_log
 from indico.modules.registration.controllers.display import RHRegistrationFormRegistrationBase
 from indico.modules.registration.controllers.management import RHCategoryManageRegFormBase, RHEventManageRegFormBase
-from indico.modules.registration.controllers.management.regforms import RHManageRegistrationFormsAreaMixin
+from indico.modules.registration.controllers.management.regforms import ManageRegistrationFormsAreaMixin
 from indico.modules.registration.forms import RegistrationPrivacyForm
 from indico.modules.registration.models.registrations import RegistrationVisibility
 from indico.modules.registration.util import update_registration_consent_to_publish
@@ -25,7 +25,7 @@ from indico.web.args import use_kwargs
 from indico.web.flask.util import url_for
 
 
-class RHRegistrationPrivacyMixin(RHManageRegistrationFormsAreaMixin):
+class RHRegistrationPrivacyMixin(ManageRegistrationFormsAreaMixin):
     """Mixin to change the privacy settings of a registration form."""
 
     _log_fields = {
