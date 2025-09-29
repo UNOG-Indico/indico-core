@@ -67,7 +67,8 @@ class RHListTemplateRegistrationForms(RHProtectedEventBase):
         RHProtectedEventBase._process_args(self)
 
     def _process(self):
-        query = RegistrationForm.query.filter(RegistrationForm.category_id.in_(self.event.category_chain))
+        query = RegistrationForm.query.filter(~RegistrationForm.is_deleted,
+                                              RegistrationForm.category_id.in_(self.event.category_chain))
 
         result = [{'id': regform.id, 'friendly_id': regform.id, 'title': regform.title,
                    'full_title': f'# {regform.title}: in category: {regform.owner.id}'}
