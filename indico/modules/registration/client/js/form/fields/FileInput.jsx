@@ -22,6 +22,7 @@ import './FileInput.module.scss';
 
 export default function FileInput({fieldId, htmlId, htmlName, disabled, isRequired}) {
   const {regformId, targetLocator, registrationUuid, fileData} = useSelector(getStaticData);
+  const isTemplateForm = 'category_id' in targetLocator;
   const isUpdateMode = useSelector(getUpdateMode);
   const isManagement = useSelector(getManagement);
   const [invitationToken, formToken] = useMemo(() => {
@@ -52,7 +53,13 @@ export default function FileInput({fieldId, htmlId, htmlName, disabled, isRequir
         name={htmlName}
         disabled={disabled}
         required={isRequired}
-        uploadURL={isManagement ? managementUploadURL(urlParams) : participantUploadURL(urlParams)}
+        uploadURL={
+          isTemplateForm
+            ? ''
+            : isManagement
+            ? managementUploadURL(urlParams)
+            : participantUploadURL(urlParams)
+        }
         initialFileDetails={initialFileDetails}
       />
     </div>

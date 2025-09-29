@@ -21,7 +21,9 @@ from indico.modules.logs.models.entries import EventLogRealm, LogKind
 from indico.modules.logs.util import make_diff_log
 from indico.modules.registration import logger
 from indico.modules.registration.controllers.management import RHCategoryManageRegFormBase, RHEventManageRegFormBase
-from indico.modules.registration.controllers.management.sections import ManageRegFormSectionBaseMixin
+from indico.modules.registration.controllers.management.sections import (ManageRegFormSectionBaseMixin,
+                                                                         RHEventManageRegFormSectionBase,
+                                                                         RHCategoryManageRegFormSectionBase)
 from indico.modules.registration.fields import get_field_types
 from indico.modules.registration.models.form_fields import RegistrationFormField
 from indico.modules.registration.models.items import RegistrationFormItemType, RegistrationFormText
@@ -215,8 +217,8 @@ class RHEventManageRegformFieldBase(ManageRegFormFieldBaseMixin, RHEventManageRe
     """Base class for a specific field within a registration form in an event."""
 
     def _process_args(self):
-        RHEventManageRegFormBase._process_args(self)
         ManageRegFormFieldBaseMixin._process_args(self)
+        RHEventManageRegFormBase._process_args(self)
 
 
 class RHCategoryManageRegformFieldBase(ManageRegFormFieldBaseMixin, RHCategoryManageRegFormBase):
@@ -365,11 +367,11 @@ class RegistrationFormAddFieldMixin:
         return jsonify(view_data=form_field.view_data)
 
 
-class RHEventRegistrationFormAddField(RegistrationFormAddFieldMixin, RHEventManageRegformFieldBase):
+class RHEventRegistrationFormAddField(RegistrationFormAddFieldMixin, RHEventManageRegFormSectionBase):
     """Add a field to the section inside an event."""
 
 
-class RHCategoryRegistrationFormAddField(RegistrationFormAddFieldMixin, RHCategoryManageRegformFieldBase):
+class RHCategoryRegistrationFormAddField(RegistrationFormAddFieldMixin, RHCategoryManageRegFormSectionBase):
     """Add a field to the section inside a category."""
 
 
@@ -448,9 +450,9 @@ class RegistrationFormAddTextMixin:
         return jsonify(view_data=form_field.view_data)
 
 
-class RHEventRegistrationFormAddText(RegistrationFormAddTextMixin, RHEventManageRegformFieldBase):
+class RHEventRegistrationFormAddText(RegistrationFormAddTextMixin, RHEventManageRegFormSectionBase):
     """Add a static text field to a section inside an event."""
 
 
-class RHCategoryRegistrationFormAddText(RegistrationFormAddTextMixin, RHCategoryManageRegformFieldBase):
+class RHCategoryRegistrationFormAddText(RegistrationFormAddTextMixin, RHCategoryManageRegFormSectionBase):
     """Add a static text field to a section inside a category."""

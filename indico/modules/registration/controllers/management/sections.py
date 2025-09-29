@@ -15,7 +15,6 @@ from indico.modules.logs.models.entries import LogKind
 from indico.modules.logs.util import make_diff_log
 from indico.modules.registration import logger
 from indico.modules.registration.controllers.management import RHCategoryManageRegFormBase, RHEventManageRegFormBase
-from indico.modules.registration.controllers.management.regforms import ManageRegistrationFormsAreaMixin
 from indico.modules.registration.models.items import RegistrationFormItemType, RegistrationFormSection
 from indico.modules.registration.util import get_flat_section_positions_setup_data, update_regform_item_positions
 from indico.util.i18n import _
@@ -51,7 +50,7 @@ class RHCategoryManageRegFormSectionBase(ManageRegFormSectionBaseMixin, RHCatego
         ManageRegFormSectionBaseMixin._process_args(self)
 
 
-class RegistrationFormAddSectionMixin(ManageRegistrationFormsAreaMixin):
+class RegistrationFormAddSectionMixin:
 
     def _process(self):
         section = RegistrationFormSection(registration_form=self.regform)
@@ -76,7 +75,7 @@ class RHCategoryRegistrationFormAddSection(RegistrationFormAddSectionMixin, RHCa
     """Add a section to the registration form inside a category."""
 
 
-class RegistrationFormModifySectionMixin(ManageRegistrationFormsAreaMixin):
+class RegistrationFormModifySectionMixin:
     """Delete/modify a section."""
 
     def _process_DELETE(self):
@@ -132,7 +131,7 @@ class RHCategoryRegistrationFormModifySection(RegistrationFormModifySectionMixin
     """Delete/modify a section inside a category."""
 
 
-class RegistrationFormToggleSection(ManageRegistrationFormsAreaMixin):
+class RegistrationFormToggleSection:
     """Enable/disable a section."""
 
     def _process_POST(self):
@@ -171,7 +170,7 @@ class RHCategoryRegistrationFormToggleSection(RegistrationFormToggleSection, RHC
     """Enable/disable a section inside a category."""
 
 
-class RegistrationFormMoveSection(ManageRegistrationFormsAreaMixin):
+class RegistrationFormMoveSection:
     """Move a section within the registration form."""
 
     def _process(self):

@@ -57,6 +57,7 @@ export default function PictureInput({
     uploadUrlParams.form_token = formToken;
   }
   const previewUrlParams = initialPictureDetails ? initialPictureDetails.locator : null;
+  const isTemplateForm = 'category_id' in targetLocator;
 
   return (
     <div styleName="file-field" id={htmlId}>
@@ -64,8 +65,8 @@ export default function PictureInput({
         name={htmlName}
         disabled={disabled}
         required={isRequired}
-        uploadURL={uploadURL(uploadUrlParams)}
-        previewURL={previewUrlParams ? previewURL(previewUrlParams) : ''}
+        uploadURL={isTemplateForm ? '' : uploadURL(uploadUrlParams)}
+        previewURL={isTemplateForm ? '' : previewUrlParams ? previewURL(previewUrlParams) : ''}
         initialPictureDetails={initialPictureDetails}
         minPictureSize={minPictureSize}
       />
