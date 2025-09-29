@@ -337,11 +337,11 @@ class RHRegistrationFormCloneFromTemplate(RHEventManageRegFormsBase):
             new_regform = RegistrationFormCloner.clone_from_template_regform(self.event, regform, title)
             signals.event.registration_form_created.send(new_regform)
             flash(_('Registration form has been successfully cloned'), 'success')
-            data = {'cloned from': f'{regform!r}'}
+            cloned_from_message = f'"{regform.title}" in category: {regform.category.id}'
+            data = {'cloned from': cloned_from_message}
             data.update(_get_regform_creation_log_data(new_regform))
-            print(data)
             new_regform.log(EventLogRealm.management, LogKind.positive, 'Registration',
-                            f'Registration form "{new_regform.title}" has been cloned from {regform}',
+                            f'Registration form "{new_regform.title}" has been cloned from {cloned_from_message}',
                             session.user, data=data)
             return redirect(url_for('.manage_regform', new_regform))
         return WPEventManageRegistration.render_template('management/regform_clone.html', self.event,
