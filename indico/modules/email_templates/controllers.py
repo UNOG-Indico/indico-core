@@ -7,7 +7,7 @@
 
 from copy import deepcopy
 
-from flask import flash, request, session
+from flask import flash, request, session, jsonify, render_template
 from markupsafe import Markup
 from werkzeug.exceptions import Forbidden, NotFound
 
@@ -15,9 +15,10 @@ from indico.core.db import db
 from indico.modules.categories import Category
 from indico.modules.categories.controllers.base import RHManageCategoryBase
 from indico.modules.designer.forms import CloneTemplateForm
+from indico.modules.email_templates.dummy import get_dummy_registration
 from indico.modules.email_templates.forms import CreateEmailTemplatesForm, EditEmailTemplatesForm
 from indico.modules.email_templates.models.email_templates import EmailTemplate
-from indico.modules.email_templates.util import get_inherited_templates
+from indico.modules.email_templates.util import get_inherited_templates, get_system_templates
 from indico.modules.email_templates.views import WPCategoryManagementEmailTemplate, WPEventManagementEmailTemplate
 from indico.modules.events import Event
 from indico.modules.events.management.controllers import RHManageEventBase
@@ -32,7 +33,8 @@ from indico.web.util import jsonify_data, jsonify_form
 def _render_template_list(target, event=None):
     tpl = get_template_module('email_templates/_list.html')
     return tpl.render_email_template_list(target.email_templates, target, event=event,
-                                          inherited_templates=get_inherited_templates(target))
+                                          inherited_templates=get_inherited_templates(target),
+                                          system_templates=get_system_templates())
 
 
 class EmailTemplateMixin:
@@ -101,7 +103,9 @@ class TargetFromURLMixin(EmailTemplateMixin):
 class EmailTemplateListMixin(TargetFromURLMixin):
     def _process(self):
         inherited_templates = get_inherited_templates(self.target)
-        return self._render_template('list.html', inherited_templates=inherited_templates)
+        system_templates = get_system_templates()
+        return self._render_template('list.html', inherited_templates=inherited_templates,
+                                     system_templates=system_templates)
 
 
 class AddEmailTemplateMixin(TargetFromURLMixin):
@@ -120,6 +124,28 @@ class AddEmailTemplateMixin(TargetFromURLMixin):
         return jsonify_form(form, disabled_until_change=False)
 
 
+class RHViewEmailTemplate(AddEmailTemplateMixin):
+    def _process_args(self):
+        super()._process_args()
+        self.email_template_name = request.view_args['email_template_name']
+
+    def _process(self):
+        title = self.email_template_name.replace('_', ' ').title()
+        filename = get_system_templates(self.email_template_name)
+        dummy = get_dummy_registration()
+        tpl = get_template_module(f'events/registration/emails/{filename}', registration=dummy,
+                                  attach_rejection_reason='{rejection_reason}', diff=None, old_price=None,
+                                  receipt=None)
+        # email_body = replace_placeholders('accreditation-email', request.form['body'], accreditation=accreditation)
+        # email_subject = replace_placeholders('accreditation-email', request.form['subject'],
+        #                                      accreditation=accreditation)
+        # tpl = get_template_module('events/registration/emails/custom_email.html', email_subject=email_subject,
+        #                           email_body=email_body)
+        html = render_template('email_templates/preview.html', title=title, type='Registration',
+                               subject=tpl.get_subject(), body=tpl.get_body())
+        return jsonify(html=html)
+
+
 class RHListEventEmailTemplates(EmailTemplateListMixin, RHManageEventBase):
     pass
 
@@ -133,6 +159,14 @@ class RHAddEventEmailTemplate(AddEmailTemplateMixin, RHManageEventBase):
 
 
 class RHAddCategoryEmailTemplate(AddEmailTemplateMixin, RHManageCategoryBase):
+    pass
+
+
+class RHViewEventEmailTemplate(RHViewEmailTemplate, RHManageEventBase):
+    pass
+
+
+class RHViewCategoryEmailTemplate(RHViewEmailTemplate, RHManageCategoryBase):
     pass
 
 
@@ -204,6 +238,14 @@ class CloneTemplateMixin(TargetFromURLMixin):
             return self.clone_template()
 
 
+class CloneSystemTemplateMixin(CloneTemplateMixin):
+    def clone_template(self, target=None):
+        pass
+
+    def _process(self):
+        pass
+
+
 class RHCloneEventEmailTemplate(CloneTemplateMixin, RHManageEventBase):
     def _process_args(self):
         RHManageEventBase._process_args(self)
@@ -211,6 +253,20 @@ class RHCloneEventEmailTemplate(CloneTemplateMixin, RHManageEventBase):
 
 
 class RHCloneCategoryEmailTemplate(CloneTemplateMixin, RHManageCategoryBase):
+    cloneable_elsewhere = True
+
+    def _process_args(self):
+        RHManageCategoryBase._process_args(self)
+        CloneTemplateMixin._process_args(self)
+
+
+class RHCloneEventSystemEmailTemplate(CloneSystemTemplateMixin, RHManageEventBase):
+    def _process_args(self):
+        RHManageEventBase._process_args(self)
+        CloneTemplateMixin._process_args(self)
+
+
+class RHCloneCategorySystemEmailTemplate(CloneSystemTemplateMixin, RHManageCategoryBase):
     cloneable_elsewhere = True
 
     def _process_args(self):

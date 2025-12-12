@@ -6,9 +6,12 @@
 # LICENSE file for more details.
 
 from indico.modules.email_templates.controllers import (RHAddCategoryEmailTemplate, RHAddEventEmailTemplate,
-                                                        RHCloneCategoryEmailTemplate, RHCloneEventEmailTemplate,
-                                                        RHDeleteEmailTemplate, RHEditEmailTemplate,
-                                                        RHListCategoryEmailTemplates, RHListEventEmailTemplates)
+                                                        RHCloneCategoryEmailTemplate,
+                                                        RHCloneCategorySystemEmailTemplate, RHCloneEventEmailTemplate,
+                                                        RHCloneEventSystemEmailTemplate, RHDeleteEmailTemplate,
+                                                        RHEditEmailTemplate, RHListCategoryEmailTemplates,
+                                                        RHListEventEmailTemplates, RHViewCategoryEmailTemplate,
+                                                        RHViewEventEmailTemplate)
 from indico.util.caching import memoize
 from indico.web.flask.util import make_view_func
 from indico.web.flask.wrappers import IndicoBlueprint
@@ -43,4 +46,10 @@ for object_type in ('event', 'category'):
                      RHDeleteEmailTemplate, defaults={'object_type': object_type}, methods=('DELETE',))
     _bp.add_url_rule(f'{prefix}/<int:email_template_id>/clone', 'clone_email_template',
                      _dispatch(RHCloneEventEmailTemplate, RHCloneCategoryEmailTemplate),
+                     defaults={'object_type': object_type}, methods=('GET', 'POST'))
+    _bp.add_url_rule(f'{prefix}/<email_template_name>/view-system-template', 'view_system_email_template',
+                     _dispatch(RHViewEventEmailTemplate, RHViewCategoryEmailTemplate),
+                     defaults={'object_type': object_type}, methods=('GET', 'POST'))
+    _bp.add_url_rule(f'{prefix}/<email_template_name>/system-template/clone', 'clone_system_email_template',
+                     _dispatch(RHCloneEventSystemEmailTemplate, RHCloneCategorySystemEmailTemplate),
                      defaults={'object_type': object_type}, methods=('GET', 'POST'))
