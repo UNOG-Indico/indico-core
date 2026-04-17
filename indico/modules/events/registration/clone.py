@@ -48,7 +48,6 @@ class RegistrationTagCloner(EventCloner):
 class RegistrationFormCloner(EventCloner):
     name = 'registration_forms'
     friendly_name = _('Registration forms')
-    requires = {'registration_tags'}
 
     @property
     def is_visible(self):

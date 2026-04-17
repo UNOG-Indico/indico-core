@@ -40,14 +40,14 @@ def test_registration_clone(dummy_event, dummy_regform, dummy_reg, create_event,
         assert not copied_registration.tags
 
 
-@pytest.mark.usefixtures('dummy_regform')
+@pytest.mark.usefixtures('dummy_regform', 'dummy_reg')
 def test_registration_tags_clone(dummy_event, create_event):
     set_feature_enabled(dummy_event, 'registration', True)
     tag = RegistrationTag(title='Foo', color='b33f69')
     dummy_event.registration_tags.append(tag)
 
     copied_event = create_event()
-    EventCloner.run_cloners(dummy_event, copied_event, {'registration_forms'})
+    EventCloner.run_cloners(dummy_event, copied_event, {'registrations', 'registration_forms'})
 
     assert len(copied_event.registration_tags) == 1
     copied_tag = copied_event.registration_tags[0]
