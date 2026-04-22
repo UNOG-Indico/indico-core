@@ -46,6 +46,7 @@ export default function WTFLinkListField({fieldId, linkProps}) {
           placeholder={Translate.string('URL')}
           onChange={evt => handleChange(0, 'url', evt.target.value)}
           value={links[0].url}
+          {...linkProps}
         />
       </div>
     );
