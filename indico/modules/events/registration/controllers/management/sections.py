@@ -79,7 +79,8 @@ class RHRegistrationFormModifySection(RHManageRegFormSectionBase):
         if changes.get('is_manager_only') == (False, True):
             # Check that no field in this section is conditionally shown
             if any(field.show_if_id is not None for field in self.section.children if not field.is_deleted):
-                raise ValidationError('Sections with conditional fields cannot be made manager-only')
+                raise ValidationError(_('This section cannot be made manager-only because it contains fields that are '
+                                        'conditionally shown. Remove those dependencies first.'))
             # Check no conditional fields depend on this section if it is becoming manager-only now
             critical_fields_ids = {field.id for field in self.section.children if not field.is_deleted}
             for section in self.regform.sections:
@@ -88,7 +89,8 @@ class RHRegistrationFormModifySection(RHManageRegFormSectionBase):
                 fields_ids = {field.show_if_id for field in section.children
                               if field.show_if_id is not None and not field.is_deleted}
                 if critical_fields_ids & fields_ids:
-                    raise ValidationError('Cannot make section manager-only due to conditional field relations')
+                    raise ValidationError(_('This section cannot be made manager-only because other fields depend on '
+                                            'fields inside it. Remove those dependencies first.'))
         db.session.flush()
         changes = make_diff_log(changes, {
             'title': {'title': 'Title', 'type': 'string'},
@@ -114,7 +116,8 @@ class RHRegistrationFormToggleSection(RHManageRegFormSectionBase):
                 raise BadRequest
             if any(f.condition_for for f in self.section.children):
                 raise NoReportError.wrap_exc(
-                    BadRequest(_('Sections with fields used as conditional cannot be disabled'))
+                    BadRequest(_('This section cannot be disabled because other fields depend on fields inside it. '
+                                 'Remove those dependencies first.'))
                 )
         self.section.is_enabled = enabled
         update_regform_item_positions(self.regform)

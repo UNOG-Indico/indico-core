@@ -51,7 +51,7 @@ export default function FormItemSetupActions({
           className={`icon-remove hide-if-locked ${isCondition ? 'disabled' : ''}`}
           title={
             isCondition
-              ? Translate.string('Fields that are a condition for other fields cannot be deleted.')
+              ? Translate.string('This field cannot be deleted because other fields depend on it.')
               : Translate.string('Delete field')
           }
           onClick={handleRemoveClick}
@@ -69,7 +69,7 @@ export default function FormItemSetupActions({
           className={`icon-disable hide-if-locked ${isCondition ? 'disabled' : ''}`}
           title={
             isCondition
-              ? Translate.string('Fields that are a condition for other fields cannot be disabled.')
+              ? Translate.string('This field cannot be disabled because other fields depend on it.')
               : Translate.string('Disable field')
           }
           onClick={handleDisableClick}

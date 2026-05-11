@@ -106,7 +106,7 @@ class TestGeneralFieldDataSchema:
         schema = GeneralFieldDataSchema(context={'regform': dummy_regform, 'field': new_field})
         with pytest.raises(ValidationError) as exc_info:
             schema.load({'input_type': 'text', 'title': 'New field', 'internal_name': position_field.internal_name})
-        assert exc_info.value.messages == {'internal_name': [f'The field "{position_field.title}" on this form '
+        assert exc_info.value.messages == {'internal_name': [f'The field "{position_field.title}" in this form '
                                                              f'has the same internal name.']}
 
     @pytest.mark.parametrize('internal_name', ('internal name', 'InternalName', 'internal.name', 'internal_name', ''))
@@ -165,7 +165,7 @@ class TestGeneralFieldDataSchema:
         with pytest.raises(ValidationError) as exc_info:
             schema.load({'input_type': 'text', 'title': 'test', 'internal_name': 'title'})
         assert exc_info.value.messages == {
-            'internal_name': [f'The field "Title" with the same internal name on form '
+            'internal_name': [f'The field "Title" with the same internal name in form '
                               f'"{other_form.title}" uses a different input type which is not allowed.']
         }
         other_form.is_deleted = True
@@ -263,7 +263,7 @@ class TestRegistrationFormToggleFieldState:
         db.session.flush()
         rh = RHRegistrationFormToggleFieldState()
         rh.field = disabled_field
-        with pytest.raises(BadRequest, match='The field "Title" on this form has the same internal name'):
+        with pytest.raises(BadRequest, match='The field "Title" in this form has the same internal name'):
             rh._check_unique_internal_name_in_form()
 
     def test_same_internal_name_in_other_section_on_enable(self, db, dummy_regform):
@@ -276,7 +276,7 @@ class TestRegistrationFormToggleFieldState:
         db.session.flush()
         rh = RHRegistrationFormToggleFieldState()
         rh.field = disabled_field
-        with pytest.raises(BadRequest, match='The field "Title" on this form has the same internal name'):
+        with pytest.raises(BadRequest, match='The field "Title" in this form has the same internal name'):
             rh._check_unique_internal_name_in_form()
 
     def test_consistent_type_on_enabled(self, db, dummy_regform, create_regform):
@@ -311,6 +311,6 @@ class TestRegistrationFormToggleFieldState:
         db.session.flush()
         rh = RHRegistrationFormToggleFieldState()
         rh.field = disabled_field
-        with pytest.raises(BadRequest, match='The field "Field Title" with the same internal name on form "Other Form" '
+        with pytest.raises(BadRequest, match='The field "Field Title" with the same internal name in form "Other Form" '
                                              'uses a different input type which is not allowed'):
             rh._check_internal_name_type_consistency_in_event()

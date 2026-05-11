@@ -122,7 +122,7 @@ class GeneralFieldDataSchema(mm.Schema):
             if field.id:
                 query = query.filter(RegistrationFormItem.id != field.id)
             if same_field := query.first():
-                raise ValidationError(_('The field "{}" on this form has the same internal name.')
+                raise ValidationError(_('The field "{}" in this form has the same internal name.')
                                       .format(same_field.title))
             # consistent type on forms of the same event
             query = (RegistrationFormItem.query
@@ -138,7 +138,7 @@ class GeneralFieldDataSchema(mm.Schema):
             if field.id:
                 query = query.filter(RegistrationFormItem.id != field.id)
             if inconsistent_field := query.first():
-                raise ValidationError(_('The field "{}" with the same internal name on form "{}" '
+                raise ValidationError(_('The field "{}" with the same internal name in form "{}" '
                                         'uses a different input type which is not allowed.')
                                       .format(inconsistent_field.title, inconsistent_field.registration_form.title))
 
@@ -158,7 +158,7 @@ class GeneralFieldDataSchema(mm.Schema):
             used_field_ids.add(field.id)
         regform = self.context['regform']
         if not (condition_field := RegistrationFormItem.query.with_parent(regform).filter_by(id=field_id).first()):
-            raise ValidationError('The field to show does not belong to the same registration form.')
+            raise ValidationError('This field does not belong to the same registration form.')
         if not condition_field.field_impl.allow_condition:
             raise ValidationError('This field cannot be used as a condition.')
         if not condition_field.is_enabled:
@@ -298,7 +298,7 @@ class RHRegistrationFormToggleFieldState(RHManageRegFormFieldBase):
                          ~RegistrationFormItem.is_deleted))
         if same_field := query.first():
             raise NoReportError.wrap_exc(
-                BadRequest(_('The field "{}" on this form has the same internal name.')
+                BadRequest(_('The field "{}" in this form has the same internal name.')
                            .format(same_field.title))
             )
 
@@ -316,7 +316,7 @@ class RHRegistrationFormToggleFieldState(RHManageRegFormFieldBase):
                          Event.id == self.field.registration_form.event_id))
         if inconsistent_field := query.first():
             raise NoReportError.wrap_exc(
-                BadRequest(_('The field "{}" with the same internal name on form "{}" '
+                BadRequest(_('The field "{}" with the same internal name in form "{}" '
                              'uses a different input type which is not allowed.')
                            .format(inconsistent_field.title, inconsistent_field.registration_form.title))
             )
@@ -327,7 +327,8 @@ class RHRegistrationFormToggleFieldState(RHManageRegFormFieldBase):
                 self.field.personal_data_type.is_required):
             raise BadRequest
         if not enabled and self.field.condition_for:
-            raise NoReportError.wrap_exc(BadRequest(_('Fields used as conditional cannot be disabled')))
+            raise NoReportError.wrap_exc(BadRequest(_('This field cannot be disabled because other fields depend on '
+                                                      'it. Remove those dependencies first.')))
         if enabled:
             self._check_unique_title_in_section()
             self._check_unique_internal_name_in_form()
@@ -358,7 +359,8 @@ class RHRegistrationFormModifyField(RHManageRegFormFieldBase):
         if self.field.type == RegistrationFormItemType.field_pd:
             raise BadRequest
         if self.field.condition_for:
-            raise NoReportError.wrap_exc(BadRequest(_('Fields used as conditional cannot be deleted')))
+            raise NoReportError.wrap_exc(BadRequest(_('This field cannot be deleted because other fields depend on it. '
+                                                      'Remove those dependencies first.')))
         signals.event.registration_form_field_deleted.send(self.field)
         self.field.is_deleted = True
         self.field.show_if_id = None
